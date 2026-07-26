@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu, Phone, X } from "lucide-react";
 import { navLinks, site } from "@/lib/site";
 
@@ -10,8 +11,13 @@ export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   /* Condense the bar and draw its hairline once the page has moved. */
   useEffect(() => {
@@ -76,124 +82,133 @@ export default function Header() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  return (
-    <header
-      className={`sticky top-0 z-50 transition-[background,box-shadow,border-color] duration-300 ${
-        scrolled
-          ? "border-b border-divider bg-[color-mix(in_srgb,var(--color-bg)_88%,transparent)] backdrop-blur-md"
-          : "border-b border-transparent bg-bg"
-      }`}
+  const mobileDrawer = (
+    <div
+      id="mobile-menu"
+      ref={panelRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Site menu"
+      hidden={!open}
+      className="fixed inset-0 z-[100] flex h-dvh min-h-screen flex-col bg-bg lg:hidden"
     >
-      <div className="wrap flex items-center gap-6" style={{ height: "var(--header-h)" }}>
+      <div
+        className="wrap flex items-center justify-between border-b border-divider"
+        style={{ height: "var(--header-h)" }}
+      >
         <Link
           href="/"
+          onClick={close}
           className="font-heading text-[18px] font-semibold uppercase tracking-[0.01em] text-ink no-underline md:text-[19px]"
         >
           Felmos <span className="text-accent-700">Engineering</span>
         </Link>
-
-        {/* Desktop navigation */}
-        <nav className="mr-auto hidden lg:flex lg:gap-7" aria-label="Primary">
-          {navLinks.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              aria-current={isActive(l.href) ? "page" : undefined}
-              className={`relative py-1.5 font-body text-[14.5px] font-medium no-underline transition-colors after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-                isActive(l.href)
-                  ? "text-accent-700 after:scale-x-100"
-                  : "text-ink hover:text-accent-700"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="ml-auto hidden items-center gap-2.5 lg:flex">
-          <a href={site.phoneHref} className="btn btn-secondary text-ink no-underline">
-            <Phone size={16} strokeWidth={1.5} />
-            {site.phone}
-          </a>
-          <Link href="/contact" className="btn btn-primary no-underline">
-            Book Inspection
-          </Link>
-        </div>
-
-        {/* Mobile toggle */}
         <button
-          ref={toggleRef}
           type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="btn btn-secondary btn-icon ml-auto lg:hidden"
+          onClick={close}
+          aria-label="Close menu"
+          className="btn btn-secondary btn-icon"
         >
-          {/* The open drawer covers this bar and carries its own close button. */}
-          <Menu size={20} strokeWidth={1.5} />
+          <X size={20} strokeWidth={1.5} />
         </button>
       </div>
 
-      {/* Mobile drawer */}
-      <div
-        id="mobile-menu"
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Site menu"
-        hidden={!open}
-        className="fixed inset-0 z-[60] flex flex-col bg-bg lg:hidden"
+      <nav className="wrap flex-1 overflow-y-auto py-4" aria-label="Mobile">
+        <ul className="m-0 list-none p-0">
+          {navLinks.map((l, i) => (
+            <li key={l.href} className="border-b border-divider">
+              <Link
+                href={l.href}
+                aria-current={isActive(l.href) ? "page" : undefined}
+                style={{ animationDelay: `${60 + i * 55}ms` }}
+                className={`block py-5 font-heading text-[26px] font-semibold uppercase no-underline ${
+                  open ? "animate-[fx-rise_0.5s_var(--ease-out-quint)_both]" : ""
+                } ${isActive(l.href) ? "text-accent-700" : "text-ink"}`}
+              >
+                <span className="mr-3 align-middle font-mono text-[12px] tracking-widest text-accent-700 opacity-70">
+                  0{i + 1}
+                </span>
+                {l.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div className="wrap flex flex-col gap-2.5 border-t border-divider py-5 pb-[max(20px,env(safe-area-inset-bottom))]">
+        <Link href="/contact" onClick={close} className="btn btn-primary btn-block no-underline">
+          Book Inspection
+        </Link>
+        <a href={site.phoneHref} className="btn btn-secondary btn-block text-ink no-underline">
+          <Phone size={16} strokeWidth={1.5} />
+          {site.phone}
+        </a>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <header
+        className={`sticky top-0 z-50 transition-[background,box-shadow,border-color] duration-300 ${
+          scrolled
+            ? "border-b border-divider bg-[color-mix(in_srgb,var(--color-bg)_88%,transparent)] backdrop-blur-md"
+            : "border-b border-transparent bg-bg"
+        }`}
       >
-        <div
-          className="wrap flex items-center justify-between border-b border-divider"
-          style={{ height: "var(--header-h)" }}
-        >
-          <span className="font-heading text-[18px] font-semibold uppercase">
-            Felmos <span className="text-accent-700">Engineering</span>
-          </span>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close menu"
-            className="btn btn-secondary btn-icon"
+        <div className="wrap flex items-center gap-6" style={{ height: "var(--header-h)" }}>
+          <Link
+            href="/"
+            className="font-heading text-[18px] font-semibold uppercase tracking-[0.01em] text-ink no-underline md:text-[19px]"
           >
-            <X size={20} strokeWidth={1.5} />
+            Felmos <span className="text-accent-700">Engineering</span>
+          </Link>
+
+          {/* Desktop navigation */}
+          <nav className="mr-auto hidden lg:flex lg:gap-7" aria-label="Primary">
+            {navLinks.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={isActive(l.href) ? "page" : undefined}
+                className={`relative py-1.5 font-body text-[14.5px] font-medium no-underline transition-colors after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+                  isActive(l.href)
+                    ? "text-accent-700 after:scale-x-100"
+                    : "text-ink hover:text-accent-700"
+                }`}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="ml-auto hidden items-center gap-2.5 lg:flex">
+            <a href={site.phoneHref} className="btn btn-secondary text-ink no-underline">
+              <Phone size={16} strokeWidth={1.5} />
+              {site.phone}
+            </a>
+            <Link href="/contact" className="btn btn-primary no-underline">
+              Book Inspection
+            </Link>
+          </div>
+
+          {/* Mobile toggle */}
+          <button
+            ref={toggleRef}
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            className="btn btn-secondary btn-icon ml-auto lg:hidden"
+          >
+            {/* The open drawer covers this bar and carries its own close button. */}
+            <Menu size={20} strokeWidth={1.5} />
           </button>
         </div>
+      </header>
 
-        <nav className="wrap flex-1 overflow-y-auto py-4" aria-label="Mobile">
-          <ul className="m-0 list-none p-0">
-            {navLinks.map((l, i) => (
-              <li key={l.href} className="border-b border-divider">
-                <Link
-                  href={l.href}
-                  aria-current={isActive(l.href) ? "page" : undefined}
-                  style={{ animationDelay: `${60 + i * 55}ms` }}
-                  className={`block py-5 font-heading text-[26px] font-semibold uppercase no-underline ${
-                    open ? "animate-[fx-rise_0.5s_var(--ease-out-quint)_both]" : ""
-                  } ${isActive(l.href) ? "text-accent-700" : "text-ink"}`}
-                >
-                  <span className="mr-3 align-middle font-mono text-[12px] tracking-widest text-accent-700 opacity-70">
-                    0{i + 1}
-                  </span>
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="wrap flex flex-col gap-2.5 border-t border-divider py-5 pb-[max(20px,env(safe-area-inset-bottom))]">
-          <Link href="/contact" className="btn btn-primary btn-block no-underline">
-            Book Inspection
-          </Link>
-          <a href={site.phoneHref} className="btn btn-secondary btn-block text-ink no-underline">
-            <Phone size={16} strokeWidth={1.5} />
-            {site.phone}
-          </a>
-        </div>
-      </div>
-    </header>
+      {mounted && createPortal(mobileDrawer, document.body)}
+    </>
   );
 }
