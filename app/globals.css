@@ -419,6 +419,153 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* ------------------- pinned project stage (/projects) ----------------- */
+  /* CAUTION: nothing in .pin-col's ancestor chain may set overflow other than
+     visible -- an overflow'd ancestor cancels a sticky descendant silently.
+     The same applies to .idx-list, whose hover preview overflows its row. */
+
+  /* The default is the honest one: no pinning, photograph in the flow. The
+     pinned column only switches on where it can actually work -- wide enough
+     to spare the space, and with the scripting to drive it. */
+  .pin-col {
+    display: none;
+  }
+  .dossier-media {
+    display: block;
+  }
+  @media (min-width: 1024px) and (scripting: enabled) {
+    .pin-col {
+      display: block;
+      position: sticky;
+      /* Clears the sticky header, plus a little air. */
+      top: calc(var(--header-h) + 24px);
+    }
+    /* The in-flow figure only stands down once the stage has replaced it. */
+    .dossier-media {
+      display: none;
+    }
+  }
+
+  .pin-stage {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-surface);
+    border-radius: var(--radius-control);
+    /* Sized against the viewport rather than by aspect ratio: a sticky box
+       taller than the screen pins to the wrong edge and reads as broken. */
+    height: min(calc(100svh - var(--header-h) - 140px), 660px);
+  }
+  .pin-img {
+    /* A transition rather than an animation, so the global reduced-motion
+       block zeroes it into a hard cut without any JS involvement. */
+    transition: opacity 0.7s var(--ease-out-quint);
+  }
+
+  .pin-rail {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    margin-top: 14px;
+  }
+  .pin-rail > span {
+    height: 2px;
+    flex: 1 1 0%;
+    background: var(--color-divider);
+    transition: background 0.5s var(--ease-out-quint);
+  }
+  .pin-rail > span[data-on="true"] {
+    background: var(--color-accent);
+  }
+
+  /* --------------------- project index (/projects) ---------------------- */
+  .idx-row {
+    position: relative;
+    border-top: 1px solid var(--color-divider);
+  }
+  .idx-row > a {
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    align-items: baseline;
+    gap: 10px 16px;
+    padding: 16px 4px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: padding-left 0.5s var(--ease-out-quint), color 0.3s var(--ease-out-quint);
+  }
+  @media (min-width: 640px) {
+    .idx-row > a {
+      grid-template-columns: 34px 1fr auto auto;
+    }
+  }
+  .idx-peek {
+    display: none;
+  }
+  /* The preview is a hover affordance, so it exists only where hovering does.
+     Nothing is lost on touch: the row text already carries every fact. */
+  @media (hover: hover) and (min-width: 1024px) {
+    .idx-peek {
+      display: block;
+      position: absolute;
+      right: 20%;
+      top: 50%;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-40%) scale(0.96);
+      border-radius: var(--radius-control);
+      box-shadow: var(--shadow-lg);
+      transition: opacity 0.4s var(--ease-out-quint), transform 0.4s var(--ease-out-quint);
+    }
+    .idx-row:hover > a {
+      padding-left: 20px;
+      color: var(--color-accent-700);
+    }
+    .idx-row:hover .idx-peek {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+  }
+
+  /* ------------- audience index (homepage "Who We Serve") ---------------
+     The same row language as the project index, on the surface band: the
+     project's number column becomes a thumbnail and the service tags take the
+     column the year holds there. Only the track differs — the hairline, the
+     hover indent and the colour shift are .idx-row's, inherited unchanged. */
+  .aud-row > a {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    padding-block: 16px;
+  }
+  @media (min-width: 768px) {
+    .aud-row > a {
+      /* thumbnail | label + need | tags | arrow */
+      grid-template-columns: 96px minmax(0, 1fr) minmax(0, auto) 17px;
+      gap: 0 22px;
+      padding-block: 18px;
+    }
+  }
+  /* The list closes itself, so the final row isn't left hanging on the band's
+     bottom edge with no rule under it. */
+  .aud-row:last-child {
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  /* Declared from md only, matching the grid track above — a display:none
+     element would still occupy its column otherwise. */
+  .aud-thumb {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .aud-thumb {
+      display: block;
+      width: 96px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      align-self: center;
+    }
+  }
+
   /* -------------------------- layout helpers -------------------------- */
   .wrap {
     width: 100%;
@@ -493,40 +640,102 @@
     }
   }
 
+  /* Each pair below is declared twice on purpose. A transition can only run to
+     different timing in each direction if the base rule owns the CLOSING one
+     and the open-state rule owns the OPENING one. Sharing a single delay is
+     what made the close ungraceful: the detail sat still for 150ms while the
+     panel was already narrowing, then crossed the spine on its way back in. */
+
   /* The name that runs up the spine of a collapsed panel. */
   .svc-spine {
-    transition: opacity 0.3s var(--ease-out-quint);
-  }
-  .svc-panel:focus-within .svc-spine {
-    opacity: 0;
+    /* Returning: hold back until the detail has cleared, so the two never
+       occupy the panel at the same time. */
+    transition: opacity 0.35s 0.14s var(--ease-out-quint),
+      transform 0.35s 0.14s var(--ease-out-quint);
   }
 
   /* The detail that fades up once the panel has room for it. */
   .svc-detail {
     opacity: 0;
     transform: translateY(16px);
-    transition: opacity 0.5s 0.15s var(--ease-out-quint),
-      transform 0.5s 0.15s var(--ease-out-quint);
-  }
-  .svc-panel:focus-within .svc-detail {
-    opacity: 1;
-    transform: none;
+    /* Leaving: quicker than the panel collapses, so the copy is gone before
+       the panel is too narrow to hold it and the text reflows mid-transition. */
+    transition: opacity 0.26s var(--ease-out-quint), transform 0.26s var(--ease-out-quint);
   }
 
   .svc-photo {
     transition: transform 1.2s var(--ease-out-quint);
   }
 
+  /* "Learn more" is the one clickable promise on the panel, so once the panel
+     is open the rule draws itself in beneath it and the arrow nudges along its
+     own diagonal — the eye is pulled to the action instead of stopping at the
+     copy. Both stay still until the detail has arrived, or they read as noise. */
+  .svc-cta {
+    position: relative;
+  }
+  .svc-cta::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s var(--ease-out-quint);
+  }
+  .svc-cta svg {
+    transition: transform 0.4s var(--ease-out-quint);
+  }
+
+  /* ---- open state ----
+     Written out for :focus-within and again for :hover, because the pointer
+     half has to stay behind the (hover: hover) gate and the two can't share a
+     selector list without dragging the gate onto the keyboard half. */
+  .svc-panel:focus-within .svc-spine {
+    opacity: 0;
+    transform: translateY(6px);
+    /* Opening: get out of the way at once. */
+    transition: opacity 0.2s var(--ease-out-quint), transform 0.2s var(--ease-out-quint);
+  }
+  .svc-panel:focus-within .svc-detail {
+    opacity: 1;
+    transform: none;
+    /* Opening: wait for the panel to have made the room, then rise in. */
+    transition: opacity 0.5s 0.18s var(--ease-out-quint),
+      transform 0.5s 0.18s var(--ease-out-quint);
+  }
+  .svc-panel:focus-within .svc-cta::after {
+    transform: scaleX(1);
+    transition-delay: 0.34s;
+  }
+  .svc-panel:focus-within .svc-cta svg {
+    animation: fx-nudge 1.7s var(--ease-in-out-quart) 0.6s infinite;
+  }
+
   @media (hover: hover) {
     .svc-panel:hover .svc-spine {
       opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.2s var(--ease-out-quint), transform 0.2s var(--ease-out-quint);
     }
     .svc-panel:hover .svc-detail {
       opacity: 1;
       transform: none;
+      transition: opacity 0.5s 0.18s var(--ease-out-quint),
+        transform 0.5s 0.18s var(--ease-out-quint);
     }
     .svc-panel:hover .svc-photo {
       transform: scale(1.06);
+    }
+    .svc-panel:hover .svc-cta::after {
+      transform: scaleX(1);
+      transition-delay: 0.34s;
+    }
+    .svc-panel:hover .svc-cta svg {
+      animation: fx-nudge 1.7s var(--ease-in-out-quart) 0.6s infinite;
     }
   }
 
@@ -546,11 +755,27 @@
     @media (prefers-reduced-motion: no-preference) {
 
       /* Photographs wipe up into frame as they enter the viewport. The wipe is
-         on the frame, so the hover zoom on the image is left untouched. */
-      .photo-frame {
+         on the frame, so the hover zoom on the image is left untouched.
+         `.no-wipe` (Photo's `wipe={false}`) opts out where the frame lives in a
+         very tall container and the viewport-keyed range would finish early. */
+      .photo-frame:not(.no-wipe) {
         animation: fx-wipe linear both;
         animation-timeline: view();
         animation-range: entry 5% entry 65%;
+      }
+
+      /* A continuous reading-progress fill, drawn under the six discrete
+         segments the observer drives. Browsers without scroll timelines keep
+         the segments alone, which already tell the whole story. */
+      .pin-rail::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform-origin: left center;
+        background: var(--color-accent);
+        animation: fx-draw linear both;
+        animation-timeline: view(block);
+        animation-range: contain 0% contain 100%;
       }
     }
   }
@@ -605,6 +830,18 @@
   }
   to {
     transform: scaleX(1);
+  }
+}
+/* A repeating hint on the "Learn more" arrow. Travels up and to the right, the
+   direction the arrow already points, and returns to nothing at both ends so
+   removing the animation on close is a no-op rather than a snap. */
+@keyframes fx-nudge {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: translate(3px, -3px);
   }
 }
 @keyframes fx-wipe {

@@ -16,6 +16,7 @@ export default function Photo({
   priority = false,
   className = "",
   zoom = true,
+  wipe = true,
 }: {
   src: ImageKey;
   alt: string;
@@ -25,10 +26,14 @@ export default function Photo({
   priority?: boolean;
   className?: string;
   zoom?: boolean;
+  /** Opt out of the scroll-driven entry wipe. Needed where the frame sits in a
+      very tall container — the wipe is keyed to the viewport, so it finishes
+      long before the photo is anywhere near read. */
+  wipe?: boolean;
 }) {
   return (
     <div
-      className={`photo-frame ${zoom ? "photo-zoom" : ""} ${className}`}
+      className={`photo-frame ${zoom ? "photo-zoom" : ""} ${wipe ? "" : "no-wipe"} ${className}`}
       style={{ aspectRatio: ratio }}
     >
       <Image

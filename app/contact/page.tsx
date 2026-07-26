@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CalendarClock, Mail, MapPin, Phone } from "lucide-react";
-import PageHead from "@/components/ui/PageHead";
+import ContactHero from "@/components/contact/ContactHero";
 import ContactForm from "@/components/contact/ContactForm";
 import MapPanel from "@/components/contact/MapPanel";
 import Faq from "@/components/contact/Faq";
@@ -35,13 +35,9 @@ const details = [
 export default function ContactPage() {
   return (
     <>
-      <PageHead
-        kicker="Get Started"
-        title="Book a Structural Inspection"
-        lead="Tell us about your project and preferred date — an engineer confirms scope and scheduling within one business day."
-      />
+      <ContactHero />
 
-      <section className="wrap pb-12" aria-label="Contact">
+      <section className="wrap pb-12 pt-10 md:pt-14" aria-label="Contact">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
           <Reveal>
             <ContactForm />
