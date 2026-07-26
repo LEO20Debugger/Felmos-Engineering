@@ -14,7 +14,10 @@ import { stats } from "@/lib/content";
  */
 export default function AboutHero() {
   return (
-    <section className="relative isolate flex min-h-[380px] flex-col justify-end overflow-hidden h-[52svh] lg:h-[50vh] lg:max-h-[480px]">
+    /* The stat strip wraps to 2x2 on a phone, which used to overflow a fixed
+       52svh and be clipped. .banner treats the height as a floor, so the banner
+       grows to hold it instead. */
+    <section className="banner" style={{ "--banner-min": "48svh" } as React.CSSProperties}>
       <Image
         src={images["about-hero"]}
         alt="Felmos structural engineering construction project site under open sky"
@@ -28,7 +31,7 @@ export default function AboutHero() {
         className="absolute inset-0 -z-10 bg-gradient-to-t from-accent-900/95 via-accent-900/60 to-accent-900/20"
       />
 
-      <div className="wrap relative w-full pb-10 pt-24 text-on-dark md:pb-14">
+      <div className="banner-body wrap text-on-dark">
         <Reveal
           as="span"
           className="mb-3 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300"

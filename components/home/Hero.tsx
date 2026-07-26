@@ -7,25 +7,75 @@ import { site } from "@/lib/site";
 
 const HEADLINE = ["Structural", "certainty,", "before", "you", "commit."];
 
+/* The three frames of the banner, in the order they play. Stacked in this same
+   order in the DOM, which is what puts each one above the last — the crossfade
+   depends on that, so do not reorder these without reading .hero-slide in
+   globals.css. */
+const FRAMES = [
+  {
+    src: images.hero,
+    /* Corrected: this photograph is the skyline, not people. The previous alt
+       described engineers walking a concrete deck, which is not in the frame —
+       a screen reader was being told about a different picture entirely. */
+    alt: "Tower cranes standing over a glass-clad high-rise under construction",
+    className: "hero-slide",
+  },
+  {
+    src: images["hero-2"],
+    alt: "A site engineer sighting through a levelling instrument mounted on a tripod",
+    className: "hero-slide-2",
+  },
+  {
+    src: images["hero-3"],
+    alt: "Two high-rise blocks under construction, a tower crane rising beside the left one",
+    className: "hero-slide-3",
+  },
+];
+
 /**
  * Full-bleed banner hero: the photograph spans the viewport and the copy sits
  * on it, rather than the two sharing a split.
  *
- * The image is the LCP element, so it is `priority` and unanimated on entry —
- * only a slow settle, which starts from a scale rather than an opacity so the
- * pixels are painted immediately.
+ * Three photographs cycle on a 21s loop with a slow push in on each. The whole
+ * thing is CSS on one shared clock — no state, no effect, no client boundary —
+ * so this stays a server component and the first frame is still painted as the
+ * LCP element rather than being faded in by script after hydration.
  */
 export default function Hero() {
   return (
-    <section className="relative isolate flex min-h-[560px] items-end overflow-hidden h-[86svh] lg:h-[88vh] lg:max-h-[880px]">
-      <Image
-        src={images.hero}
-        alt="Engineers walking a reinforced concrete deck on a live construction site"
-        fill
-        priority
-        sizes="100vw"
-        className="hero-media -z-20 object-cover"
-      />
+    <section
+      className="banner items-end"
+      style={
+        {
+          /* Taller than the inner pages: this is the one banner that carries
+             the full headline, lead and both calls to action. */
+          "--banner-min": "64svh",
+          "--banner-h": "88vh",
+          "--banner-max": "880px",
+          "--banner-min-lg": "560px",
+          "--banner-air": "clamp(24px, 6vh, 56px)",
+          "--banner-foot": "clamp(32px, 6vh, 72px)",
+        } as React.CSSProperties
+      }
+    >
+      {FRAMES.map((f, i) => (
+        <Image
+          key={f.src}
+          src={f.src}
+          alt={f.alt}
+          fill
+          /* Only the first frame competes for the LCP. The other two are wanted
+             within seconds but must not be fetched ahead of it, so they load
+             eagerly at low priority rather than lazily — a lazy image that is
+             already in the viewport starts downloading at the same moment
+             anyway, but without the priority hint to deprioritise it. */
+          priority={i === 0}
+          loading={i === 0 ? undefined : "eager"}
+          fetchPriority={i === 0 ? undefined : "low"}
+          sizes="100vw"
+          className={`${f.className} -z-20 object-cover`}
+        />
+      ))}
 
       {/* Two scrims: one across for legibility on wide screens, one up from the
           base so the copy always has a dark footing on tall phone screens. */}
@@ -38,7 +88,7 @@ export default function Hero() {
         className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-accent-900/95 to-transparent"
       />
 
-      <div className="wrap relative w-full pb-14 pt-28 text-on-dark md:pb-20 lg:pb-24">
+      <div className="banner-body wrap text-on-dark">
         <Reveal as="span" className="mb-4 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300">
           Structural Testing &amp; Engineering
         </Reveal>

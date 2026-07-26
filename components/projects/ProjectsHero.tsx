@@ -23,7 +23,7 @@ export default function ProjectsHero() {
   ].filter(Boolean) as { value: string; label: string }[];
 
   return (
-    <section className="relative isolate flex min-h-[380px] flex-col justify-end overflow-hidden h-[52svh] lg:h-[50vh] lg:max-h-[480px]">
+    <section className="banner" style={{ "--banner-min": "48svh" } as React.CSSProperties}>
       <Image
         src={images["projects-hero"]}
         alt="A high-rise structure under construction, seen from below"
@@ -37,9 +37,9 @@ export default function ProjectsHero() {
         className="absolute inset-0 -z-10 bg-gradient-to-t from-accent-900/95 via-accent-900/60 to-accent-900/20"
       />
 
-      {/* justify-end pins this block to the base, so the bottom padding is what
-          keeps the stat strip off the banner's edge. */}
-      <div className="wrap relative w-full pb-10 pt-24 text-on-dark md:pb-14">
+      {/* .banner pins this block to the base, so --banner-foot is what keeps
+          the stat strip off the banner's edge. */}
+      <div className="banner-body wrap text-on-dark">
         <Reveal
           as="span"
           className="mb-3 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300"

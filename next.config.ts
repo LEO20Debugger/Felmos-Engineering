@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react"],
+    /* NOT available here: `turbopackPersistentCaching: true` would let Turbopack
+       keep its dev cache on disk across restarts, but on a stable release Next
+       throws CanaryOnlyError at startup and the dev server refuses to boot.
+       Revisit when it ships in stable — it is the fix for the ~7s recompile
+       every `npm run dev` still pays. */
   },
 };
 

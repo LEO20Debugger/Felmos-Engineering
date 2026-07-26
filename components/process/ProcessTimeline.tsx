@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { processSteps } from "@/lib/content";
 import Photo from "@/components/ui/Photo";
@@ -51,6 +51,19 @@ export default function ProcessTimeline() {
   const Icon = step.icon;
   const progress = (active / (processSteps.length - 1)) * 100;
 
+  /* Clamped rather than wrapping. The auto-advance loops, but it has already
+     stood down by the time these are usable — driving them marks the visitor as
+     engaged. Six numbered stages read as a sequence, not a carousel, so landing
+     back on "Submit request" after "Recommendations" would feel like a fault
+     rather than a loop. The ends simply disable, which .btn:disabled styles. */
+  const atStart = active === 0;
+  const atEnd = active === processSteps.length - 1;
+
+  const go = (delta: number) => {
+    setEngaged(true);
+    setActive((c) => Math.min(processSteps.length - 1, Math.max(0, c + delta)));
+  };
+
   return (
     <div
       ref={sectionRef}
@@ -58,6 +71,44 @@ export default function ProcessTimeline() {
       onMouseEnter={() => setEngaged(true)}
       onFocusCapture={() => setEngaged(true)}
     >
+      {/* ── back / forward ──
+          Deliberately OUTSIDE the tablist below: a role="tablist" may only
+          contain role="tab" children, so putting these inside it would make the
+          six stages unreadable to a screen reader. They drive the same state the
+          tabs and the ArrowLeft/ArrowRight handler do.
+
+          No bottom spacing of its own — the rail's pt-10 already separates them,
+          and the rail's hairline is absolutely positioned against that padding
+          (top-[52px] lines up with the 26px nodes), so it must not change. */}
+      <div className="flex items-center justify-end gap-2">
+        <span
+          aria-hidden
+          className="mr-1 font-mono text-[12px] tabular-nums tracking-[0.14em] text-ink/55"
+        >
+          {step.num} / {processSteps[processSteps.length - 1].num}
+        </span>
+        <button
+          type="button"
+          onClick={() => go(-1)}
+          disabled={atStart}
+          aria-controls="process-panel"
+          aria-label="Previous stage"
+          className="btn btn-secondary btn-icon"
+        >
+          <ChevronLeft size={18} strokeWidth={1.5} />
+        </button>
+        <button
+          type="button"
+          onClick={() => go(1)}
+          disabled={atEnd}
+          aria-controls="process-panel"
+          aria-label="Next stage"
+          className="btn btn-secondary btn-icon"
+        >
+          <ChevronRight size={18} strokeWidth={1.5} />
+        </button>
+      </div>
+
       {/* ── the rail ── */}
       <div
         className="relative pb-2 pt-10"
