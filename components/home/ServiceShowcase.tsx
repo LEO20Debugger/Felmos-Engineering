@@ -80,7 +80,9 @@ export default function ServiceShowcase() {
                 <span className="max-w-[34ch] text-[14.5px] leading-[1.5] text-bg/80">
                   {s.short}
                 </span>
-                <span className="mt-1 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-bg">
+                {/* `self-start` keeps the drawn rule the width of the label
+                    rather than the width of the panel. */}
+                <span className="svc-cta mt-1 inline-flex items-center gap-1.5 self-start text-[13.5px] font-semibold text-bg">
                   Learn more
                   <ArrowUpRight size={16} strokeWidth={1.5} />
                 </span>

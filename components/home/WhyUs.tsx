@@ -1,22 +1,138 @@
+import Image from "next/image";
 import SectionHead from "@/components/ui/Section";
 import Reveal from "@/components/ui/Reveal";
+import { imageAt } from "@/lib/images";
 import { differentiators } from "@/lib/content";
+
+/**
+ * Evidence, not adjectives — and an asymmetric bento so it stops being the
+ * second identical icon grid in a row.
+ *
+ * At lg the spans total 2+1+1+2+2+2 = 10 across a 4-column grid... which is
+ * why the first cell also spans two rows: 4 + 1 + 1 + 2 + 2 + 2 = 12 = 4x3.
+ * That means DOM order alone lays the grid out — no explicit line numbers and
+ * no `order-*`, so the visual order and the reading order cannot drift apart.
+ *
+ * The figures are deliberately NOT count-ups. Only one is even an integer,
+ * a single counting number among static ones reads as a bug, and counting is
+ * the Stats row's one device three sections below.
+ */
+const CELL: Record<string, string> = {
+  "certified-engineers": "sm:col-span-2 lg:col-span-2 lg:row-span-2",
+  "fast-turnaround": "",
+  "modern-equipment": "",
+  "code-compliant": "sm:col-span-2 lg:col-span-2",
+  "accurate-reports": "sm:col-span-2 lg:col-span-2",
+  "real-support": "sm:col-span-2 lg:col-span-2",
+};
+
+const SHELL =
+  "flex flex-col rounded-[var(--radius-control)] bg-surface p-5 md:p-6";
 
 export default function WhyUs() {
   return (
     <section className="wrap py-14 md:py-20" aria-label="Why choose Felmos">
-      <SectionHead kicker="Why Felmos" title="Engineering You Can Rely On" />
+      <SectionHead
+        kicker="Why Felmos"
+        title="Proof, Not Promises"
+        lead="Six things we can show you evidence for."
+      />
 
-      <ul className="m-0 grid list-none grid-cols-1 gap-x-8 gap-y-7 p-0 sm:grid-cols-2 lg:grid-cols-3">
-        {differentiators.map(({ icon: Icon, title, line }, i) => (
-          <Reveal as="li" key={title} delay={i % 3} className="flex gap-3.5">
-            <Icon size={22} strokeWidth={1.5} className="mt-0.5 flex-none text-accent-700" />
-            <div>
-              <h3 className="m-0 font-heading text-[17px] uppercase">{title}</h3>
-              <p className="m-0 mt-1 text-[14px] leading-[1.5] opacity-75">{line}</p>
-            </div>
-          </Reveal>
-        ))}
+      <ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[minmax(180px,auto)]">
+        {differentiators.map((d, i) => {
+          const Icon = d.icon;
+          const span = CELL[d.key] ?? "";
+          const lead = i === 0;
+
+          /* The photograph. Deliberately not <Photo>: that sets aspect-ratio
+             on the frame, which fights a grid row sized by its siblings and
+             would blow the auto-row height. next/image + fill inside a
+             relative cell is what ServiceShowcase does. */
+          if (d.image) {
+            return (
+              <Reveal
+                as="li"
+                key={d.key}
+                delay={i % 3}
+                className={`relative min-h-[220px] overflow-hidden rounded-[var(--radius-control)] ${span}`}
+              >
+                <Image
+                  src={imageAt(d.image, 1200, 700)}
+                  alt=""
+                  aria-hidden
+                  fill
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  className="object-cover"
+                />
+                {/* Same gradient recipe as the service panels, so the reversed
+                    type contrast is already validated on this site. */}
+                <span
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-accent-900 via-accent-900/55 to-accent-900/10"
+                />
+                <span className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+                  <h3 className="m-0 font-heading text-[19px] uppercase text-bg">{d.title}</h3>
+                  <p className="m-0 mt-1.5 max-w-[38ch] text-[14px] leading-[1.5] text-bg/85">
+                    {d.proof}
+                  </p>
+                </span>
+              </Reveal>
+            );
+          }
+
+          /* The lead cell: the page's focal point for this section. An
+             accent-900 *card* is within the house rule that reserves the one
+             full-bleed accent-900 field for CtaBand — ServiceShowcase's
+             mobile "See all services" tile is the same device. */
+          if (lead) {
+            return (
+              <Reveal
+                as="li"
+                key={d.key}
+                delay={0}
+                className={`flex flex-col justify-between rounded-[var(--radius-control)] bg-accent-900 p-6 text-bg md:p-8 ${span}`}
+              >
+                <Icon size={28} strokeWidth={1.5} aria-hidden className="text-accent-300" />
+                <div className="mt-8">
+                  {d.figure && (
+                    <span className="block font-heading text-[clamp(46px,8vw,76px)] font-semibold leading-none tabular-nums">
+                      {d.figure}
+                    </span>
+                  )}
+                  <h3 className="m-0 mt-3 font-heading text-[19px] uppercase text-bg">{d.title}</h3>
+                  <p className="m-0 mt-2 max-w-[34ch] text-[14.5px] leading-[1.55] text-bg/75">
+                    {d.proof}
+                  </p>
+                </div>
+              </Reveal>
+            );
+          }
+
+          /* Everything else: figure if it has one, icon if it doesn't. */
+          return (
+            <Reveal as="li" key={d.key} delay={i % 3} className={`${SHELL} ${span}`}>
+              {d.figure ? (
+                <span className="font-heading text-[clamp(30px,4.5vw,42px)] font-semibold leading-none text-accent-700 tabular-nums">
+                  {d.figure}
+                </span>
+              ) : (
+                <Icon size={24} strokeWidth={1.5} aria-hidden className="text-accent-700" />
+              )}
+
+              <h3 className="m-0 mt-3 font-heading text-[16.5px] uppercase">{d.title}</h3>
+
+              {d.figureLabel && (
+                <span className="mt-1 text-[12.5px] uppercase tracking-[0.06em] opacity-60">
+                  {d.figureLabel}
+                </span>
+              )}
+
+              <p className="m-0 mt-2 max-w-[46ch] text-[14px] leading-[1.55] opacity-75">
+                {d.proof}
+              </p>
+            </Reveal>
+          );
+        })}
       </ul>
     </section>
   );

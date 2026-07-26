@@ -6,6 +6,7 @@ import WhyUs from "@/components/home/WhyUs";
 import Stats from "@/components/home/Stats";
 import Testimonials from "@/components/home/Testimonials";
 import ProcessShowcase from "@/components/process/ProcessShowcase";
+import Projects from "@/components/home/Projects";
 import CtaBand from "@/components/ui/CtaBand";
 
 export default function HomePage() {
@@ -17,6 +18,7 @@ export default function HomePage() {
       <Audience />
       <WhyUs />
       <ProcessShowcase />
+      <Projects />
       <Stats />
       <Testimonials />
       <CtaBand

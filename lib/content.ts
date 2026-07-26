@@ -112,7 +112,10 @@ export const services: Service[] = [
       "Supports insurance, sale and renovation decisions",
       "Prioritised remedial recommendations",
     ],
-    clients: ["Homeowners", "Banks", "Property Developers"],
+    /* "Government Projects" is listed here deliberately: project 03 (the
+       heritage office block) is a Government Project delivered under this
+       discipline, so omitting it contradicted our own record. */
+    clients: ["Homeowners", "Banks", "Property Developers", "Government Projects"],
   },
   {
     slug: "building-verification",
@@ -145,6 +148,151 @@ export const services: Service[] = [
       "Suited to purchase, renovation or extension",
     ],
     clients: ["Homeowners", "Construction Companies", "Architects"],
+  },
+];
+
+/* ─────────────────────────────── projects ───────────────────────────────── */
+
+/** The headline figure set large beside each project's outcome. */
+export type ProjectMetric = {
+  /** Pre-formatted for display — "23", "1/3", "40 yrs". These are typeset
+      figures, not operands: nothing ever does arithmetic on them. */
+  value: string;
+  label: string;
+};
+
+export type Project = {
+  slug: string;
+  num: string;
+  title: string;
+  category: string;
+  location: string;
+  year: string;
+  client: string;
+  /** How long the engagement ran — fills the fourth cell of the fact grid. */
+  duration: string;
+  /** One line. Used by the homepage teaser and the index, where there is no
+      room for the narrative. */
+  scope: string;
+  /** The dossier body: what was found, and how. */
+  narrative: string;
+  result: string;
+  metric: ProjectMetric;
+  /** Slugs from `services` above. Rendered as links through to /services#slug,
+      so a project shows which disciplines it drew on. Kept as string[] rather
+      than a slug union — `Service["slug"]` is plain string, and narrowing it
+      would ripple through five other files for no real gain. The render site
+      guards with `services.find()`. */
+  services: string[];
+  image: ImageKey;
+};
+
+/* The six entries below are illustrative case studies, not real engagements —
+   the copy, clients and figures are all placeholder. Replace them with real
+   project records before this goes live. */
+
+export const projects: Project[] = [
+  {
+    slug: "lekki-tower-verification",
+    num: "01",
+    title: "23-Storey Residential Tower",
+    category: "Building Verification",
+    location: "Lekki, Lagos",
+    year: "2025",
+    client: "Property Developer",
+    duration: "6 weeks",
+    scope: "Independent structural verification ahead of construction financing.",
+    narrative:
+      "The developer had design drawings and a contractor's warranty, but the lender wanted a third party to confirm the frame as built matched what had been approved. We surveyed the completed structure floor by floor, cored and tested concrete at every third level, and checked reinforcement against the issued-for-construction drawings.",
+    result: "Report accepted by the lender without a single follow-up query.",
+    metric: { value: "23", label: "Storeys verified" },
+    services: ["building-verification", "non-destructive-testing"],
+    image: "proj-1",
+  },
+  {
+    slug: "ikeja-foundation-diagnosis",
+    num: "02",
+    title: "Settling Warehouse Foundation",
+    category: "Foundation Assessment",
+    location: "Ikeja, Lagos",
+    year: "2024",
+    client: "Construction Company",
+    duration: "9 days on site",
+    scope: "Diagnostic investigation of visible cracking and uneven settlement.",
+    narrative:
+      "Cracking had opened along one wall of a working warehouse and the owner had been quoted for full underpinning. We levelled the slab, opened inspection pits at four locations and tested the soil beneath the affected corner. The movement traced to a single poorly compacted fill zone, not to the foundation design.",
+    result: "Root cause identified in one visit; remedial cost cut by a third.",
+    metric: { value: "1/3", label: "Remedial cost avoided" },
+    services: ["foundation-assessment", "soil-investigation"],
+    image: "proj-2",
+  },
+  {
+    slug: "victoria-island-integrity",
+    num: "03",
+    title: "Heritage Office Block Assessment",
+    category: "Structural Integrity",
+    location: "Victoria Island, Lagos",
+    year: "2024",
+    client: "Government Project",
+    duration: "8 weeks",
+    scope: "Full condition assessment of a 40-year-old occupied structure.",
+    narrative:
+      "A public building still in daily use needed a condition read before a refurbishment budget could be set. Testing had to be non-destructive and work around occupancy. We assessed the frame, facade and slabs over eight weeks of evening and weekend access, and ranked every defect found by structural consequence rather than by visibility.",
+    result: "Cleared for continued occupation with a prioritised repair plan.",
+    metric: { value: "40 yrs", label: "Structure re-certified" },
+    services: ["structural-integrity", "non-destructive-testing"],
+    image: "proj-3",
+  },
+  {
+    slug: "ajah-ndt-survey",
+    num: "04",
+    title: "Concrete Strength Survey, Housing Estate",
+    category: "Non-Destructive Testing",
+    location: "Ajah, Lagos",
+    year: "2023",
+    client: "Property Developer",
+    duration: "3 weeks",
+    scope: "Rebound hammer and UPV testing across 60 residential units.",
+    narrative:
+      "A batching inconsistency during construction put a whole phase of completed units in question. Breaking out samples would have meant making good across sixty finished homes. Rebound hammer and ultrasonic pulse velocity readings, calibrated against cores taken from a single sacrificial unit, established strength across the phase instead.",
+    result: "Every unit verified without breaking a single wall.",
+    metric: { value: "60", label: "Units tested, zero opened" },
+    services: ["non-destructive-testing", "structural-integrity"],
+    image: "proj-4",
+  },
+  {
+    slug: "epe-soil-investigation",
+    num: "05",
+    title: "Coastal Plot Soil Investigation",
+    category: "Soil Investigation",
+    location: "Epe, Lagos",
+    year: "2023",
+    client: "Homeowner",
+    duration: "2 weeks",
+    scope: "Bearing capacity and composition testing ahead of design.",
+    narrative:
+      "A private client bought a coastal plot and wanted to know what they were building on before an architect drew anything. Boreholes to eight metres found a competent bearing stratum shallower than the area's reputation suggested, which let the design proceed on pads rather than the piled solution that had been assumed.",
+    result: "Foundation redesign avoided; approvals secured on first submission.",
+    metric: { value: "1", label: "Submission to approval" },
+    services: ["soil-investigation", "foundation-assessment"],
+    image: "proj-5",
+  },
+  {
+    slug: "ikoyi-lender-verification",
+    num: "06",
+    title: "Mixed-Use Development Financing Report",
+    category: "Building Verification",
+    location: "Ikoyi, Lagos",
+    year: "2022",
+    client: "Bank",
+    duration: "5 weeks",
+    scope: "Independent adequacy verification for a construction loan facility.",
+    narrative:
+      "The bank was lending against a part-built mixed-use scheme and needed structural adequacy confirmed before drawing down the next tranche. We verified the completed substructure and frame against the design, and reported in the format the credit committee already used, so the findings could be actioned without translation.",
+    result: "Became the bank's standard reference for the borrower's next three projects.",
+    metric: { value: "3", label: "Follow-on facilities" },
+    services: ["building-verification", "structural-integrity"],
+    image: "proj-6",
   },
 ];
 
@@ -215,24 +363,194 @@ export const processSteps: ProcessStep[] = [
 
 /* ─────────────────────────────── audiences ─────────────────────────────── */
 
-export const audiences = [
-  { icon: Users, label: "Property Developers" },
-  { icon: Home, label: "Homeowners" },
-  { icon: Landmark, label: "Banks & Lenders" },
-  { icon: Ruler, label: "Architects" },
-  { icon: HardHat, label: "Construction Firms" },
-  { icon: Building2, label: "Government Projects" },
+export type Audience = {
+  slug: string;
+  label: string;
+  icon: LucideIcon;
+  /** The "is this for me?" line — one sentence, naming a real service. */
+  need: string;
+  /** Every spelling this audience appears under in `Service.clients` and
+      `Project.client`. Both of those are visible copy on /services and
+      /projects and are deliberately NOT normalised to these labels, so the
+      join lives here instead. Plural forms match services, singular match
+      projects. Add a spelling here rather than editing the copy there. */
+  matches: readonly string[];
+  /** The service this audience is routed to; the row links at its anchor. */
+  primary: string;
+  image: ImageKey;
+};
+
+export const audiences: readonly Audience[] = [
+  {
+    slug: "property-developers",
+    label: "Property Developers",
+    icon: Users,
+    need: "Ground data before design, and an independent report before drawdown.",
+    matches: ["Property Developers", "Property Developer"],
+    primary: "soil-investigation",
+    image: "svc-soil",
+  },
+  {
+    slug: "homeowners",
+    label: "Homeowners",
+    icon: Home,
+    need: "Find out what the crack actually means, before you buy or build.",
+    matches: ["Homeowners", "Homeowner"],
+    primary: "foundation-assessment",
+    image: "svc-foundation",
+  },
+  {
+    slug: "banks-lenders",
+    label: "Banks & Lenders",
+    icon: Landmark,
+    need: "Structural adequacy confirmed independently, in your credit committee's format.",
+    matches: ["Banks", "Bank", "Financial Institutions", "Financial Institution"],
+    primary: "building-verification",
+    image: "svc-verify",
+  },
+  {
+    slug: "architects",
+    label: "Architects",
+    icon: Ruler,
+    need: "Bearing capacity established before the first foundation is drawn.",
+    matches: ["Architects", "Architect"],
+    primary: "soil-investigation",
+    // Borrowed: only five svc-* images exist and all six rows need a distinct one.
+    image: "about-story",
+  },
+  {
+    slug: "construction-firms",
+    label: "Construction Firms",
+    icon: HardHat,
+    need: "Concrete strength and workmanship verified without stopping the job.",
+    matches: ["Construction Companies", "Construction Company", "Construction Firms"],
+    primary: "non-destructive-testing",
+    image: "svc-ndt",
+  },
+  {
+    slug: "government-projects",
+    label: "Government Projects",
+    icon: Building2,
+    need: "Condition assessment on occupied public buildings, tested non-destructively.",
+    matches: ["Government Projects", "Government Project"],
+    primary: "structural-integrity",
+    image: "svc-integrity",
+  },
 ] as const;
+
+/* Case- and punctuation-insensitive, so "Banks & Lenders" and "banks and
+   lenders" can't diverge on a stray ampersand. */
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z]+/g, "");
+
+/** The services that actually list this audience among their clients. */
+export const servicesFor = (a: Audience) =>
+  services.filter((s) => s.clients.some((c) => a.matches.some((m) => norm(m) === norm(c))));
+
+/** The projects delivered for this audience. Not currently rendered on the
+    homepage — Architects match zero projects, which would leave a row empty. */
+export const projectsFor = (a: Audience) =>
+  projects.filter((p) => a.matches.some((m) => norm(m) === norm(p.client)));
+
+/* There is no test runner in this project, and the join above reads strings
+   that live in two other arrays as visible copy. Without this, renaming a
+   client on /services silently empties a row on the homepage and nothing
+   anywhere reports it. Dev only — it costs nothing in production. */
+if (process.env.NODE_ENV !== "production") {
+  for (const a of audiences) {
+    if (servicesFor(a).length === 0) {
+      console.warn(`[content] audience "${a.slug}" matches no service — check .matches against Service.clients`);
+    }
+    if (!services.some((s) => s.slug === a.primary)) {
+      console.warn(`[content] audience "${a.slug}".primary "${a.primary}" is not a service slug`);
+    }
+  }
+  const known = new Set(audiences.flatMap((a) => a.matches.map(norm)));
+  for (const s of services) {
+    for (const c of s.clients) {
+      if (!known.has(norm(c))) {
+        console.warn(`[content] Service.clients value "${c}" (${s.slug}) matches no audience`);
+      }
+    }
+  }
+}
 
 /* ─────────────────────────────── why felmos ────────────────────────────── */
 
-export const differentiators = [
-  { icon: Target, title: "Accurate Reports", line: "Measured and cross-checked, never estimated." },
-  { icon: Award, title: "Certified Engineers", line: "Chartered professionals on every job." },
-  { icon: Gauge, title: "Modern Equipment", line: "Calibrated instruments on every site." },
-  { icon: Clock, title: "Fast Turnaround", line: "Delivered on the date we committed to." },
-  { icon: Headset, title: "Real Support", line: "Speak to the engineer who did the work." },
-  { icon: Scale, title: "Code Compliant", line: "Built to satisfy lenders and regulators." },
+/* ⚠️  DO NOT SHIP WITHOUT SIGN-OFF ⚠️
+   Unlike the project case studies (which are openly illustrative), these
+   describe the REAL business and are the kind of specifics a client can hold
+   Felmos to contractually. Every item marked INVENTED below is a placeholder
+   written to shape the layout — confirm each with Felmos or replace it.
+   An unverifiable claim can always fall back to the icon-and-proof treatment
+   used by Modern Equipment, which carries no figure.
+
+   Constraint on any replacement figure: it must not repeat or near-repeat a
+   `stats` value above (12+ yrs, 640+ projects, 98% on schedule, 5 disciplines).
+   That rule is why Modern Equipment has no number — "calibrated within 12
+   months" collides with "12+ years", and "98% on the committed date" merely
+   restates "98% reports on schedule". */
+
+export type Differentiator = {
+  /** Stable id — drives the bento cell span map in WhyUs.tsx. */
+  key: string;
+  title: string;
+  icon: LucideIcon;
+  /** Set large. Pre-formatted for display, never an operand. */
+  figure?: string;
+  figureLabel?: string;
+  proof: string;
+  image?: ImageKey;
+};
+
+export const differentiators: readonly Differentiator[] = [
+  {
+    key: "certified-engineers",
+    icon: Award,
+    title: "Certified Engineers",
+    figure: "100%", // INVENTED
+    figureLabel: "Reports signed by a chartered engineer",
+    proof:
+      "Every report is signed by a chartered engineer — not a technician's readings with an engineer's name on the cover.",
+  },
+  {
+    key: "fast-turnaround",
+    icon: Clock,
+    title: "Fast Turnaround",
+    figure: "3–5", // INVENTED
+    figureLabel: "Working days to report",
+    proof: "Quoted before we start, and held to.",
+  },
+  {
+    key: "modern-equipment",
+    icon: Gauge,
+    title: "Modern Equipment",
+    // INVENTED: that the certificate travels with the report.
+    proof:
+      "Every instrument carries a current calibration certificate, and the certificate travels with the report.",
+  },
+  {
+    key: "code-compliant",
+    icon: Scale,
+    title: "Code Compliant",
+    proof:
+      "Written to the submission standard banks and regulators already work in, so findings are actioned rather than translated.",
+  },
+  {
+    key: "accurate-reports",
+    icon: Target,
+    title: "Accurate Reports",
+    // INVENTED: the twice-on-two-instruments procedure.
+    proof:
+      "Every reading is taken twice, on two instruments, before it enters a report. Nothing is estimated.",
+  },
+  {
+    key: "real-support",
+    icon: Headset,
+    title: "Real Support",
+    proof:
+      "The engineer who stood on your site answers when you call. No account manager in between.",
+    image: "team-1",
+  },
 ] as const;
 
 /* ──────────────────────────────── about ────────────────────────────────── */
