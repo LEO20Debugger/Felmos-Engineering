@@ -10,9 +10,11 @@ import { projects, stats } from "@/lib/content";
  */
 export default function ProjectsHero() {
   /* Read from the same source as the rest of the site rather than retyping the
-     figures, so the banner can never drift from the Stats row. */
-  const years = stats.find((s) => s.label === "Years in practice");
-  const tested = stats.find((s) => s.label === "Projects tested");
+     figures, so the banner can never drift from the Stats row. Keyed on `key`,
+     not `label` — the strip filters out misses, so a label rename used to drop
+     a cell silently. */
+  const years = stats.find((s) => s.key === "years");
+  const tested = stats.find((s) => s.key === "projects");
 
   const strip = [
     tested && { value: `${tested.value}${tested.suffix}`, label: "Projects tested" },
