@@ -85,13 +85,13 @@ export default function ProjectDossiers() {
               key={`cap-${active}`}
               className="absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-6 animate-[fx-fade_0.55s_var(--ease-out-quint)_both]"
             >
-              <span className="font-mono text-[12px] tracking-[0.16em] text-bg/70">
+              <span className="font-mono text-[12px] tracking-[0.16em] text-on-dark/70">
                 {current.num} / {String(projects.length).padStart(2, "0")}
               </span>
-              <span className="font-heading text-[19px] uppercase leading-tight text-bg">
+              <span className="font-heading text-[19px] uppercase leading-tight text-on-dark">
                 {current.location} · {current.year}
               </span>
-              <span className="text-[13px] uppercase tracking-[0.06em] text-bg/70">
+              <span className="text-[13px] uppercase tracking-[0.06em] text-on-dark/70">
                 {current.category}
               </span>
             </span>
@@ -130,7 +130,7 @@ export default function ProjectDossiers() {
                   />
                 </figure>
 
-                <span className="flex items-center gap-3 font-mono text-[12px] tracking-[0.14em] text-accent-700">
+                <span className="flex items-center gap-3 font-mono text-[12px] tracking-[0.14em] text-link">
                   {p.num}
                   <span aria-hidden className="h-px w-8 bg-accent/40" />
                   {p.category}
@@ -162,7 +162,7 @@ export default function ProjectDossiers() {
                 </p>
 
                 <p className="m-0 mt-7 flex items-baseline gap-3.5 border-l-2 border-accent pl-4">
-                  <span className="font-heading text-[clamp(28px,4vw,40px)] font-semibold leading-none text-accent-700 tabular-nums">
+                  <span className="font-heading text-[clamp(28px,4vw,40px)] font-semibold leading-none text-link tabular-nums">
                     {p.metric.value}
                   </span>
                   <span className="text-[13px] uppercase tracking-[0.06em] opacity-70">

@@ -20,7 +20,7 @@ export default function CtaBand({
   href?: string;
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-accent-900 text-bg">
+    <section className="relative isolate overflow-hidden bg-accent-900 text-on-dark">
       <Image
         src={images["cta-texture"]}
         alt=""

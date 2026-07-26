@@ -58,7 +58,7 @@ export default function Footer() {
             <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
               {navLinks.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-[14px] text-ink no-underline hover:text-accent-700">
+                  <Link href={l.href} className="text-[14px] text-ink no-underline hover:text-link">
                     {l.label}
                   </Link>
                 </li>
@@ -75,7 +75,7 @@ export default function Footer() {
                 <li key={s.slug}>
                   <Link
                     href={`/services#${s.slug}`}
-                    className="text-[14px] text-ink no-underline hover:text-accent-700"
+                    className="text-[14px] text-ink no-underline hover:text-link"
                   >
                     {s.title.replace(" & Testing", "").replace(" & Investigation", "")}
                   </Link>
@@ -90,19 +90,19 @@ export default function Footer() {
             </h2>
             <ul className="m-0 flex list-none flex-col gap-2.5 p-0 text-[14px]">
               <li className="flex items-center gap-2">
-                <Phone size={15} strokeWidth={1.5} className="flex-none text-accent-700" />
-                <a href={site.phoneHref} className="text-ink no-underline hover:text-accent-700">
+                <Phone size={15} strokeWidth={1.5} className="flex-none text-link" />
+                <a href={site.phoneHref} className="text-ink no-underline hover:text-link">
                   {site.phone}
                 </a>
               </li>
               <li className="flex items-center gap-2">
-                <Mail size={15} strokeWidth={1.5} className="flex-none text-accent-700" />
-                <a href={site.emailHref} className="break-all text-ink no-underline hover:text-accent-700">
+                <Mail size={15} strokeWidth={1.5} className="flex-none text-link" />
+                <a href={site.emailHref} className="break-all text-ink no-underline hover:text-link">
                   {site.email}
                 </a>
               </li>
               <li className="flex items-center gap-2">
-                <MapPin size={15} strokeWidth={1.5} className="flex-none text-accent-700" />
+                <MapPin size={15} strokeWidth={1.5} className="flex-none text-link" />
                 <span className="opacity-80">{site.address.short}</span>
               </li>
             </ul>

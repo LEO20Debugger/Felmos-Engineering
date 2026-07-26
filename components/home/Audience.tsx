@@ -75,7 +75,7 @@ export default function Audience() {
                           size={19}
                           strokeWidth={1.5}
                           aria-hidden
-                          className="flex-none text-accent-700"
+                          className="flex-none text-link"
                         />
                         <span className="font-heading text-[18px] uppercase leading-tight md:text-[21px]">
                           {a.label}
@@ -100,7 +100,7 @@ export default function Audience() {
                       size={17}
                       strokeWidth={1.5}
                       aria-hidden
-                      className="hidden flex-none self-center text-accent-700 md:block"
+                      className="hidden flex-none self-center text-link md:block"
                     />
                   </Link>
                 </Reveal>
