@@ -30,7 +30,8 @@ const SOURCES = {
   // sky on the left for the headline to sit in.
   hero: { id: "1565008447742-97f6f38c985c", w: 2000, h: 1000 },
 
-  "about-story": { id: "1503387762-592deb58ef4e", w: 1400, h: 1050 }, // hands over drawings
+  "about-story": { id: "1581092580497-e0d23cbdf1dc", w: 1400, h: 1050 }, // structural engineer performing inspection on site
+  "about-hero": { id: "1216589", w: 2000, h: 1000, from: "pexels" }, // structural construction site under open sky
 
   "svc-soil": { id: "1517089152318-42ec560349c0", w: 1400, h: 1050 }, // earthworks
   "svc-ndt": { id: "1621905251189-08b45d6a269e", w: 1400, h: 1050 }, // taking a reading
@@ -45,11 +46,14 @@ const SOURCES = {
   "process-5": { id: "1581092160562-40aa08e78837", w: 1200, h: 800 }, // the written report
   "process-6": { id: "1600880292089-90a7e086ee0c", w: 1200, h: 800 }, // recommendations
 
-  // team — placeholder people, see note above
-  "team-1": { id: "1472099645785-5658abf4ff4e", w: 900, h: 900 },
-  "team-2": { id: "1573497019940-1c28c88b4f3e", w: 900, h: 900 },
-  "team-3": { id: "1507003211169-0a1dd7228f2d", w: 900, h: 900 },
-  "team-4": { id: "1580489944761-15a19d654956", w: 900, h: 900 },
+  /* team — placeholder people, see note above.
+     4:5 rather than square: at 1:1 these read as avatars, at 4:5 as
+     commissioned portraits. `differentiators.real-support` re-crops team-1
+     through imageAt() independently, so it is unaffected by this ratio. */
+  "team-1": { id: "1472099645785-5658abf4ff4e", w: 900, h: 1125 },
+  "team-2": { id: "1573497019940-1c28c88b4f3e", w: 900, h: 1125 },
+  "team-3": { id: "1507003211169-0a1dd7228f2d", w: 900, h: 1125 },
+  "team-4": { id: "1580489944761-15a19d654956", w: 900, h: 1125 },
 
   "cta-texture": { id: "1486406146926-c627a92ad1ab", w: 1920, h: 1080 },
 
