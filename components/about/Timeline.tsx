@@ -27,7 +27,7 @@ export default function Timeline() {
               {/* The rule sits above each entry rather than between them, so
                   the row reads as a track at lg and stacks cleanly below. */}
               <span aria-hidden className="block h-px w-full bg-divider" />
-              <span className="mt-4 block font-heading text-[clamp(26px,4vw,34px)] font-semibold leading-none text-accent-700 tabular-nums">
+              <span className="mt-4 block font-heading text-[clamp(26px,4vw,34px)] font-semibold leading-none text-link tabular-nums">
                 {m.year}
               </span>
               <h3 className="m-0 mt-2.5 font-heading text-[16.5px] uppercase">{m.title}</h3>

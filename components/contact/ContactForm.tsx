@@ -37,7 +37,7 @@ function Field({
       <label htmlFor={name}>{label}</label>
       {children}
       {error && (
-        <p id={`${name}-error`} className="m-0 mt-1.5 flex items-center gap-1.5 text-[12.5px] text-[#b4433a]">
+        <p id={`${name}-error`} className="m-0 mt-1.5 flex items-center gap-1.5 text-[12.5px] text-danger">
           <AlertCircle size={14} strokeWidth={1.5} className="flex-none" />
           {error}
         </p>
@@ -96,7 +96,7 @@ export default function ContactForm() {
   if (status === "sent") {
     return (
       <div className="relative flex flex-col items-start gap-4 p-8">
-        <CheckCircle2 size={34} strokeWidth={1.5} className="text-accent-700" />
+        <CheckCircle2 size={34} strokeWidth={1.5} className="text-link" />
         <h2 className="m-0 font-heading text-[22px] uppercase">Request received</h2>
         <p className="m-0 max-w-[42ch] text-[15px] leading-[1.6] opacity-80">
           One of our engineers will confirm scope and scheduling within one business day.
@@ -164,7 +164,7 @@ export default function ContactForm() {
       </Field>
 
       {status === "failed" && (
-        <p role="alert" className="m-0 flex items-center gap-2 border border-[#b4433a] p-3 text-[13.5px] text-[#b4433a]">
+        <p role="alert" className="m-0 flex items-center gap-2 border border-danger p-3 text-[13.5px] text-danger">
           <AlertCircle size={16} strokeWidth={1.5} className="flex-none" />
           {Object.keys(errors).length
             ? "Please check the highlighted fields and try again."

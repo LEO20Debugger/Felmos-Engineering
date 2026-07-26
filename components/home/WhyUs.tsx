@@ -71,8 +71,8 @@ export default function WhyUs() {
                   className="absolute inset-0 bg-gradient-to-t from-accent-900 via-accent-900/55 to-accent-900/10"
                 />
                 <span className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                  <h3 className="m-0 font-heading text-[19px] uppercase text-bg">{d.title}</h3>
-                  <p className="m-0 mt-1.5 max-w-[38ch] text-[14px] leading-[1.5] text-bg/85">
+                  <h3 className="m-0 font-heading text-[19px] uppercase text-on-dark">{d.title}</h3>
+                  <p className="m-0 mt-1.5 max-w-[38ch] text-[14px] leading-[1.5] text-on-dark/85">
                     {d.proof}
                   </p>
                 </span>
@@ -90,7 +90,7 @@ export default function WhyUs() {
                 as="li"
                 key={d.key}
                 delay={0}
-                className={`flex flex-col justify-between rounded-[var(--radius-control)] bg-accent-900 p-6 text-bg md:p-8 ${span}`}
+                className={`flex flex-col justify-between rounded-[var(--radius-control)] bg-accent-900 p-6 text-on-dark md:p-8 ${span}`}
               >
                 <Icon size={28} strokeWidth={1.5} aria-hidden className="text-accent-300" />
                 <div className="mt-8">
@@ -99,8 +99,8 @@ export default function WhyUs() {
                       {d.figure}
                     </span>
                   )}
-                  <h3 className="m-0 mt-3 font-heading text-[19px] uppercase text-bg">{d.title}</h3>
-                  <p className="m-0 mt-2 max-w-[34ch] text-[14.5px] leading-[1.55] text-bg/75">
+                  <h3 className="m-0 mt-3 font-heading text-[19px] uppercase text-on-dark">{d.title}</h3>
+                  <p className="m-0 mt-2 max-w-[34ch] text-[14.5px] leading-[1.55] text-on-dark/75">
                     {d.proof}
                   </p>
                 </div>
@@ -112,11 +112,11 @@ export default function WhyUs() {
           return (
             <Reveal as="li" key={d.key} delay={i % 3} className={`${SHELL} ${span}`}>
               {d.figure ? (
-                <span className="font-heading text-[clamp(30px,4.5vw,42px)] font-semibold leading-none text-accent-700 tabular-nums">
+                <span className="font-heading text-[clamp(30px,4.5vw,42px)] font-semibold leading-none text-link tabular-nums">
                   {d.figure}
                 </span>
               ) : (
-                <Icon size={24} strokeWidth={1.5} aria-hidden className="text-accent-700" />
+                <Icon size={24} strokeWidth={1.5} aria-hidden className="text-link" />
               )}
 
               <h3 className="m-0 mt-3 font-heading text-[16.5px] uppercase">{d.title}</h3>

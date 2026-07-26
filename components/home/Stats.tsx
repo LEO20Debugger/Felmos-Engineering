@@ -35,7 +35,7 @@ function Stat({ value, suffix, label, run }: { value: number; suffix: string; la
   const n = useCountUp(value, run);
   return (
     <div className="flex flex-col gap-1">
-      <span className="font-heading text-[clamp(34px,7vw,48px)] font-semibold leading-none text-accent-700 tabular-nums">
+      <span className="font-heading text-[clamp(34px,7vw,48px)] font-semibold leading-none text-link tabular-nums">
         {n}
         {suffix}
       </span>

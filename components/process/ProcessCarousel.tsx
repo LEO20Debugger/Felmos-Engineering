@@ -118,16 +118,16 @@ export default function ProcessCarousel() {
                   sizes="(max-width: 640px) 84vw, 62vw"
                   zoom={false}
                 />
-                <span className="absolute left-0 top-0 bg-accent px-3 py-1.5 font-heading text-[13px] font-semibold tracking-[0.14em] text-bg">
+                <span className="absolute left-0 top-0 bg-accent px-3 py-1.5 font-heading text-[13px] font-semibold tracking-[0.14em] text-on-dark">
                   {step.num}
                 </span>
               </div>
 
               <div className="flex flex-col gap-2 p-5">
-                <Icon size={26} strokeWidth={1.5} className="text-accent-700" />
+                <Icon size={26} strokeWidth={1.5} className="text-link" />
                 <h3 className="m-0 font-heading text-[21px] uppercase">{step.title}</h3>
                 <p className="m-0 text-[14.5px] leading-[1.55] opacity-75">{step.line}</p>
-                <span className="mt-1 border-t border-divider pt-3 font-mono text-[11.5px] uppercase tracking-[0.12em] text-accent-700">
+                <span className="mt-1 border-t border-divider pt-3 font-mono text-[11.5px] uppercase tracking-[0.12em] text-link">
                   {step.meta}
                 </span>
               </div>

@@ -58,8 +58,8 @@ export default function ServicesPage() {
             >
               <div className="svc-head">
                 <Reveal className="mb-3 flex items-center gap-3">
-                  <Icon size={28} strokeWidth={1.5} aria-hidden className="text-accent-700" />
-                  <span className="font-mono text-[12px] tracking-[0.16em] text-accent-700">
+                  <Icon size={28} strokeWidth={1.5} aria-hidden className="text-link" />
+                  <span className="font-mono text-[12px] tracking-[0.16em] text-link">
                     {s.num}
                   </span>
                 </Reveal>
@@ -73,7 +73,7 @@ export default function ServicesPage() {
                 <Reveal
                   as="p"
                   delay={2}
-                  className="m-0 mt-3 max-w-[26ch] font-heading text-[clamp(18px,3vw,23px)] uppercase leading-[1.15] text-accent-700"
+                  className="m-0 mt-3 max-w-[26ch] font-heading text-[clamp(18px,3vw,23px)] uppercase leading-[1.15] text-link"
                 >
                   {s.short}
                 </Reveal>
@@ -107,7 +107,7 @@ export default function ServicesPage() {
                       style={{ "--j": j } as React.CSSProperties}
                       className="stagger flex items-start gap-2.5 text-[14.5px] leading-[1.55] opacity-88"
                     >
-                      <Check size={18} strokeWidth={1.5} aria-hidden className="mt-0.5 flex-none text-accent-700" />
+                      <Check size={18} strokeWidth={1.5} aria-hidden className="mt-0.5 flex-none text-link" />
                       {b}
                     </li>
                   ))}

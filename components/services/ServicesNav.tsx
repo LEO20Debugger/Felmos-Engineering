@@ -135,7 +135,7 @@ export default function ServicesNav({ items }: { items: NavItem[] }) {
                     on ? "btn-primary" : "btn-secondary text-ink"
                   }`}
                 >
-                  <span className={`font-mono text-[11px] ${on ? "text-bg/70" : "text-accent-700"}`}>
+                  <span className={`font-mono text-[11px] ${on ? "text-on-dark/70" : "text-link"}`}>
                     {s.num}
                   </span>
                   {s.label}

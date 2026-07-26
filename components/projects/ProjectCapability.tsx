@@ -34,11 +34,11 @@ export default function ProjectCapability() {
                 style={{ borderRadius: "var(--radius-control)" }}
               >
                 <span className="flex items-center justify-between">
-                  <Icon size={24} strokeWidth={1.5} className="text-accent-700" />
+                  <Icon size={24} strokeWidth={1.5} className="text-link" />
                   <ArrowUpRight
                     size={16}
                     strokeWidth={1.5}
-                    className="text-accent-700 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    className="text-link transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                   />
                 </span>
 

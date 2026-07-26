@@ -28,7 +28,7 @@ export default function AboutHero() {
         className="absolute inset-0 -z-10 bg-gradient-to-t from-accent-900/95 via-accent-900/60 to-accent-900/20"
       />
 
-      <div className="wrap relative w-full pb-10 pt-24 text-bg md:pb-14">
+      <div className="wrap relative w-full pb-10 pt-24 text-on-dark md:pb-14">
         <Reveal
           as="span"
           className="mb-3 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300"
@@ -38,14 +38,14 @@ export default function AboutHero() {
         <Reveal
           as="h1"
           delay={1}
-          className="m-0 max-w-[20ch] text-[clamp(30px,8vw,52px)] uppercase leading-[1.03] text-bg"
+          className="m-0 max-w-[20ch] text-[clamp(30px,8vw,52px)] uppercase leading-[1.03] text-on-dark"
         >
           Engineering Confidence Into Every Structure
         </Reveal>
         <Reveal
           as="p"
           delay={2}
-          className="mb-0 mt-4 max-w-[54ch] text-[15.5px] leading-[1.6] text-bg/85 md:text-[16.5px]"
+          className="mb-0 mt-4 max-w-[54ch] text-[15.5px] leading-[1.6] text-on-dark/85 md:text-[16.5px]"
         >
           Independent structural data for the people who have to make the decision —
           developers, homeowners, contractors and lenders.
@@ -56,16 +56,16 @@ export default function AboutHero() {
         <Reveal
           as="dl"
           delay={3}
-          className="m-0 mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-bg/20 pt-5"
+          className="m-0 mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-on-dark/20 pt-5"
         >
           {stats.map((s) => (
             <div key={s.key}>
               <dt className="sr-only">{s.label}</dt>
-              <dd className="m-0 font-heading text-[clamp(22px,4vw,30px)] font-semibold leading-none text-bg tabular-nums">
+              <dd className="m-0 font-heading text-[clamp(22px,4vw,30px)] font-semibold leading-none text-on-dark tabular-nums">
                 {s.value}
                 {s.suffix}
               </dd>
-              <span className="mt-1.5 block text-[11.5px] uppercase tracking-[0.08em] text-bg/65">
+              <span className="mt-1.5 block text-[11.5px] uppercase tracking-[0.08em] text-on-dark/65">
                 {s.label}
               </span>
             </div>

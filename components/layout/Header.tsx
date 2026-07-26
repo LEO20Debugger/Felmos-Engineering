@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Menu, Phone, X } from "lucide-react";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import { navLinks, site } from "@/lib/site";
 
 export default function Header() {
@@ -101,16 +102,19 @@ export default function Header() {
           onClick={close}
           className="font-heading text-[18px] font-semibold uppercase tracking-[0.01em] text-ink no-underline md:text-[19px]"
         >
-          Felmos <span className="text-accent-700">Engineering</span>
+          Felmos <span className="text-link">Engineering</span>
         </Link>
-        <button
-          type="button"
-          onClick={close}
-          aria-label="Close menu"
-          className="btn btn-secondary btn-icon"
-        >
-          <X size={20} strokeWidth={1.5} />
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close menu"
+            className="btn btn-secondary btn-icon"
+          >
+            <X size={20} strokeWidth={1.5} />
+          </button>
+        </div>
       </div>
 
       <nav className="wrap flex-1 overflow-y-auto py-4" aria-label="Mobile">
@@ -123,9 +127,9 @@ export default function Header() {
                 style={{ animationDelay: `${60 + i * 55}ms` }}
                 className={`block py-5 font-heading text-[26px] font-semibold uppercase no-underline ${
                   open ? "animate-[fx-rise_0.5s_var(--ease-out-quint)_both]" : ""
-                } ${isActive(l.href) ? "text-accent-700" : "text-ink"}`}
+                } ${isActive(l.href) ? "text-link" : "text-ink"}`}
               >
-                <span className="mr-3 align-middle font-mono text-[12px] tracking-widest text-accent-700 opacity-70">
+                <span className="mr-3 align-middle font-mono text-[12px] tracking-widest text-link opacity-70">
                   0{i + 1}
                 </span>
                 {l.label}
@@ -161,7 +165,7 @@ export default function Header() {
             href="/"
             className="font-heading text-[18px] font-semibold uppercase tracking-[0.01em] text-ink no-underline md:text-[19px]"
           >
-            Felmos <span className="text-accent-700">Engineering</span>
+            Felmos <span className="text-link">Engineering</span>
           </Link>
 
           {/* Desktop navigation */}
@@ -173,8 +177,8 @@ export default function Header() {
                 aria-current={isActive(l.href) ? "page" : undefined}
                 className={`relative py-1.5 font-body text-[14.5px] font-medium no-underline transition-colors after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                   isActive(l.href)
-                    ? "text-accent-700 after:scale-x-100"
-                    : "text-ink hover:text-accent-700"
+                    ? "text-link after:scale-x-100"
+                    : "text-ink hover:text-link"
                 }`}
               >
                 {l.label}
@@ -190,6 +194,11 @@ export default function Header() {
             <Link href="/contact" className="btn btn-primary no-underline">
               Book Inspection
             </Link>
+            {/* Undersized against the 44px the other controls keep, deliberately:
+                this is a pointer-only bar, and the toggle is a preference rather
+                than a nav target — it should sit quieter than the CTA beside it.
+                The drawer copy stays full size, where the target is a fingertip. */}
+            <ThemeToggle className="h-9 w-9 min-h-0" />
           </div>
 
           {/* Mobile toggle */}

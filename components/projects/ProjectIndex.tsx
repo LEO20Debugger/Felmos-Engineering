@@ -25,7 +25,7 @@ export default function ProjectIndex() {
         {projects.map((p, i) => (
           <Reveal as="li" key={p.slug} delay={i % 3} className="idx-row">
             <a href={`#${p.slug}`}>
-              <span className="font-mono text-[12px] tracking-[0.14em] text-accent-700">
+              <span className="font-mono text-[12px] tracking-[0.14em] text-link">
                 {p.num}
               </span>
 

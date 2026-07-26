@@ -25,17 +25,17 @@ export default function ContactHero() {
         className="absolute inset-x-0 bottom-0 -z-10 h-full bg-gradient-to-t from-accent-900/95 via-accent-900/55 to-accent-900/10"
       />
 
-      <div className="wrap relative w-full pb-9 pt-24 text-bg md:pb-12">
+      <div className="wrap relative w-full pb-9 pt-24 text-on-dark md:pb-12">
         <Reveal as="span" className="mb-3 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300">
           Get Started
         </Reveal>
-        <Reveal as="h1" delay={1} className="m-0 max-w-[24ch] text-[clamp(28px,7vw,44px)] uppercase leading-[1.05] text-bg">
+        <Reveal as="h1" delay={1} className="m-0 max-w-[24ch] text-[clamp(28px,7vw,44px)] uppercase leading-[1.05] text-on-dark">
           Book a Structural Inspection
         </Reveal>
         <Reveal
           as="p"
           delay={2}
-          className="mb-0 mt-3.5 max-w-[52ch] text-[15px] leading-[1.6] text-bg/85 md:text-[16px]"
+          className="mb-0 mt-3.5 max-w-[52ch] text-[15px] leading-[1.6] text-on-dark/85 md:text-[16px]"
         >
           Tell us about your project and preferred date — an engineer confirms scope and
           scheduling within one business day.
