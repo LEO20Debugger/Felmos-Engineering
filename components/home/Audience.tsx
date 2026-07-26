@@ -1,24 +1,120 @@
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import SectionHead from "@/components/ui/Section";
 import Reveal from "@/components/ui/Reveal";
-import { audiences } from "@/lib/content";
+import { imageAt } from "@/lib/images";
+import { audiences, servicesFor } from "@/lib/content";
 
+/**
+ * "Is this for me?" — so every audience stays visible at once. A tabbed or
+ * expanding treatment would turn self-identification into a click, and would
+ * also make this the page's third click-to-reveal section (ServiceShowcase
+ * sits one above, ProcessTimeline two below).
+ *
+ * The rows borrow `.idx-row` from the projects index, which is otherwise
+ * unused on this page — a different layout language from the icon grids
+ * around it, for no new CSS beyond the track sizing in `.aud-row`.
+ *
+ * The service tags are derived, not authored: `servicesFor` reads the
+ * `clients` each service already declares, so a row can never claim a
+ * discipline the service itself doesn't list.
+ */
 export default function Audience() {
-  return (
-    <section className="wrap py-14 md:py-20" aria-label="Who we serve">
-      <SectionHead kicker="Who We Serve" title="Built for Every Stakeholder" />
+  const cta = (
+    <>
+      Not listed? Tell us the project
+      <ArrowRight size={17} strokeWidth={1.5} />
+    </>
+  );
 
-      <ul className="m-0 grid list-none grid-cols-2 gap-4 p-0 sm:grid-cols-3 lg:grid-cols-6">
-        {audiences.map(({ icon: Icon, label }, i) => (
-          <Reveal as="li" key={label} delay={i}>
-            <div className="mark-lift relative flex h-full flex-col items-center gap-3 px-3 py-6 text-center">
-              <Icon size={26} strokeWidth={1.5} className="text-accent-700" />
-              <span className="font-heading text-[13.5px] font-semibold uppercase leading-tight tracking-[0.01em]">
-                {label}
-              </span>
-            </div>
-          </Reveal>
-        ))}
-      </ul>
+  return (
+    /* Full-bleed the way CtaBand does it: the ground goes on the section,
+       which is already viewport-wide, and .wrap stays inside. No negative
+       margins — `100vw` would include the scrollbar gutter, and `overflow-x:
+       hidden` on body would then hide the overflow rather than the mistake. */
+    <section className="bg-surface" aria-label="Who we serve">
+      <div className="wrap py-14 md:py-20">
+        <div className="lg:grid lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-x-16">
+          <div>
+            <SectionHead
+              kicker="Who We Serve"
+              title="Find Yourself On This List"
+              lead="Six kinds of client, each needing a different answer from the same five disciplines."
+            />
+            <Reveal delay={3} className="mb-8 hidden lg:block">
+              <Link href="/contact" className="btn btn-secondary text-ink no-underline">
+                {cta}
+              </Link>
+            </Reveal>
+          </div>
+
+          <ul className="m-0 list-none p-0">
+            {audiences.map((a, i) => {
+              const Icon = a.icon;
+              const mine = servicesFor(a);
+              return (
+                <Reveal as="li" key={a.slug} delay={i % 3} className="idx-row aud-row">
+                  {/* One link per row — the whole row is the target. The tags
+                      stay plain text: an <a> inside an <a> is invalid and
+                      behaves unpredictably in assistive tech. */}
+                  <Link href={`/services#${a.primary}`}>
+                    <Image
+                      src={imageAt(a.image, 240, 160)}
+                      alt=""
+                      aria-hidden
+                      width={120}
+                      height={80}
+                      sizes="96px"
+                      className="aud-thumb"
+                    />
+
+                    <span className="min-w-0">
+                      <span className="flex items-center gap-2.5">
+                        <Icon
+                          size={19}
+                          strokeWidth={1.5}
+                          aria-hidden
+                          className="flex-none text-accent-700"
+                        />
+                        <span className="font-heading text-[18px] uppercase leading-tight md:text-[21px]">
+                          {a.label}
+                        </span>
+                      </span>
+                      <span className="mt-1.5 block max-w-[44ch] text-[13.5px] leading-[1.5] opacity-70">
+                        {a.need}
+                      </span>
+                    </span>
+
+                    {/* Between one and four tags depending on the audience, so
+                        this wraps rather than assuming a fixed count. */}
+                    <span className="hidden max-w-[34ch] flex-wrap justify-end gap-1.5 md:flex">
+                      {mine.map((s) => (
+                        <span key={s.slug} className="tag tag-outline">
+                          {s.label}
+                        </span>
+                      ))}
+                    </span>
+
+                    <ArrowRight
+                      size={17}
+                      strokeWidth={1.5}
+                      aria-hidden
+                      className="hidden flex-none self-center text-accent-700 md:block"
+                    />
+                  </Link>
+                </Reveal>
+              );
+            })}
+          </ul>
+        </div>
+
+        <Reveal delay={3} className="mt-8 lg:hidden">
+          <Link href="/contact" className="btn btn-secondary btn-block text-ink no-underline">
+            {cta}
+          </Link>
+        </Reveal>
+      </div>
     </section>
   );
 }
