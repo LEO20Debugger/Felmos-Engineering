@@ -26,9 +26,21 @@ type Provider = "unsplash" | "pexels";
 
 /** id + the crop the layout asks for by default, + which host serves it. */
 const SOURCES = {
-  // hero — full-bleed banner: tower cranes over a building going up, with open
-  // sky on the left for the headline to sit in.
+  // hero — first frame of the full-bleed banner slideshow: tower cranes over a
+  // glass-clad tower going up, with open sky on the left for the headline.
   hero: { id: "1565008447742-97f6f38c985c", w: 2000, h: 1000 },
+
+  /* The other two frames of the homepage banner's slideshow. Each was loaded at
+     the banner crop and looked at before being used here, so the alt text in
+     Hero.tsx describes the actual photograph.
+
+     hero-3 is the same photograph as `proj-1`, by request. Note that it
+     therefore appears twice on the homepage — the banner cycles it, and the
+     Projects teaser below renders projects.slice(0, 3), of which proj-1 is the
+     first. Reordering `projects` in lib/content.ts so proj-1 falls outside the
+     top three would separate them without changing either picture. */
+  "hero-2": { id: "1545186070-de624ed19875", w: 2000, h: 1000 }, // engineer sighting through a levelling instrument
+  "hero-3": { id: "5612890", w: 2000, h: 1000, from: "pexels" }, // two high-rise blocks under construction
 
   "about-story": { id: "1581092580497-e0d23cbdf1dc", w: 1400, h: 1050 }, // structural engineer performing inspection on site
   "about-hero": { id: "1216589", w: 2000, h: 1000, from: "pexels" }, // structural construction site under open sky

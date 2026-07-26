@@ -259,6 +259,84 @@
     }
   }
 
+  /* ----------------------------- banners -------------------------------
+     The full-bleed photo banner that opens the homepage, About, Projects and
+     Contact. One declaration site, because four hand-tuned copies had drifted:
+     each carried its own height and its own `pt-24`, so on a 375px phone the
+     gap between the header and the first line of copy ran from 39px (About) to
+     260px (homepage), and About and Projects overflowed their own banner by
+     57px — silently clipped by the `overflow: hidden` that keeps the photo in.
+
+     The fix is to stop fixing the height on a phone. `min-height` is a FLOOR,
+     not a ceiling: short copy still gets a generous photograph, long copy grows
+     the banner instead of being cut off. Because the copy is bottom-anchored,
+     the space above it is then padding on every page rather than whatever the
+     subtraction happened to leave — which is what makes the four consistent. */
+  .banner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    min-height: var(--banner-min, 44svh);
+  }
+  /* Desktop wants a viewport-proportional banner, but asking for it with
+     `height` reintroduces exactly the bug this class exists to kill — at
+     1280x800 a 50vh banner is 400px and About's copy is 461px, so it clipped
+     again. clamp() inside min-height expresses the same intent safely: at least
+     --banner-min-lg, ideally --banner-h, capped at --banner-max on a tall
+     display. It stays a FLOOR, so copy taller than the cap grows the banner
+     rather than being cut off. */
+  @media (min-width: 1024px) {
+    .banner {
+      min-height: clamp(
+        var(--banner-min-lg, 380px),
+        var(--banner-h, 50vh),
+        var(--banner-max, 480px)
+      );
+    }
+  }
+
+  /* The header is sticky and translucent, so the copy has to clear its height
+     — not a magic number that happens to match it at one breakpoint. */
+  .banner-body {
+    position: relative;
+    width: 100%;
+    padding-top: calc(var(--header-h) + var(--banner-air, clamp(20px, 5vh, 44px)));
+    padding-bottom: var(--banner-foot, clamp(26px, 4.5vh, 52px));
+  }
+
+  /* --------------------- homepage banner slideshow ---------------------
+     Three photographs on a 21s loop, 7s each, crossfading over 1s. No JS and no
+     state: the layers are stacked in DOM order and animate on one shared clock,
+     so this stays a server component and the first frame is still the LCP image.
+
+     The first layer never animates its opacity — it is the floor of the stack,
+     always painted. Layers 2 and 3 fade in on top of it and are the only things
+     that move. That ordering is what keeps the handover clean: a layer only
+     ever fades in over an opaque layer, never over a gap, so the banner is
+     never momentarily see-through mid-crossfade.
+
+     Reduced motion needs no rule of its own. The global block below forces
+     iteration-count to 1 and duration to ~0, which lands every layer on its
+     100% frame — opacity 0 for layers 2 and 3 — leaving the first photograph
+     alone on screen. The degradation is the correct one by construction. */
+  .hero-slide {
+    /* Scale and opacity are split so each can carry its own easing: the drift
+       must be perfectly even (linear) or it reads as a lurch, while the fade
+       needs easing at both ends or the two images visibly cross at half. */
+    animation: hero-drift-1 21s linear infinite;
+  }
+  .hero-slide-2 {
+    opacity: 0;
+    animation: hero-drift-2 21s linear infinite, hero-fade-2 21s ease-in-out infinite;
+  }
+  .hero-slide-3 {
+    opacity: 0;
+    animation: hero-drift-3 21s linear infinite, hero-fade-3 21s ease-in-out infinite;
+  }
+
   /* ---------------------------- photography ---------------------------- */
   /* Photographs render in full colour. (The Industry system washes them in the
      steel accent; that treatment was removed by request, so the class no longer
@@ -904,12 +982,9 @@
     }
   }
 
-  /* Hero banner: the photo settles out of a slight over-scale on load. Scale
-     only, never opacity - the LCP pixels must paint immediately. */
+  /* The homepage banner's settle-on-load is now the opening seconds of
+     hero-drift-1 above, so .hero-media is gone with the single-photo hero. */
   @media (prefers-reduced-motion: no-preference) {
-    .hero-media {
-      animation: fx-settle 1.8s var(--ease-out-quint) both;
-    }
     .scroll-cue {
       transform-origin: top center;
       animation: fx-cue 2.4s var(--ease-in-out-quart) infinite;
@@ -970,14 +1045,6 @@
     transform: rotate(360deg);
   }
 }
-@keyframes fx-settle {
-  from {
-    transform: scale(1.07);
-  }
-  to {
-    transform: scale(1);
-  }
-}
 @keyframes fx-cue {
   0%,
   100% {
@@ -1009,6 +1076,94 @@
     transform: translate(3px, -3px);
   }
 }
+/* ---- homepage banner slideshow ----
+   One 21s clock, three 7s slots, 1s crossfades. The percentages are the second
+   marks converted once: 1s = 4.762%, 6s = 28.571%, 7s = 33.333%, 13s = 61.905%,
+   14s = 66.667%, 20s = 95.238%. Change the duration on .hero-slide* and the
+   whole thing rescales — the shape is in the percentages, not the seconds.
+
+   Layer 2 is cut rather than faded at 66.667%: layer 3 is fully opaque and
+   directly on top of it by that instant, so the cut cannot be seen. Fading it
+   out instead would thin BOTH upper layers at once and let layer 1 flash
+   through from underneath. */
+@keyframes hero-fade-2 {
+  0%,
+  28.571% {
+    opacity: 0;
+  }
+  33.333%,
+  66.667% {
+    opacity: 1;
+  }
+  66.668%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hero-fade-3 {
+  0%,
+  61.905% {
+    opacity: 0;
+  }
+  66.667%,
+  95.238% {
+    opacity: 1;
+  }
+  /* Fades back out over the last second, revealing layer 1 underneath — which
+     is what closes the loop seamlessly, since layer 1 is already where the
+     next cycle begins. */
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The slow push in on each frame. Every reset back to 1 happens inside that
+   layer's hidden window, so the drift only ever reads as one direction. */
+@keyframes hero-drift-1 {
+  /* Visible 0-7s and again over the final second, so its ramp wraps: the 100%
+     value must equal the 0% value or the loop lurches. */
+  0% {
+    transform: scale(1.02);
+  }
+  33.333% {
+    transform: scale(1.055);
+  }
+  47.619% {
+    transform: scale(1);
+  }
+  95.238% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.02);
+  }
+}
+@keyframes hero-drift-2 {
+  0%,
+  28.571% {
+    transform: scale(1);
+  }
+  66.667% {
+    transform: scale(1.055);
+  }
+  80.952% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes hero-drift-3 {
+  0%,
+  61.905% {
+    transform: scale(1);
+  }
+  /* Snaps back to 1 on wrap, at the exact frame its opacity reaches 0. */
+  100% {
+    transform: scale(1.055);
+  }
+}
+
 @keyframes fx-wipe {
   /* `round` is required here: a plain inset() clips to square corners and would
      cancel the frame's border-radius for the whole animation. */
