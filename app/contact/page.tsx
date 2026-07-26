@@ -47,11 +47,11 @@ export default function ContactPage() {
             <div className="relative flex flex-col gap-4 p-6">
               {details.map(({ icon: Icon, label, value, href }) => (
                 <div key={label} className="flex items-start gap-3">
-                  <Icon size={22} strokeWidth={1.5} className="mt-0.5 flex-none text-accent-700" />
+                  <Icon size={22} strokeWidth={1.5} className="mt-0.5 flex-none text-link" />
                   <div className="min-w-0">
                     <strong className="block text-[13px] uppercase tracking-[0.05em]">{label}</strong>
                     {href ? (
-                      <a href={href} className="block break-words text-[14px] text-ink no-underline hover:text-accent-700">
+                      <a href={href} className="block break-words text-[14px] text-ink no-underline hover:text-link">
                         {value}
                       </a>
                     ) : (

@@ -71,7 +71,7 @@ export default function AboutPage() {
             {missionVision.map(({ title, line }, i) => (
               <Reveal as="div" key={title} delay={i} className="m-0">
                 <dt className="flex items-baseline gap-3">
-                  <span className="font-mono text-[12px] tracking-[0.16em] text-accent-700">
+                  <span className="font-mono text-[12px] tracking-[0.16em] text-link">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="font-heading text-[17px] uppercase">{title}</span>
@@ -96,7 +96,7 @@ export default function AboutPage() {
           {values.map(({ title, line }, i) => (
             <Reveal as="li" key={title} delay={i % 3}>
               <div className="mark-lift flex h-full flex-col rounded-[var(--radius-control)] bg-surface p-5 md:p-6">
-                <span className="font-mono text-[12px] tracking-[0.16em] text-accent-700">
+                <span className="font-mono text-[12px] tracking-[0.16em] text-link">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="m-0 mt-3 font-heading text-[16px] uppercase">{title}</h3>
@@ -120,7 +120,7 @@ export default function AboutPage() {
           <dl className="m-0 grid grid-cols-1 gap-x-10 gap-y-7 p-0 sm:grid-cols-3">
             {officeFacts.map(({ icon: Icon, label, value, href }) => (
               <Reveal as="div" key={label} className="flex gap-3.5">
-                <Icon size={22} strokeWidth={1.5} aria-hidden className="mt-0.5 flex-none text-accent-700" />
+                <Icon size={22} strokeWidth={1.5} aria-hidden className="mt-0.5 flex-none text-link" />
                 <div className="min-w-0">
                   <dt className="text-[11px] uppercase tracking-[0.1em] opacity-55">{label}</dt>
                   <dd className="m-0 mt-1 text-[14.5px] leading-[1.55]">
@@ -129,7 +129,7 @@ export default function AboutPage() {
                         href={href}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-ink no-underline hover:text-accent-700"
+                        className="text-ink no-underline hover:text-link"
                       >
                         {value}
                       </a>

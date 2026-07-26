@@ -13,14 +13,14 @@ export default function Faq() {
           <Reveal key={f.q} delay={i % 3}>
             <details className="group border-b border-divider">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-5 [&::-webkit-details-marker]:hidden">
-                <h3 className="m-0 font-heading text-[17px] uppercase leading-tight transition-colors group-open:text-accent-700">
+                <h3 className="m-0 font-heading text-[17px] uppercase leading-tight transition-colors group-open:text-link">
                   {f.q}
                 </h3>
                 <Plus
                   size={20}
                   strokeWidth={1.5}
                   aria-hidden
-                  className="mt-0.5 flex-none text-accent-700 transition-transform duration-300 group-open:rotate-45"
+                  className="mt-0.5 flex-none text-link transition-transform duration-300 group-open:rotate-45"
                 />
               </summary>
               <p className="m-0 max-w-[62ch] pb-5 text-[14.5px] leading-[1.6] opacity-78">{f.a}</p>

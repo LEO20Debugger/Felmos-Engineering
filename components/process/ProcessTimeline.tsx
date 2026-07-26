@@ -106,9 +106,9 @@ export default function ProcessTimeline() {
                   <span
                     className={`grid h-[26px] w-[26px] flex-none place-items-center border font-mono text-[11px] transition-all duration-300 ${
                       state === "active"
-                        ? "scale-110 border-accent bg-accent text-bg"
+                        ? "scale-110 border-accent bg-accent text-on-dark"
                         : state === "done"
-                          ? "border-accent bg-bg text-accent-700"
+                          ? "border-accent bg-bg text-link"
                           : "border-divider bg-bg text-ink/50 group-hover:border-accent-400"
                     }`}
                   >
@@ -116,7 +116,7 @@ export default function ProcessTimeline() {
                   </span>
                   <span
                     className={`font-heading text-[15.5px] uppercase leading-tight transition-colors duration-300 ${
-                      i === active ? "text-accent-700" : "text-ink group-hover:text-accent-700"
+                      i === active ? "text-link" : "text-ink group-hover:text-link"
                     }`}
                   >
                     {s.title}
@@ -141,8 +141,8 @@ export default function ProcessTimeline() {
 
         <div key={`txt-${active}`} className="animate-[fx-rise_0.55s_var(--ease-out-quint)_both]">
           <div className="mb-4 flex items-center gap-3">
-            <Icon size={30} strokeWidth={1.5} className="text-accent-700" />
-            <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-accent-700">
+            <Icon size={30} strokeWidth={1.5} className="text-link" />
+            <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-link">
               Stage {step.num} · {step.meta}
             </span>
           </div>

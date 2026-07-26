@@ -29,6 +29,24 @@
   --color-neutral-800: #424244;
   --color-neutral-900: #2b2b2d;
 
+  /* ---------------------------------------------------------------------
+     Two kinds of colour token live here, and the difference matters.
+
+     LITERAL tokens (the neutral and accent ramps, --color-on-dark) name a
+     value: accent-900 is a deep steel blue in every theme, because the hero
+     bands painted with it are *meant* to be dark at noon and at midnight.
+     They do not flip.
+
+     SEMANTIC tokens (bg, surface, ink, divider, link, danger) name a ROLE:
+     "the page", "body copy", "a link". Those are what the dark theme block
+     further down re-points. Reach for a semantic token unless you specifically
+     mean the literal colour.
+     --------------------------------------------------------------------- */
+
+  /* Text and rules over photography or an accent band. Literal on purpose:
+     the ground underneath is dark in both themes, so this must not flip. */
+  --color-on-dark: #f2f2f3;
+
   --color-accent: #5980a6;
   --color-accent-100: #eef6ff;
   --color-accent-200: #d6ebff;
@@ -39,6 +57,15 @@
   --color-accent-700: #416180;
   --color-accent-800: #2c455d;
   --color-accent-900: #1d2d3d;
+
+  /* The accent at link weight. accent-700 is legible on paper and invisible on
+     charcoal, so the role is tokenised and the dark theme re-points it up the
+     ramp rather than inverting the ramp itself. */
+  --color-link: #416180;
+  --color-link-hover: #2c455d;
+
+  /* Form validation. */
+  --color-danger: #b4433a;
 
   --font-heading: var(--font-barlow-condensed), "Barlow Condensed", system-ui, sans-serif;
   --font-body: var(--font-barlow), "Barlow", system-ui, sans-serif;
@@ -74,6 +101,64 @@
   /* Industry draws every control square. Rounded by request - one value so
      buttons, fields and selects stay consistent with each other. */
   --radius-control: 10px;
+
+  /* .tag-accent's pair. Not in @theme: there is no `bg-tag-accent` utility to
+     generate, the class is the only consumer. */
+  --tag-accent-bg: var(--color-accent-100);
+  --tag-accent-ink: var(--color-accent-800);
+
+  /* Drives the UA's own rendering — scrollbars, form controls, the canvas
+     behind an overscroll. Without it those stay light and give the theme away
+     at the edges of the page. */
+  color-scheme: light;
+}
+
+/* ============================= dark theme =============================
+   Applied as [data-theme="dark"] on <html> by the inline script in
+   app/layout.tsx, which runs before first paint. Only the SEMANTIC tokens are
+   re-pointed (see the note in @theme): the literal ramps keep their values, so
+   a `bg-accent-900` band and `text-on-dark` over it read the same in both
+   themes and need no per-component dark variants.
+
+   Charcoal rather than black. Photography is the site's main material and it
+   floats against pure #000; a lifted ground also lets the low-alpha divider
+   register, which a black page eats entirely. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #17191a;
+  --color-surface: #212324;
+  --color-ink: #e8e8e9;
+  --color-divider: color-mix(in srgb, #e8e8e9 18%, transparent);
+
+  /* The ramp is read dark-to-light on paper, so it is walked backwards here to
+     keep "higher number = further from the page" true in both themes. */
+  --color-neutral-100: #1d1f20;
+  --color-neutral-200: #26282a;
+  --color-neutral-300: #333537;
+  --color-neutral-400: #47494b;
+  --color-neutral-500: #6a6c6e;
+  --color-neutral-600: #8b8d8f;
+  --color-neutral-700: #a9abad;
+  --color-neutral-800: #c8cacb;
+  --color-neutral-900: #e4e6e7;
+
+  /* Up the ramp, not down it: accent-700 on charcoal fails contrast outright. */
+  --color-link: #94bce3;
+  --color-link-hover: #b5d9fd;
+
+  --color-danger: #f0918a;
+
+  /* A pale accent-100 chip would out-glare the page here, so the fill is a wash
+     of the accent over the charcoal instead. */
+  --tag-accent-bg: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  --tag-accent-ink: var(--color-link-hover);
+
+  /* A 14%-black shadow is invisible on a dark ground, so the depth cue that
+     .mark-lift and .idx-peek rely on is re-cut against near-black. */
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #000 55%, transparent);
+  --shadow-md: 0 3px 12px color-mix(in srgb, #000 62%, transparent);
+  --shadow-lg: 0 14px 38px color-mix(in srgb, #000 68%, transparent);
 }
 
 @media (min-width: 1024px) {
@@ -129,12 +214,12 @@
   }
 
   a {
-    color: var(--color-accent-700);
+    color: var(--color-link);
     text-decoration: none;
     text-underline-offset: 3px;
   }
   a:hover {
-    color: var(--color-accent-800);
+    color: var(--color-link-hover);
   }
 
   img,
@@ -271,15 +356,17 @@
     display: block;
     flex: none;
   }
+  /* The fill is the accent in both themes, so the label is on-dark rather than
+     the page colour — otherwise it turns charcoal-on-steel after dark. */
   .btn-primary {
     background: var(--color-accent);
     border-color: var(--color-accent);
-    color: var(--color-bg);
+    color: var(--color-on-dark);
   }
   .btn-primary:hover {
     background: var(--color-accent-600);
     border-color: var(--color-accent-600);
-    color: var(--color-bg);
+    color: var(--color-on-dark);
   }
   .btn-primary:active {
     background: var(--color-accent-700);
@@ -290,9 +377,11 @@
   .btn-secondary:active {
     background: color-mix(in srgb, var(--color-text) 14%, transparent);
   }
+  /* Both of these live exclusively on the dark bands and hero banners, so they
+     are painted from the literal on-dark token and stay put across themes. */
   .btn-invert {
-    background: var(--color-bg);
-    border-color: var(--color-bg);
+    background: var(--color-on-dark);
+    border-color: var(--color-on-dark);
     color: var(--color-accent-900);
   }
   .btn-invert:hover {
@@ -303,15 +392,15 @@
   /* Outline button for use on the dark hero banner, where .btn-secondary's
      ink-on-paper colouring would be invisible. */
   .btn-light {
-    color: var(--color-bg);
-    background: color-mix(in srgb, #f2f2f3 10%, transparent);
-    border-color: color-mix(in srgb, #f2f2f3 45%, transparent);
+    color: var(--color-on-dark);
+    background: color-mix(in srgb, var(--color-on-dark) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-on-dark) 45%, transparent);
     backdrop-filter: blur(6px);
   }
   .btn-light:hover {
-    color: var(--color-bg);
-    background: color-mix(in srgb, #f2f2f3 20%, transparent);
-    border-color: var(--color-bg);
+    color: var(--color-on-dark);
+    background: color-mix(in srgb, var(--color-on-dark) 20%, transparent);
+    border-color: var(--color-on-dark);
   }
 
   .btn-icon {
@@ -334,12 +423,12 @@
     border-radius: 999px;
   }
   .tag-accent {
-    background: var(--color-accent-100);
-    color: var(--color-accent-800);
+    background: var(--tag-accent-bg);
+    color: var(--tag-accent-ink);
   }
   .tag-outline {
     border: 1px solid var(--color-accent);
-    color: var(--color-accent-700);
+    color: var(--color-link);
   }
 
   /* ------------------------------ forms ------------------------------- */
@@ -381,7 +470,7 @@
     outline-offset: 0;
   }
   .input[aria-invalid="true"] {
-    border-color: #b4433a;
+    border-color: var(--color-danger);
   }
   textarea.input {
     min-height: 108px;
@@ -415,7 +504,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     font-weight: 600;
-    color: var(--color-accent-700);
+    color: var(--color-link);
     font-variant-numeric: tabular-nums;
   }
 
@@ -518,7 +607,7 @@
     }
     .idx-row:hover > a {
       padding-left: 20px;
-      color: var(--color-accent-700);
+      color: var(--color-link);
     }
     .idx-row:hover .idx-peek {
       opacity: 1;

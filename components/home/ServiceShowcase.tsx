@@ -62,27 +62,27 @@ export default function ServiceShowcase() {
                 className="absolute inset-0 bg-gradient-to-t from-accent-900 via-accent-900/55 to-accent-900/15"
               />
 
-              <span className="absolute left-5 top-5 font-mono text-[12px] tracking-[0.16em] text-bg/75">
+              <span className="absolute left-5 top-5 font-mono text-[12px] tracking-[0.16em] text-on-dark/75">
                 {s.num}
               </span>
 
               {/* Collapsed: the name runs up the spine of the panel. */}
-              <span className="svc-spine absolute bottom-6 left-0 right-0 text-center whitespace-nowrap font-heading text-[17px] uppercase tracking-[0.06em] text-bg">
+              <span className="svc-spine absolute bottom-6 left-0 right-0 text-center whitespace-nowrap font-heading text-[17px] uppercase tracking-[0.06em] text-on-dark">
                 {s.label}
               </span>
 
               {/* Expanded: the detail fades up once the panel has room. */}
               <span className="svc-detail absolute inset-x-0 bottom-0 flex flex-col gap-2.5 p-6">
                 <Icon size={26} strokeWidth={1.5} className="text-accent-300" />
-                <span className="font-heading text-[21px] uppercase leading-tight text-bg">
+                <span className="font-heading text-[21px] uppercase leading-tight text-on-dark">
                   {s.title}
                 </span>
-                <span className="max-w-[34ch] text-[14.5px] leading-[1.5] text-bg/80">
+                <span className="max-w-[34ch] text-[14.5px] leading-[1.5] text-on-dark/80">
                   {s.short}
                 </span>
                 {/* `self-start` keeps the drawn rule the width of the label
                     rather than the width of the panel. */}
-                <span className="svc-cta mt-1 inline-flex items-center gap-1.5 self-start text-[13.5px] font-semibold text-bg">
+                <span className="svc-cta mt-1 inline-flex items-center gap-1.5 self-start text-[13.5px] font-semibold text-on-dark">
                   Learn more
                   <ArrowUpRight size={16} strokeWidth={1.5} />
                 </span>
@@ -111,11 +111,11 @@ export default function ServiceShowcase() {
                 aria-hidden
                 className="absolute inset-0 bg-gradient-to-t from-accent-900 via-accent-900/45 to-accent-900/5"
               />
-              <span className="absolute left-3 top-3 font-mono text-[11px] tracking-[0.14em] text-bg/75">
+              <span className="absolute left-3 top-3 font-mono text-[11px] tracking-[0.14em] text-on-dark/75">
                 {s.num}
               </span>
               <span className="absolute inset-x-0 bottom-0 p-3.5">
-                <span className="block font-heading text-[15px] uppercase leading-tight text-bg">
+                <span className="block font-heading text-[15px] uppercase leading-tight text-on-dark">
                   {s.title}
                 </span>
               </span>
@@ -127,14 +127,14 @@ export default function ServiceShowcase() {
         <Reveal as="li" delay={1}>
           <Link
             href="/services"
-            className="group flex aspect-square flex-col justify-between rounded-[var(--radius-control)] bg-accent-900 p-3.5 text-bg no-underline"
+            className="group flex aspect-square flex-col justify-between rounded-[var(--radius-control)] bg-accent-900 p-3.5 text-on-dark no-underline"
           >
-            <span className="font-mono text-[11px] tracking-[0.14em] text-bg/70">ALL</span>
+            <span className="font-mono text-[11px] tracking-[0.14em] text-on-dark/70">ALL</span>
             <span>
               <span className="block font-heading text-[15px] uppercase leading-tight">
                 See all services
               </span>
-              <span className="mt-2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-accent text-bg transition-transform duration-300 group-active:translate-x-1">
+              <span className="mt-2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-accent text-on-dark transition-transform duration-300 group-active:translate-x-1">
                 <ArrowRight size={17} strokeWidth={1.5} />
               </span>
             </span>

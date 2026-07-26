@@ -39,7 +39,7 @@ export default function ProjectsHero() {
 
       {/* justify-end pins this block to the base, so the bottom padding is what
           keeps the stat strip off the banner's edge. */}
-      <div className="wrap relative w-full pb-10 pt-24 text-bg md:pb-14">
+      <div className="wrap relative w-full pb-10 pt-24 text-on-dark md:pb-14">
         <Reveal
           as="span"
           className="mb-3 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300"
@@ -49,14 +49,14 @@ export default function ProjectsHero() {
         <Reveal
           as="h1"
           delay={1}
-          className="m-0 max-w-[20ch] text-[clamp(30px,8vw,52px)] uppercase leading-[1.03] text-bg"
+          className="m-0 max-w-[20ch] text-[clamp(30px,8vw,52px)] uppercase leading-[1.03] text-on-dark"
         >
           Structures We&rsquo;ve Verified
         </Reveal>
         <Reveal
           as="p"
           delay={2}
-          className="mb-0 mt-4 max-w-[54ch] text-[15.5px] leading-[1.6] text-bg/85 md:text-[16.5px]"
+          className="mb-0 mt-4 max-w-[54ch] text-[15.5px] leading-[1.6] text-on-dark/85 md:text-[16.5px]"
         >
           A record of the testing, assessment and verification work behind buildings across
           the region — one engineer accountable on each.
@@ -65,17 +65,17 @@ export default function ProjectsHero() {
         <Reveal
           as="dl"
           delay={3}
-          className="m-0 mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-bg/20 pt-5"
+          className="m-0 mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-on-dark/20 pt-5"
         >
           {/* column-reverse puts the figure above its label visually while
               keeping dt-before-dd in the DOM, so the pair is announced once
               and in the right order. */}
           {strip.map((s) => (
             <div key={s.label} className="flex flex-col-reverse">
-              <dt className="mt-1.5 text-[11.5px] uppercase tracking-[0.08em] text-bg/65">
+              <dt className="mt-1.5 text-[11.5px] uppercase tracking-[0.08em] text-on-dark/65">
                 {s.label}
               </dt>
-              <dd className="m-0 font-heading text-[clamp(22px,4vw,30px)] font-semibold leading-none text-bg tabular-nums">
+              <dd className="m-0 font-heading text-[clamp(22px,4vw,30px)] font-semibold leading-none text-on-dark tabular-nums">
                 {s.value}
               </dd>
             </div>

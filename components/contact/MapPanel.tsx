@@ -26,7 +26,7 @@ export default function MapPanel() {
         <button
           type="button"
           onClick={() => setLoaded(true)}
-          className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-accent-900 text-bg transition-colors hover:bg-accent-800"
+          className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-accent-900 text-on-dark transition-colors hover:bg-accent-800"
         >
           <MapPin size={30} strokeWidth={1.5} />
           <span className="font-heading text-[16px] uppercase tracking-[0.04em]">
@@ -39,7 +39,7 @@ export default function MapPanel() {
         href={site.mapLink}
         target="_blank"
         rel="noreferrer noopener"
-        className="absolute bottom-2 right-2 z-10 inline-flex items-center gap-1.5 bg-bg px-2.5 py-1.5 text-[12px] text-ink no-underline hover:text-accent-700"
+        className="absolute bottom-2 right-2 z-10 inline-flex items-center gap-1.5 bg-bg px-2.5 py-1.5 text-[12px] text-ink no-underline hover:text-link"
       >
         Directions
         <ExternalLink size={13} strokeWidth={1.5} />

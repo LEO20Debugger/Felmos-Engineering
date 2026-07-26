@@ -51,7 +51,7 @@ export default function Projects() {
                   <ArrowRight
                     size={17}
                     strokeWidth={1.5}
-                    className="flex-none text-accent-700 transition-transform duration-300 group-hover:translate-x-1"
+                    className="flex-none text-link transition-transform duration-300 group-hover:translate-x-1"
                   />
                 </span>
                 <span className="mt-1.5 block text-[13px] opacity-65">

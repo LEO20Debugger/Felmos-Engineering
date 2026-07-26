@@ -38,12 +38,12 @@ export default function Hero() {
         className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-accent-900/95 to-transparent"
       />
 
-      <div className="wrap relative w-full pb-14 pt-28 text-bg md:pb-20 lg:pb-24">
+      <div className="wrap relative w-full pb-14 pt-28 text-on-dark md:pb-20 lg:pb-24">
         <Reveal as="span" className="mb-4 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300">
           Structural Testing &amp; Engineering
         </Reveal>
 
-        <h1 className="m-0 max-w-[16ch] text-[clamp(36px,10vw,76px)] uppercase leading-[1.02] tracking-[0.005em] text-bg lg:max-w-[18ch]">
+        <h1 className="m-0 max-w-[16ch] text-[clamp(36px,10vw,76px)] uppercase leading-[1.02] tracking-[0.005em] text-on-dark lg:max-w-[18ch]">
           {HEADLINE.map((word, i) => (
             <span key={word + i}>
               <Reveal as="span" delay={i} className="inline-block">
@@ -56,7 +56,7 @@ export default function Hero() {
         <Reveal
           as="p"
           delay={5}
-          className="mb-9 mt-5 max-w-[48ch] text-[16px] leading-[1.6] text-bg/85 md:text-[18px]"
+          className="mb-9 mt-5 max-w-[48ch] text-[16px] leading-[1.6] text-on-dark/85 md:text-[18px]"
         >
           Certified engineers test the soil, the concrete and the structure — and give
           you a report you can build, lend or buy on.
@@ -77,7 +77,7 @@ export default function Hero() {
       {/* Quiet cue that there is more below the fold. */}
       <span
         aria-hidden
-        className="scroll-cue absolute bottom-5 left-1/2 hidden h-10 w-px -translate-x-1/2 bg-bg/40 lg:block"
+        className="scroll-cue absolute bottom-5 left-1/2 hidden h-10 w-px -translate-x-1/2 bg-on-dark/40 lg:block"
       />
     </section>
   );
