@@ -10,7 +10,17 @@ import { images } from "@/lib/images";
  */
 export default function ContactHero() {
   return (
-    <section className="relative isolate flex min-h-[320px] items-end overflow-hidden h-[46svh] lg:h-[42vh] lg:max-h-[440px]">
+    <section
+      className="banner"
+      style={
+        {
+          "--banner-min": "36svh",
+          "--banner-h": "42vh",
+          "--banner-max": "440px",
+          "--banner-min-lg": "320px",
+        } as React.CSSProperties
+      }
+    >
       <Image
         src={images["contact-hero"]}
         alt="An engineer and a client shaking hands on a construction site"
@@ -25,7 +35,7 @@ export default function ContactHero() {
         className="absolute inset-x-0 bottom-0 -z-10 h-full bg-gradient-to-t from-accent-900/95 via-accent-900/55 to-accent-900/10"
       />
 
-      <div className="wrap relative w-full pb-9 pt-24 text-on-dark md:pb-12">
+      <div className="banner-body wrap text-on-dark">
         <Reveal as="span" className="mb-3 block text-[12px] font-semibold uppercase tracking-[0.16em] text-accent-300">
           Get Started
         </Reveal>
