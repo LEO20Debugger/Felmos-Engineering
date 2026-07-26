@@ -13,6 +13,8 @@ import Photo from "@/components/ui/Photo";
  */
 export default function ProcessTimeline() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const [drawn, setDrawn] = useState(false);
   const [active, setActive] = useState(0);
   const [engaged, setEngaged] = useState(false);
@@ -61,7 +63,19 @@ export default function ProcessTimeline() {
 
   const go = (delta: number) => {
     setEngaged(true);
-    setActive((c) => Math.min(processSteps.length - 1, Math.max(0, c + delta)));
+    const target = Math.min(processSteps.length - 1, Math.max(0, active + delta));
+    setActive(target);
+
+    /* Stepping onto the last stage disables the button that got you there, and
+       a disabled element cannot hold focus — the browser drops it to <body>, so
+       a keyboard user loses their place mid-sequence. Hand focus to the button
+       that is still live. Guarded on the press having come from the keyboard or
+       the button itself, so a mouse user never gets an unexpected focus ring. */
+    const landingOnEnd = target === 0 || target === processSteps.length - 1;
+    if (!landingOnEnd) return;
+    const leaving = delta > 0 ? nextRef.current : prevRef.current;
+    if (document.activeElement !== leaving) return;
+    (delta > 0 ? prevRef.current : nextRef.current)?.focus();
   };
 
   return (
@@ -71,44 +85,6 @@ export default function ProcessTimeline() {
       onMouseEnter={() => setEngaged(true)}
       onFocusCapture={() => setEngaged(true)}
     >
-      {/* ── back / forward ──
-          Deliberately OUTSIDE the tablist below: a role="tablist" may only
-          contain role="tab" children, so putting these inside it would make the
-          six stages unreadable to a screen reader. They drive the same state the
-          tabs and the ArrowLeft/ArrowRight handler do.
-
-          No bottom spacing of its own — the rail's pt-10 already separates them,
-          and the rail's hairline is absolutely positioned against that padding
-          (top-[52px] lines up with the 26px nodes), so it must not change. */}
-      <div className="flex items-center justify-end gap-2">
-        <span
-          aria-hidden
-          className="mr-1 font-mono text-[12px] tabular-nums tracking-[0.14em] text-ink/55"
-        >
-          {step.num} / {processSteps[processSteps.length - 1].num}
-        </span>
-        <button
-          type="button"
-          onClick={() => go(-1)}
-          disabled={atStart}
-          aria-controls="process-panel"
-          aria-label="Previous stage"
-          className="btn btn-secondary btn-icon"
-        >
-          <ChevronLeft size={18} strokeWidth={1.5} />
-        </button>
-        <button
-          type="button"
-          onClick={() => go(1)}
-          disabled={atEnd}
-          aria-controls="process-panel"
-          aria-label="Next stage"
-          className="btn btn-secondary btn-icon"
-        >
-          <ChevronRight size={18} strokeWidth={1.5} />
-        </button>
-      </div>
-
       {/* ── the rail ── */}
       <div
         className="relative pb-2 pt-10"
@@ -190,19 +166,55 @@ export default function ProcessTimeline() {
           <Photo src={step.image} alt={step.title} ratio="3/2" sizes="52vw" />
         </figure>
 
-        <div key={`txt-${active}`} className="animate-[fx-rise_0.55s_var(--ease-out-quint)_both]">
-          <div className="mb-4 flex items-center gap-3">
-            <Icon size={30} strokeWidth={1.5} className="text-link" />
-            <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-link">
-              Stage {step.num} · {step.meta}
-            </span>
+        <div>
+          {/* Keyed so each stage re-runs the entrance animation. Everything
+              inside is therefore REMOUNTED on every change — which is why the
+              controls below sit outside it. Inside, the button would be
+              destroyed by its own click and focus would fall back to <body>,
+              breaking a second press and every keyboard user. */}
+          <div key={`txt-${active}`} className="animate-[fx-rise_0.55s_var(--ease-out-quint)_both]">
+            <div className="mb-4 flex items-center gap-3">
+              <Icon size={30} strokeWidth={1.5} className="text-link" />
+              <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-link">
+                Stage {step.num} · {step.meta}
+              </span>
+            </div>
+            <h3 className="m-0 text-[clamp(26px,2.4vw,34px)] uppercase">{step.title}</h3>
+            <p className="mt-4 max-w-[42ch] text-[16px] leading-[1.6] opacity-80">{step.line}</p>
+            <Link href="/contact" className="btn btn-primary mt-6 no-underline">
+              Start at stage 01
+              <ArrowRight size={18} strokeWidth={1.5} />
+            </Link>
           </div>
-          <h3 className="m-0 text-[clamp(26px,2.4vw,34px)] uppercase">{step.title}</h3>
-          <p className="mt-4 max-w-[42ch] text-[16px] leading-[1.6] opacity-80">{step.line}</p>
-          <Link href="/contact" className="btn btn-primary mt-6 no-underline">
-            Start at stage 01
-            <ArrowRight size={18} strokeWidth={1.5} />
-          </Link>
+
+          {/* Deliberately not role="tab" and outside the tablist above: these
+              move the selection, they aren't part of it. A tablist may only
+              contain tabs, and announcing eight tabs for six stages would be a
+              lie to a screen reader. */}
+          <div className="mt-8 flex items-center justify-end gap-2">
+            <button
+              ref={prevRef}
+              type="button"
+              onClick={() => go(-1)}
+              disabled={atStart}
+              aria-controls="process-panel"
+              aria-label="Previous stage"
+              className="btn btn-secondary btn-icon"
+            >
+              <ChevronLeft size={18} strokeWidth={1.5} />
+            </button>
+            <button
+              ref={nextRef}
+              type="button"
+              onClick={() => go(1)}
+              disabled={atEnd}
+              aria-controls="process-panel"
+              aria-label="Next stage"
+              className="btn btn-secondary btn-icon"
+            >
+              <ChevronRight size={18} strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
