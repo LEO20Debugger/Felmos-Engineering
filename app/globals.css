@@ -616,8 +616,84 @@
     animation-duration: 0.9s;
   }
 
+  /* A revealed parent can hand its children their own offsets: one observer,
+     N staggered items, no extra JS. `--i` is the parent's own index (so lists
+     in different sections still cascade), `--j` the child's position.
+
+     The parent MUST be variant="fade". On the default fx-rise both parent and
+     child translate and the children travel 28px instead of 14. */
+  [data-reveal][data-visible="true"] > .stagger {
+    animation: fx-rise 0.6s var(--ease-out-quint) both;
+    animation-delay: calc(var(--i, 0) * 90ms + var(--j, 0) * 70ms + 60ms);
+  }
+
   .spin {
     animation: fx-spin 0.8s linear infinite;
+  }
+
+  /* ---------------- sticky service index (/services) -------------------
+     Sticky is proven in this codebase under body{overflow-x:hidden} — the
+     Header and .pin-col both rely on it. The overflow-x:auto lives on the
+     inner <ul>; only an ANCESTOR's overflow cancels stickiness, so do not
+     move that overflow up onto .svc-nav. */
+  .svc-nav {
+    position: sticky;
+    top: var(--header-h);
+    /* Under the Header (z-50) and the floating MobileCta (fixed, z-40). */
+    z-index: 30;
+    border-bottom: 1px solid var(--color-divider);
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  /* An anchor jump has to clear the header AND this bar. scroll-padding
+     applies to the scroll container (html), never to a wrapper, so it is
+     driven from :has() — no JS, and it simply doesn't apply on the pages that
+     don't render the bar. If :has() ever fails the target lands under the bar:
+     degraded, not broken. */
+  html:has(.svc-nav) {
+    /* Declared HERE, not on .svc-nav. Custom properties inherit downwards, so a
+       value set on the bar is invisible to <html> — the calc() below would be
+       invalid at computed-value time, and because this rule outranks the base
+       `html` rule it would take that one down with it, leaving scroll-padding
+       at `auto` and every anchor landing under the header. */
+    --svc-nav-h: 61px;
+    scroll-padding-top: calc(var(--header-h) + var(--svc-nav-h) + 16px);
+  }
+
+  /* ------------------- service blocks (/services) ----------------------
+     Areas rather than `order`, so the heading can sit above the photograph on
+     a phone while staying in the text column at lg. `display: contents` would
+     be the other way to do this and is avoided — it has a history of dropping
+     elements from the accessibility tree. */
+  .svc-block {
+    display: grid;
+    grid-template-areas: "head" "media" "body";
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 1024px) {
+    .svc-block {
+      grid-template-areas: "head media" "body media";
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-rows: auto 1fr;
+      align-items: start;
+    }
+    .svc-block.is-flipped {
+      grid-template-areas: "media head" "media body";
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+  }
+  .svc-head {
+    grid-area: head;
+  }
+  .svc-media {
+    grid-area: media;
+    /* The text column is top-aligned; the photograph stays optically centred
+       against the whole block. */
+    align-self: center;
+  }
+  .svc-body {
+    grid-area: body;
   }
 
   /* ------------------- expanding service panels ----------------------

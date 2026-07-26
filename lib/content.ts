@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 
 import type { ImageKey } from "./images";
+import { site } from "./site";
 
 /* ────────────────────────────── trust strip ────────────────────────────── */
 
@@ -41,11 +42,18 @@ export const trustPoints = [
 
 /* ─────────────────────────────── the numbers ────────────────────────────── */
 
+/* `key` is the stable handle. Banners look these up to avoid retyping the
+   figures, and doing that by display label meant renaming a label silently
+   dropped a cell with nothing reporting it. Never key off `label`. */
 export const stats = [
-  { value: 12, suffix: "+", label: "Years in practice" },
-  { value: 640, suffix: "+", label: "Projects tested" },
-  { value: 98, suffix: "%", label: "Reports on schedule" },
-  { value: 5, suffix: "", label: "Testing disciplines" },
+  /* Resolved 2026-07: was "12+", which implied a ~2014 founding and
+     contradicted site.founded = 2016. The founding year is published as
+     JSON-LD foundingDate and is the harder fact, so the marketing figure moved.
+     The invariant at the foot of this file stops the two drifting again. */
+  { key: "years", value: 10, suffix: "+", label: "Years in practice" },
+  { key: "projects", value: 640, suffix: "+", label: "Projects tested" },
+  { key: "onTime", value: 98, suffix: "%", label: "Reports on schedule" },
+  { key: "disciplines", value: 5, suffix: "", label: "Testing disciplines" },
 ] as const;
 
 /* ──────────────────────────────── services ─────────────────────────────── */
@@ -485,10 +493,10 @@ if (process.env.NODE_ENV !== "production") {
    used by Modern Equipment, which carries no figure.
 
    Constraint on any replacement figure: it must not repeat or near-repeat a
-   `stats` value above (12+ yrs, 640+ projects, 98% on schedule, 5 disciplines).
-   That rule is why Modern Equipment has no number — "calibrated within 12
-   months" collides with "12+ years", and "98% on the committed date" merely
-   restates "98% reports on schedule". */
+   `stats` value above (10+ yrs, 640+ projects, 98% on schedule, 5 disciplines).
+   That rule is why Modern Equipment has no number — a "calibrated within N
+   months" figure collides with the years figure, and "98% on the committed
+   date" merely restates "98% reports on schedule". */
 
 export type Differentiator = {
   /** Stable id — drives the bento cell span map in WhyUs.tsx. */
@@ -577,12 +585,111 @@ export const missionVision = [
   },
 ] as const;
 
+/* ⚠️  DO NOT SHIP WITHOUT SIGN-OFF ⚠️
+   Two separate problems in this array:
+
+   1. The four portraits are STOCK PEOPLE, not Felmos staff (see lib/images.ts),
+      and the names are invented. The About page now renders them larger, with
+      bios, which makes the fiction more prominent, not less.
+   2. Every `tag` is an unverified professional credential — "P.Eng",
+      "ACI Certified", "M.Sc Geotech", "Chartered Engineer". These predate this
+      work but are now set as standalone chips. Claiming a professional
+      registration nobody holds is a regulatory problem, not a marketing one.
+
+   Replace the photographs and confirm every credential before launch, or cut
+   the names and run this section as roles only. The `bio` lines are new and
+   deliberately qualitative — no dates, employers or client names. */
 export const team = [
-  { name: "K. Adeyemi", role: "Principal Structural Engineer", tag: "P.Eng · 18 yrs", image: "team-1" },
-  { name: "S. Nwosu", role: "Lead Geotechnical Engineer", tag: "M.Sc Geotech", image: "team-2" },
-  { name: "R. Alvarez", role: "NDT Testing Specialist", tag: "ACI Certified", image: "team-3" },
-  { name: "T. Bello", role: "Quality Assurance Lead", tag: "Chartered Engineer", image: "team-4" },
-] as const satisfies ReadonlyArray<{ name: string; role: string; tag: string; image: ImageKey }>;
+  {
+    name: "K. Adeyemi",
+    role: "Principal Structural Engineer",
+    tag: "P.Eng · 18 yrs",
+    bio: "Signs off every verification report the practice issues.",
+    image: "team-1",
+  },
+  {
+    name: "S. Nwosu",
+    role: "Lead Geotechnical Engineer",
+    tag: "M.Sc Geotech",
+    bio: "Runs the ground investigation programme, borehole to bearing capacity.",
+    image: "team-2",
+  },
+  {
+    name: "R. Alvarez",
+    role: "NDT Testing Specialist",
+    tag: "ACI Certified",
+    bio: "Rebound hammer, ultrasonic pulse velocity and coring on occupied structures.",
+    image: "team-3",
+  },
+  {
+    name: "T. Bello",
+    role: "Quality Assurance Lead",
+    tag: "Chartered Engineer",
+    bio: "Checks every reading against method before it reaches a client.",
+    image: "team-4",
+  },
+] as const satisfies ReadonlyArray<{
+  name: string;
+  role: string;
+  tag: string;
+  bio: string;
+  image: ImageKey;
+}>;
+
+/* ───────────────────────────── company history ─────────────────────────── */
+
+/* ⚠️  DO NOT SHIP WITHOUT SIGN-OFF ⚠️
+   Milestone 01's year is derived from site.founded and is therefore as good as
+   that value. Everything else below — the three later years and all four
+   description lines — is INVENTED to shape the section.
+
+   If sign-off doesn't arrive: delete entries 02–04. The section renders
+   whatever is in the array, so a single founding entry degrades honestly. */
+export const milestones = [
+  {
+    year: String(site.founded),
+    title: "Practice founded",
+    line: "Started with soil investigation for residential developers.",
+  },
+  { year: "2019", title: "Materials lab in house", line: "Sample testing stopped being outsourced." }, // INVENTED
+  { year: "2022", title: "First lender framework", line: "Verification reports accepted without rework." }, // INVENTED
+  { year: "2025", title: "Fifth discipline added", line: "Foundation assessment joined the practice." }, // INVENTED
+] as const;
+
+/* ─────────────────────── accreditations & standards ────────────────────── */
+
+/* ⚠️  DO NOT SHIP WITHOUT SIGN-OFF ⚠️
+   This array is INTENTIONALLY EMPTY. The entries below are commented-out
+   placeholders that were used to build and prove the layout.
+
+   Claiming a certification the practice does not hold is a materially
+   different risk from an optimistic turnaround figure — it is the kind of
+   claim that draws regulatory and legal attention, and certification bodies
+   pursue misuse of their marks.
+
+   `components/about/Standards.tsx` renders NOTHING while this is empty, so
+   shipping as-is is safe and is the correct action if sign-off never arrives.
+   Uncomment only what Felmos can produce a current certificate for. */
+export const standards: readonly { name: string; body: string }[] = [
+  // { name: "ISO 9001:2015", body: "Quality management" },          // INVENTED — verify certificate number and expiry
+  // { name: "ASTM C805 / C597", body: "Rebound hammer & UPV" },     // INVENTED — confirm methods actually accredited
+  // { name: "COREN", body: "Council for the Regulation of Engineering in Nigeria" }, // INVENTED — confirm registration
+];
+
+/* `site.founded` is published as JSON-LD `foundingDate` in app/layout.tsx, and
+   the years figure is rendered on the homepage and both banners. They are two
+   statements of the same fact and drifted apart once already (12+ vs 2016).
+   Dev only, same idiom as the audience/clients guard above. */
+if (process.env.NODE_ENV !== "production") {
+  const years = stats.find((s) => s.key === "years");
+  const actual = new Date().getFullYear() - site.founded;
+  if (years && Math.abs(actual - years.value) > 1) {
+    console.warn(
+      `[content] founding-year conflict: site.founded=${site.founded} implies ~${actual} years, ` +
+        `but stats "${years.key}" says ${years.value}${years.suffix}. One of them is wrong.`
+    );
+  }
+}
 
 export const trustReasons = [
   { icon: Compass, title: "Independent Findings", line: "Our reports serve the structure, not a party." },
