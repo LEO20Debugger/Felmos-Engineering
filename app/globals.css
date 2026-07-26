@@ -1,0 +1,656 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   INDUSTRY - design-system tokens, ported from
+   _ds/industry-2c71f014-9b1a-4fb6-a333-2928fed4ae85/styles.css
+
+   Declared inside @theme so each token is BOTH a CSS variable
+   (var(--color-accent)) and a Tailwind utility (bg-accent, text-accent-700,
+   font-heading, shadow-lg). Single declaration site - never hard-code a hex,
+   font or radius the tokens already carry.
+
+   Everything below @theme lives in @layer base / @layer components, so plain
+   Tailwind utilities still win in a conflict (e.g. `lg:hidden` beating the
+   `display` that .btn sets).
+   ========================================================================== */
+@theme {
+  --color-bg: #f2f2f3;
+  --color-surface: #e9e9ea;
+  --color-ink: #1d1f20;
+  --color-divider: color-mix(in srgb, #1d1f20 16%, transparent);
+
+  --color-neutral-100: #f5f5f8;
+  --color-neutral-200: #e7e7ea;
+  --color-neutral-300: #d4d4d7;
+  --color-neutral-400: #b7b7ba;
+  --color-neutral-500: #98989b;
+  --color-neutral-600: #7a7a7d;
+  --color-neutral-700: #5d5d60;
+  --color-neutral-800: #424244;
+  --color-neutral-900: #2b2b2d;
+
+  --color-accent: #5980a6;
+  --color-accent-100: #eef6ff;
+  --color-accent-200: #d6ebff;
+  --color-accent-300: #b5d9fd;
+  --color-accent-400: #94bce3;
+  --color-accent-500: #749dc4;
+  --color-accent-600: #597ea3;
+  --color-accent-700: #416180;
+  --color-accent-800: #2c455d;
+  --color-accent-900: #1d2d3d;
+
+  --font-heading: var(--font-barlow-condensed), "Barlow Condensed", system-ui, sans-serif;
+  --font-body: var(--font-barlow), "Barlow", system-ui, sans-serif;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 7px;
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2b2b2d 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2b2b2d 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2b2b2d 22%, transparent);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+:root {
+  /* DS density scale (0.85x) - used by the ported component layer below. */
+  --space-1: 3.4px;
+  --space-2: 6.8px;
+  --space-3: 10.2px;
+  --space-4: 13.6px;
+  --space-6: 20.4px;
+  --space-8: 27.2px;
+
+  /* Aliased so the ported DS rules read exactly as authored. */
+  --color-text: var(--color-ink);
+
+  --header-h: 60px;
+  --gutter: clamp(20px, 5vw, 72px);
+  --wrap: 1240px;
+
+  /* Industry draws every control square. Rounded by request - one value so
+     buttons, fields and selects stay consistent with each other. */
+  --radius-control: 10px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 72px;
+  }
+}
+
+/* ============================== base ================================== */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Anchor jumps clear the sticky header. */
+    scroll-padding-top: calc(var(--header-h) + 16px);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    font-weight: 400;
+    text-wrap: pretty;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--space-2);
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0 0 var(--space-3);
+  }
+
+  a {
+    color: var(--color-accent-700);
+    text-decoration: none;
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: var(--color-accent-800);
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+}
+
+/* =========================== components =============================== */
+@layer components {
+  /* Cards and figures are unframed: no hairline, no corner registration marks.
+     (The Industry system draws both; they were removed by request.) Depth comes
+     from the photography and a soft lift on hover instead. */
+  .mark-lift {
+    transition: transform 0.45s var(--ease-out-quint), box-shadow 0.45s var(--ease-out-quint);
+  }
+  @media (hover: hover) {
+    .mark-lift:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+  }
+
+  /* ---------------------------- photography ---------------------------- */
+  /* Photographs render in full colour. (The Industry system washes them in the
+     steel accent; that treatment was removed by request, so the class no longer
+     claims to duotone anything.) */
+  .photo-frame {
+    position: relative;
+    overflow: hidden;
+    /* Neutral ground while the image loads - the frame is already the right
+       shape, so nothing shifts when the photo arrives. */
+    background: var(--color-surface);
+    border-radius: var(--radius-control);
+  }
+  .photo-frame > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (hover: hover) {
+    .photo-frame > img {
+      transition: transform 0.9s var(--ease-out-quint);
+    }
+    .photo-frame.photo-zoom:hover > img {
+      transform: scale(1.045);
+    }
+  }
+
+  /* ----------------------------- buttons ------------------------------ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: var(--color-text);
+    background: transparent;
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-control);
+    /* 44px minimum target - mobile first. */
+    min-height: 44px;
+    padding: 10px 22px;
+    /* Clips the sheen sweep below to the rounded shape. */
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition: background 0.22s var(--ease-out-quint), color 0.22s var(--ease-out-quint),
+      border-color 0.22s var(--ease-out-quint), transform 0.18s var(--ease-out-quint),
+      box-shadow 0.28s var(--ease-out-quint);
+  }
+  /* A slow specular sweep across the solid buttons on hover. */
+  .btn-primary::after,
+  .btn-invert::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      105deg,
+      transparent 38%,
+      color-mix(in srgb, #fff 34%, transparent) 50%,
+      transparent 62%
+    );
+    transform: translateX(-130%);
+  }
+  @media (hover: hover) {
+    .btn-primary:hover::after,
+    .btn-invert:hover::after {
+      transform: translateX(130%);
+      transition: transform 0.85s var(--ease-out-quint);
+    }
+    .btn-primary:hover,
+    .btn-invert:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+  .btn:hover {
+    color: var(--color-text);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn svg {
+    display: block;
+    flex: none;
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+  .btn-primary:hover {
+    background: var(--color-accent-600);
+    border-color: var(--color-accent-600);
+    color: var(--color-bg);
+  }
+  .btn-primary:active {
+    background: var(--color-accent-700);
+  }
+  .btn-secondary:hover {
+    background: color-mix(in srgb, var(--color-text) 7%, transparent);
+  }
+  .btn-secondary:active {
+    background: color-mix(in srgb, var(--color-text) 14%, transparent);
+  }
+  .btn-invert {
+    background: var(--color-bg);
+    border-color: var(--color-bg);
+    color: var(--color-accent-900);
+  }
+  .btn-invert:hover {
+    background: var(--color-accent-100);
+    border-color: var(--color-accent-100);
+    color: var(--color-accent-900);
+  }
+  /* Outline button for use on the dark hero banner, where .btn-secondary's
+     ink-on-paper colouring would be invisible. */
+  .btn-light {
+    color: var(--color-bg);
+    background: color-mix(in srgb, #f2f2f3 10%, transparent);
+    border-color: color-mix(in srgb, #f2f2f3 45%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  .btn-light:hover {
+    color: var(--color-bg);
+    background: color-mix(in srgb, #f2f2f3 20%, transparent);
+    border-color: var(--color-bg);
+  }
+
+  .btn-icon {
+    width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 999px;
+  }
+  .btn-block {
+    width: 100%;
+  }
+
+  /* ------------------------------ tags -------------------------------- */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    padding: 4px 11px;
+    border-radius: 999px;
+  }
+  .tag-accent {
+    background: var(--color-accent-100);
+    color: var(--color-accent-800);
+  }
+  .tag-outline {
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent-700);
+  }
+
+  /* ------------------------------ forms ------------------------------- */
+  .field > label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text) 70%, transparent);
+  }
+  .input {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 12px;
+    font: inherit;
+    /* 16px stops iOS zooming the page on focus. */
+    font-size: 16px;
+    color: var(--color-text);
+    caret-color: var(--color-accent);
+    background: var(--color-surface);
+    border: 1px solid var(--color-divider);
+    /* Matched to the buttons they sit beside in the booking form. */
+    border-radius: var(--radius-control);
+    transition: border-color 0.2s var(--ease-out-quint), background 0.2s var(--ease-out-quint),
+      box-shadow 0.2s var(--ease-out-quint);
+  }
+  .input:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+  .input::placeholder {
+    color: color-mix(in srgb, var(--color-text) 40%, transparent);
+  }
+  .input:hover {
+    border-color: color-mix(in srgb, var(--color-text) 45%, transparent);
+  }
+  .input:focus-visible {
+    border-color: var(--color-accent);
+    outline-offset: 0;
+  }
+  .input[aria-invalid="true"] {
+    border-color: #b4433a;
+  }
+  textarea.input {
+    min-height: 108px;
+    resize: vertical;
+  }
+
+  /* ------------------------------ cards ------------------------------- */
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: 0;
+    background: transparent;
+  }
+  .card-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.2;
+  }
+  .card-body {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    opacity: 0.78;
+  }
+
+  .kicker {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-accent-700);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* -------------------------- layout helpers -------------------------- */
+  .wrap {
+    width: 100%;
+    max-width: var(--wrap);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .rule {
+    height: 1px;
+    border: 0;
+    margin: 0;
+    background: var(--color-divider);
+  }
+
+  /* Keeps the carousel swipeable without a visible scrollbar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* --------------------------- reveal state --------------------------- */
+  /* Only hide un-revealed content where scripting is actually available, so a
+     blocked or failed bundle degrades to plain visible content instead of a
+     blank page. Browsers without `scripting` support simply skip the rule --
+     it fails open, which is the safe direction. */
+  @media (scripting: enabled) {
+    [data-reveal][data-visible="false"] {
+      opacity: 0;
+    }
+  }
+  [data-reveal][data-visible="true"] {
+    animation: fx-rise 0.72s var(--ease-out-quint) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  [data-reveal="fade"][data-visible="true"] {
+    animation-name: fx-fade;
+  }
+  /* Section rules draw themselves out from the left instead of fading in. */
+  [data-reveal="line"] {
+    transform-origin: left center;
+  }
+  [data-reveal="line"][data-visible="true"] {
+    animation-name: fx-draw;
+    animation-duration: 0.9s;
+  }
+
+  .spin {
+    animation: fx-spin 0.8s linear infinite;
+  }
+
+  /* ------------------- expanding service panels ----------------------
+     Desktop only. Written here rather than as utility variants so the
+     hover/focus cascade is explicit and can't be out-ordered by a
+     shorthand like `flex`. */
+  .svc-panel {
+    position: relative;
+    flex: 1 1 0%;
+    overflow: hidden;
+    border-radius: var(--radius-control);
+    transition: flex-grow 0.7s var(--ease-out-quint);
+  }
+  .svc-panel:focus-within {
+    flex-grow: 2.7;
+  }
+  @media (hover: hover) {
+    .svc-panel:hover {
+      flex-grow: 2.7;
+    }
+  }
+
+  /* The name that runs up the spine of a collapsed panel. */
+  .svc-spine {
+    transition: opacity 0.3s var(--ease-out-quint);
+  }
+  .svc-panel:focus-within .svc-spine {
+    opacity: 0;
+  }
+
+  /* The detail that fades up once the panel has room for it. */
+  .svc-detail {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s 0.15s var(--ease-out-quint),
+      transform 0.5s 0.15s var(--ease-out-quint);
+  }
+  .svc-panel:focus-within .svc-detail {
+    opacity: 1;
+    transform: none;
+  }
+
+  .svc-photo {
+    transition: transform 1.2s var(--ease-out-quint);
+  }
+
+  @media (hover: hover) {
+    .svc-panel:hover .svc-spine {
+      opacity: 0;
+    }
+    .svc-panel:hover .svc-detail {
+      opacity: 1;
+      transform: none;
+    }
+    .svc-panel:hover .svc-photo {
+      transform: scale(1.06);
+    }
+  }
+
+  /* Hero banner: the photo settles out of a slight over-scale on load. Scale
+     only, never opacity - the LCP pixels must paint immediately. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media {
+      animation: fx-settle 1.8s var(--ease-out-quint) both;
+    }
+    .scroll-cue {
+      transform-origin: top center;
+      animation: fx-cue 2.4s var(--ease-in-out-quart) infinite;
+    }
+  }
+
+  /* ---------------------- scroll-driven motion ------------------------
+     Pure CSS, no listeners. Browsers without scroll-driven animation just
+     skip these blocks and get the static result. */
+  .scroll-progress {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -1px;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    background: var(--color-accent);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .scroll-progress {
+        animation: fx-draw linear both;
+        animation-timeline: scroll(root block);
+      }
+
+      /* Photographs wipe up into frame as they enter the viewport. The wipe is
+         on the frame, so the hover zoom on the image is left untouched. */
+      .photo-frame {
+        animation: fx-wipe linear both;
+        animation-timeline: view();
+        animation-range: entry 5% entry 65%;
+      }
+    }
+  }
+}
+
+/* ============================== motion ================================ */
+@keyframes fx-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fx-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fx-settle {
+  from {
+    transform: scale(1.07);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes fx-cue {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 0.8;
+  }
+}
+@keyframes fx-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes fx-wipe {
+  /* `round` is required here: a plain inset() clips to square corners and would
+     cancel the frame's border-radius for the whole animation. */
+  from {
+    clip-path: inset(18% 0 0 0 round var(--radius-control));
+    opacity: 0.55;
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--radius-control));
+    opacity: 1;
+  }
+}
+
+/* ========================== reduced motion ============================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal][data-visible="false"] {
+    opacity: 1 !important;
+  }
+}
