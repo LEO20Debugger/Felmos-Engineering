@@ -135,10 +135,6 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Reading-progress hairline. Driven entirely by CSS scroll-timeline —
-          no scroll listener, no re-renders. */}
-      <div className="scroll-progress" aria-hidden />
-
       {/* Mobile drawer */}
       <div
         id="mobile-menu"

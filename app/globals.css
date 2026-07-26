@@ -542,25 +542,8 @@
     }
   }
 
-  /* ---------------------- scroll-driven motion ------------------------
-     Pure CSS, no listeners. Browsers without scroll-driven animation just
-     skip these blocks and get the static result. */
-  .scroll-progress {
-    position: absolute;
-    inset-inline: 0;
-    bottom: -1px;
-    height: 2px;
-    transform: scaleX(0);
-    transform-origin: 0 50%;
-    background: var(--color-accent);
-  }
-
   @supports (animation-timeline: scroll()) {
     @media (prefers-reduced-motion: no-preference) {
-      .scroll-progress {
-        animation: fx-draw linear both;
-        animation-timeline: scroll(root block);
-      }
 
       /* Photographs wipe up into frame as they enter the viewport. The wipe is
          on the frame, so the hover zoom on the image is left untouched. */
