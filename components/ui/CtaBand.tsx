@@ -41,6 +41,9 @@ export default function CtaBand({
           {lead}
         </Reveal>
         <Reveal delay={2}>
+          {/* .btn-invert, not .btn-primary — see globals.css. Same green, same
+              meaning, repitched for a dark ground; .btn-primary's fill is 2.6:1
+              against this band and loses its own edge. */}
           <Link href={href} className="btn btn-invert w-full sm:w-auto">
             {cta}
             <ArrowRight size={18} strokeWidth={1.5} />

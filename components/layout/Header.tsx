@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Menu, Phone, X } from "lucide-react";
 import ThemeToggle from "@/components/layout/ThemeToggle";
+import Logo from "@/components/brand/Logo";
 import { navLinks, site } from "@/lib/site";
 
 export default function Header() {
@@ -97,12 +98,8 @@ export default function Header() {
         className="wrap flex items-center justify-between border-b border-divider"
         style={{ height: "var(--header-h)" }}
       >
-        <Link
-          href="/"
-          onClick={close}
-          className="font-heading text-[18px] font-semibold uppercase tracking-[0.01em] text-ink no-underline md:text-[19px]"
-        >
-          Felmos <span className="text-link">Engineering</span>
+        <Link href="/" onClick={close} aria-label="Felmos Engineering — home" className="text-ink no-underline">
+          <Logo size={30} />
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -161,15 +158,23 @@ export default function Header() {
         }`}
       >
         <div className="wrap flex items-center gap-6" style={{ height: "var(--header-h)" }}>
+          {/* The mark alone would be the tidier bar, but Felmos is not a
+              recognised glyph yet — the wordmark stays until it is. */}
           <Link
             href="/"
-            className="font-heading text-[18px] font-semibold uppercase tracking-[0.01em] text-ink no-underline md:text-[19px]"
+            aria-label="Felmos Engineering — home"
+            className="text-ink no-underline transition-opacity hover:opacity-85"
           >
-            Felmos <span className="text-link">Engineering</span>
+            <Logo size={30} />
           </Link>
 
           {/* Desktop navigation */}
-          <nav className="mr-auto hidden lg:flex lg:gap-7" aria-label="Primary">
+          {/* gap-5 at lg, gap-7 from xl. Six nav items, the phone and the CTA
+              leave ~24px of slack at exactly 1024px on gap-7 — enough today,
+              but site.phone is a placeholder and a real longer number would
+              take the bar over. The tighter gap at the tightest breakpoint is
+              the cheap insurance. */}
+          <nav className="mr-auto hidden lg:flex lg:gap-5 xl:gap-7" aria-label="Primary">
             {navLinks.map((l) => (
               <Link
                 key={l.href}

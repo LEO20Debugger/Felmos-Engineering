@@ -62,8 +62,8 @@ export const viewport: Viewport = {
      these tags. Both are declared so the first paint is already right for a
      visitor who has never touched the toggle. */
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f2f3" },
-    { media: "(prefers-color-scheme: dark)", color: "#17191a" },
+    { media: "(prefers-color-scheme: light)", color: "#f1f3f4" },
+    { media: "(prefers-color-scheme: dark)", color: "#14181b" },
   ],
   colorScheme: "light dark",
 };

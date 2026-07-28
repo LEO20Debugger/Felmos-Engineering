@@ -48,7 +48,9 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
        phone's browser chrome would stay light behind a dark page. */
     document
       .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
-      .forEach((m) => m.setAttribute("content", theme === "dark" ? "#17191a" : "#f2f2f3"));
+      /* These two are --color-bg from globals.css, in both themes. Literals
+         because a meta tag cannot resolve a var(); change them together. */
+      .forEach((m) => m.setAttribute("content", theme === "dark" ? "#14181b" : "#f1f3f4"));
   }, [theme]);
 
   const next = theme === "dark" ? "light" : "dark";
