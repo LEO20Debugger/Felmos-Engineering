@@ -132,7 +132,9 @@ export default function ServicesNav({ items }: { items: NavItem[] }) {
                   data-slug={s.slug}
                   aria-current={on ? "true" : undefined}
                   className={`btn whitespace-nowrap text-[13.5px] no-underline ${
-                    on ? "btn-primary" : "btn-secondary text-ink"
+                    // Accent, not .btn-primary: this pill is a "you are here",
+                    // and green is reserved for "do this".
+                    on ? "btn-accent" : "btn-secondary text-ink"
                   }`}
                 >
                   <span className={`font-mono text-[11px] ${on ? "text-on-dark/70" : "text-link"}`}>

@@ -1,0 +1,187 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import Photo from "@/components/ui/Photo";
+import Reveal from "@/components/ui/Reveal";
+import CtaBand from "@/components/ui/CtaBand";
+import PostBody from "@/components/blog/PostBody";
+import PostCard from "@/components/blog/PostCard";
+import { formatDate, postBySlug, posts, readMinutes, relatedPosts } from "@/lib/blog";
+import { team } from "@/lib/content";
+import { images } from "@/lib/images";
+import { site } from "@/lib/site";
+
+/* Every post is known at build time, so all of them prerender as static HTML.
+   Combined with the default dynamicParams behaviour, a slug that is not in the
+   list 404s rather than being rendered on demand. */
+export function generateStaticParams() {
+  return posts.map((p) => ({ slug: p.slug }));
+}
+
+/* Next 15: params is a Promise in both of these and in the page itself. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = postBySlug(slug);
+  if (!post) return { title: "Not found" };
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      url: `${site.url}/blog/${post.slug}`,
+      publishedTime: post.date,
+      authors: [post.author],
+      images: [images[post.image]],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [images[post.image]],
+    },
+  };
+}
+
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = postBySlug(slug);
+  if (!post) notFound();
+
+  /* Bylines are matched by name against `team`; lib/blog.ts warns in dev if one
+     does not resolve. Rendering degrades to the name alone rather than throwing,
+     because a missing role is not worth a 500. */
+  const author = team.find((m) => m.name === post.author);
+  const related = relatedPosts(post);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    image: images[post.image],
+    author: { "@type": "Person", name: post.author },
+    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${site.url}/blog/${post.slug}` },
+    articleSection: post.category,
+  };
+
+  return (
+    <>
+      <article>
+        <header className="wrap pb-8 pt-10 md:pb-10 md:pt-14">
+          <Reveal>
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-1.5 text-[13px] uppercase tracking-[0.08em] text-link no-underline"
+            >
+              <ArrowLeft size={15} strokeWidth={1.75} />
+              All insights
+            </Link>
+          </Reveal>
+
+          <Reveal as="span" delay={1} className="kicker mb-2.5 mt-5 block">
+            {post.category}
+          </Reveal>
+
+          <Reveal
+            as="h1"
+            delay={2}
+            /* Narrower measure than the page allows: a headline set to the full
+               1240px wrap runs past the point where the eye can find the next
+               line without effort. */
+            className="m-0 max-w-[20ch] text-[clamp(30px,7vw,50px)] uppercase leading-[1.05]"
+          >
+            {post.title}
+          </Reveal>
+
+          <Reveal
+            as="p"
+            delay={3}
+            className="mb-0 mt-4 max-w-[56ch] text-[16px] leading-[1.62] opacity-80 md:text-[17.5px]"
+          >
+            {post.excerpt}
+          </Reveal>
+
+          <Reveal delay={4} className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px]">
+            <span className="font-heading uppercase tracking-[0.06em]">{post.author}</span>
+            {author && <span className="opacity-65">{author.role}</span>}
+            <span aria-hidden className="opacity-40">
+              ·
+            </span>
+            <time dateTime={post.date} className="opacity-65">
+              {formatDate(post.date)}
+            </time>
+            <span aria-hidden className="opacity-40">
+              ·
+            </span>
+            <span className="opacity-65">{readMinutes(post)} min read</span>
+          </Reveal>
+        </header>
+
+        <div className="wrap">
+          <Reveal>
+            <Photo
+              src={post.image}
+              alt=""
+              ratio="16/9"
+              sizes="(max-width: 1240px) 100vw, 1240px"
+              priority
+              zoom={false}
+              /* The frame is tall and the entry wipe is keyed to the viewport,
+                 so it would finish before the photograph is anywhere near read. */
+              wipe={false}
+            />
+          </Reveal>
+        </div>
+
+        <div className="wrap py-12 md:py-16">
+          <PostBody body={post.body} />
+        </div>
+      </article>
+
+      {related.length > 0 && (
+        /* Plain ground, not the surface band it used to be: PostCard is now a
+           surface-filled panel, and a surface card on a surface band is
+           invisible. The band was only there to separate this from the article
+           above it, and a rule does that job without competing with the cards. */
+        <section className="border-t border-divider" aria-label="More insights">
+          <div className="wrap py-14 md:py-20">
+            <Reveal as="h2" className="m-0 font-heading text-[clamp(22px,4vw,30px)] uppercase">
+              Keep reading
+            </Reveal>
+            <Reveal variant="line" delay={1} className="rule mb-9 mt-6" />
+            <ul className="m-0 grid list-none grid-cols-1 gap-x-6 gap-y-10 p-0 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((p, i) => (
+                <Reveal as="li" key={p.slug} delay={i % 3}>
+                  <PostCard post={p} />
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      <CtaBand
+        title="Need this looked at properly?"
+        lead="Book an inspection and get a certified engineer on site — with a report you can act on."
+        cta="Book Your Inspection"
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+    </>
+  );
+}
