@@ -24,13 +24,31 @@ export default function PostCard({
   feature?: boolean;
   sizes?: string;
 }) {
-  const meta = (
+  /* Two shapes for the same three facts.
+     The feature panel is wide enough to run them on one line. A grid card is
+     not: "Testing Methods · 27 May 2026 · 2 min read" needs ~330px inside a
+     307px column, so it wrapped on some cards and not others, and the titles
+     below started 23px apart across a row. Setting the category on its own
+     line makes the block exactly two lines for EVERY post regardless of how
+     long the category is — aligned by construction rather than by hoping the
+     text stays short. It also reads better: the category is the coloured
+     label, the date and length are the quiet pair. */
+  const meta = feature ? (
     <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12px] uppercase tracking-[0.08em] opacity-65">
       <span className="text-link opacity-100">{post.category}</span>
       <span aria-hidden>·</span>
       <time dateTime={post.date}>{formatDate(post.date)}</time>
       <span aria-hidden>·</span>
       <span>{readMinutes(post)} min read</span>
+    </div>
+  ) : (
+    <div className="text-[12px] uppercase tracking-[0.08em]">
+      <span className="block truncate text-link">{post.category}</span>
+      <span className="mt-1 block opacity-65">
+        <time dateTime={post.date}>{formatDate(post.date)}</time>
+        <span aria-hidden> · </span>
+        {readMinutes(post)} min read
+      </span>
     </div>
   );
 
@@ -49,8 +67,11 @@ export default function PostCard({
      its bottom corners cut into the fill. */
   return (
     <article
+      /* h-full on the grid variant: the <li> wrappers already stretch to the
+         tallest in their row, but the panel inside them did not, so a short
+         post left a gap of page showing under its own card. */
       className={`group relative mark-lift overflow-hidden rounded-[var(--radius-control)] bg-surface ${
-        feature ? "grid lg:grid-cols-2" : "flex flex-col"
+        feature ? "grid lg:grid-cols-2" : "flex h-full flex-col"
       }`}
     >
       <Photo
@@ -65,13 +86,25 @@ export default function PostCard({
         className={
           feature
             ? "flex flex-col justify-center p-6 md:p-8 lg:p-10"
-            : "flex flex-col p-5 md:p-6"
+            : /* grow is what makes the mt-auto below do anything. Without it
+                 this block is content-sized, the panel's spare height collects
+                 underneath it, and "Read" floats mid-card with a ragged gap
+                 beneath — 47px on some cards against 24px on others. */
+              "flex grow flex-col p-5 md:p-6"
         }
       >
         {meta}
+        {/* Clamped to two lines, and reserving two lines whether it needs them
+            or not. The clamp is what stops a long title setting the height of
+            everything beside it; the min-height is what makes the excerpts
+            start on the same line across a row, which is the difference between
+            a grid and three cards that happen to be adjacent.
+            2.2em = 2 lines at leading-[1.1]. */}
         <h3
           className={`m-0 mt-2.5 font-heading uppercase leading-[1.1] ${
-            feature ? "text-[clamp(24px,3.4vw,34px)]" : "text-[19px]"
+            feature
+              ? "text-[clamp(24px,3.4vw,34px)]"
+              : "line-clamp-2 min-h-[2.2em] text-[19px]"
           }`}
         >
           <Link
@@ -81,15 +114,26 @@ export default function PostCard({
             {post.title}
           </Link>
         </h3>
+        {/* Three lines then an ellipsis. The excerpt is a hook, not the
+            article — the post page carries the whole thing. */}
         <p
           className={`m-0 mt-3 leading-[1.6] opacity-75 ${
-            feature ? "max-w-[52ch] text-[15.5px]" : "text-[14px]"
+            feature ? "max-w-[52ch] text-[15.5px]" : "line-clamp-3 text-[14px]"
           }`}
         >
           {post.excerpt}
         </p>
 
-        <span className="mt-4 inline-flex items-center gap-1.5 font-heading text-[13.5px] font-semibold uppercase tracking-[0.06em] text-link">
+        {/* mt-auto, not mt-4: now that the panels stretch to a common height,
+            a fixed margin leaves this floating wherever the copy happened to
+            end and the row's baselines scatter. Pushed to the foot instead, so
+            "Read" lands on the same line in every card. `feature` keeps the
+            fixed margin — it is a single panel with nothing to align to. */}
+        <span
+          className={`inline-flex items-center gap-1.5 self-start font-heading text-[13.5px] font-semibold uppercase tracking-[0.06em] text-link ${
+            feature ? "mt-4" : "mt-auto pt-4"
+          }`}
+        >
           Read
           <ArrowRight
             size={15}
