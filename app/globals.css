@@ -12,22 +12,35 @@
    Everything below @theme lives in @layer base / @layer components, so plain
    Tailwind utilities still win in a conflict (e.g. `lg:hidden` beating the
    `display` that .btn sets).
-   ========================================================================== */
-@theme {
-  --color-bg: #f2f2f3;
-  --color-surface: #e9e9ea;
-  --color-ink: #1d1f20;
-  --color-divider: color-mix(in srgb, #1d1f20 16%, transparent);
 
-  --color-neutral-100: #f5f5f8;
-  --color-neutral-200: #e7e7ea;
-  --color-neutral-300: #d4d4d7;
-  --color-neutral-400: #b7b7ba;
-  --color-neutral-500: #98989b;
-  --color-neutral-600: #7a7a7d;
-  --color-neutral-700: #5d5d60;
-  --color-neutral-800: #424244;
-  --color-neutral-900: #2b2b2d;
+   `static` is load-bearing, not a style choice. A plain @theme emits only the
+   variables Tailwind can see a USE for — a generated utility, or a var() in a
+   file it scans. It cannot see a var() written into an SVG `fill` prop in TSX,
+   and it does not always see one referenced only from another custom property.
+   Without `static`, --color-signal-ink and --color-signal-400/500 came out of
+   the compiler EMPTY in the light theme while working in dark (where the
+   [data-theme] block below re-declares them as ordinary CSS and is never
+   pruned) — a failure that is invisible until someone toggles the theme.
+   The whole ramp is a few hundred bytes; emit it and stop guessing.
+   ========================================================================== */
+@theme static {
+  /* The page neutrals carry a few degrees of the brand navy rather than being
+     dead grey. Too little to read as "blue", enough that the accent bands and
+     photography sit on a ground that belongs to the same family. */
+  --color-bg: #f1f3f4;
+  --color-surface: #e5e9eb;
+  --color-ink: #171e24;
+  --color-divider: color-mix(in srgb, #171e24 16%, transparent);
+
+  --color-neutral-100: #f4f6f7;
+  --color-neutral-200: #e5e9eb;
+  --color-neutral-300: #d2d8dc;
+  --color-neutral-400: #b4bcc2;
+  --color-neutral-500: #949da4;
+  --color-neutral-600: #767f86;
+  --color-neutral-700: #59626a;
+  --color-neutral-800: #3e464d;
+  --color-neutral-900: #262d33;
 
   /* ---------------------------------------------------------------------
      Two kinds of colour token live here, and the difference matters.
@@ -45,24 +58,58 @@
 
   /* Text and rules over photography or an accent band. Literal on purpose:
      the ground underneath is dark in both themes, so this must not flip. */
-  --color-on-dark: #f2f2f3;
+  --color-on-dark: #f2f4f5;
 
-  --color-accent: #5980a6;
-  --color-accent-100: #eef6ff;
-  --color-accent-200: #d6ebff;
-  --color-accent-300: #b5d9fd;
-  --color-accent-400: #94bce3;
-  --color-accent-500: #749dc4;
-  --color-accent-600: #597ea3;
-  --color-accent-700: #416180;
-  --color-accent-800: #2c455d;
-  --color-accent-900: #1d2d3d;
+  /* ---------------------------------------------------------------------
+     BRAND. The logo is three colours and the site uses them for three
+     different jobs — the split is what keeps it from looking like confetti:
+
+       accent (navy → sky)  STRUCTURE. Dark bands, photo scrims, links,
+                            kickers, active nav, focus. The site's voice.
+       signal (green)       ACTION AND PROOF. The primary CTA, progress
+                            fills, verification ticks. Nothing else.
+       on-dark              type over either.
+
+     A visitor should be able to say "the blue is the company, the green is
+     what it wants me to do". Adding green to a third job breaks that.
+     --------------------------------------------------------------------- */
+
+  /* The ramp runs sky at the light end to the logo navy at the dark end, so
+     one scale covers both the bright plate glass and the tower silhouette. */
+  --color-accent: #1b6f97;
+  --color-accent-100: #eaf6fd;
+  --color-accent-200: #cbe9f9;
+  --color-accent-300: #9dd7f3;
+  --color-accent-400: #63bfe9;
+  --color-accent-500: #29a9e0; /* logo — glass tower */
+  --color-accent-600: #1c86b8;
+  --color-accent-700: #1b5f85;
+  --color-accent-800: #223c56; /* logo — tower silhouette */
+  --color-accent-900: #142838;
+
+  /* The logo green. Deliberately a shorter ramp than the accent: it is only
+     ever a fill, a tick or a bar, so the mid-tones the accent needs for
+     photography scrims would be dead tokens. */
+  --color-signal: #22a45d; /* logo — pylon */
+  --color-signal-100: #e7f7ee;
+  --color-signal-200: #c2ebd5;
+  --color-signal-300: #8fd9b3;
+  --color-signal-400: #55c48d;
+  --color-signal-500: #22a45d;
+  --color-signal-600: #1c8c4f;
+  --color-signal-700: #17743f; /* the lowest step that clears 4.5:1 on --color-bg */
+  --color-signal-800: #115730;
+  --color-signal-900: #0c3d22;
 
   /* The accent at link weight. accent-700 is legible on paper and invisible on
      charcoal, so the role is tokenised and the dark theme re-points it up the
      ramp rather than inverting the ramp itself. */
-  --color-link: #416180;
-  --color-link-hover: #2c455d;
+  --color-link: #1b5f85;
+  --color-link-hover: #142838;
+
+  /* The one green that must stay legible as TEXT (the tick beside a kicker,
+     a "verified" label). Re-pointed after dark like --color-link. */
+  --color-signal-ink: #17743f;
 
   /* Form validation. */
   --color-danger: #b4433a;
@@ -106,6 +153,16 @@
      generate, the class is the only consumer. */
   --tag-accent-bg: var(--color-accent-100);
   --tag-accent-ink: var(--color-accent-800);
+  --signal-tag-bg: var(--color-signal-100);
+  --signal-tag-ink: var(--color-signal-800);
+
+  /* The logo's navy masses — the plinth, the left tower and the glazed tower's
+     return — as a ROLE rather than a literal, because they are the one part of
+     the mark that has to flip. At accent-800 on charcoal the plinth is a smudge
+     and the skyline loses the ground it stands on. Held here rather than passed
+     as a prop so a mark dropped anywhere is correct in both themes without its
+     caller having to know which one is active. */
+  --logo-mass: var(--color-accent-800);
 
   /* Drives the UA's own rendering — scrollbars, form controls, the canvas
      behind an overscroll. Without it those stay light and give the theme away
@@ -126,26 +183,32 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --color-bg: #17191a;
-  --color-surface: #212324;
-  --color-ink: #e8e8e9;
-  --color-divider: color-mix(in srgb, #e8e8e9 18%, transparent);
+  /* Charcoal pulled the same few degrees toward the navy as the light ground,
+     so the accent-900 bands read as a deeper step of the page rather than as a
+     blue rectangle dropped onto grey. */
+  --color-bg: #14181b;
+  --color-surface: #1e2326;
+  --color-ink: #e6e9ea;
+  --color-divider: color-mix(in srgb, #e6e9ea 18%, transparent);
 
   /* The ramp is read dark-to-light on paper, so it is walked backwards here to
      keep "higher number = further from the page" true in both themes. */
-  --color-neutral-100: #1d1f20;
-  --color-neutral-200: #26282a;
-  --color-neutral-300: #333537;
-  --color-neutral-400: #47494b;
-  --color-neutral-500: #6a6c6e;
-  --color-neutral-600: #8b8d8f;
-  --color-neutral-700: #a9abad;
-  --color-neutral-800: #c8cacb;
-  --color-neutral-900: #e4e6e7;
+  --color-neutral-100: #1a1e21;
+  --color-neutral-200: #23282b;
+  --color-neutral-300: #303538;
+  --color-neutral-400: #44494d;
+  --color-neutral-500: #676d71;
+  --color-neutral-600: #888e92;
+  --color-neutral-700: #a7adb0;
+  --color-neutral-800: #c6cbcd;
+  --color-neutral-900: #e2e6e7;
 
   /* Up the ramp, not down it: accent-700 on charcoal fails contrast outright. */
-  --color-link: #94bce3;
-  --color-link-hover: #b5d9fd;
+  --color-link: #63bfe9;
+  --color-link-hover: #9dd7f3;
+
+  /* Same move for the green: signal-700 is a hole on charcoal. */
+  --color-signal-ink: #55c48d;
 
   --color-danger: #f0918a;
 
@@ -153,6 +216,12 @@
      of the accent over the charcoal instead. */
   --tag-accent-bg: color-mix(in srgb, var(--color-accent) 24%, transparent);
   --tag-accent-ink: var(--color-link-hover);
+  --signal-tag-bg: color-mix(in srgb, var(--color-signal) 22%, transparent);
+  --signal-tag-ink: var(--color-signal-300);
+
+  /* Up the ramp, like --color-link. The mark reads as a lit skyline at night
+     rather than as a silhouette that has lost three of its six shapes. */
+  --logo-mass: var(--color-accent-300);
 
   /* A 14%-black shadow is invisible on a dark ground, so the depth cue that
      .mark-lift and .idx-peek rely on is re-cut against near-black. */
@@ -434,21 +503,46 @@
     display: block;
     flex: none;
   }
-  /* The fill is the accent in both themes, so the label is on-dark rather than
-     the page colour — otherwise it turns charcoal-on-steel after dark. */
+  /* The one place the logo green is a large field. It is the site's only
+     "do this" control, so it must not share a colour with the links — a green
+     button among blue text is unmistakable at a glance, which is the whole
+     point of spending the brand's loudest colour here and nowhere else.
+     The fill is signal-700, not the brand green itself. Measured against the
+     on-dark label: brand 500 is 2.6:1, 600 is 3.9:1, 700 is 5.3:1 — and 4.5 is
+     the floor for a 15px label. Going the other way and putting dark type on
+     the brand green is worse (3.5:1), so the deeper fill is the only version of
+     this button that is actually readable. The tick, the kicker dash and the
+     mark still carry the brand green undiluted, where they are graphics and
+     only owe 3:1.
+     The fill is identical in both themes, so the label is on-dark rather than
+     the page colour — otherwise it turns charcoal-on-green after dark. */
   .btn-primary {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
+    background: var(--color-signal-700);
+    border-color: var(--color-signal-700);
     color: var(--color-on-dark);
   }
   .btn-primary:hover {
-    background: var(--color-accent-600);
-    border-color: var(--color-accent-600);
+    background: var(--color-signal-800);
+    border-color: var(--color-signal-800);
     color: var(--color-on-dark);
   }
   .btn-primary:active {
-    background: var(--color-accent-700);
+    background: var(--color-signal-900);
   }
+  /* Filled accent. For a SELECTED state (the /services pill rail), never for an
+     action — those are .btn-primary's, in green. Same shape, different meaning,
+     and the colour is the only thing carrying that distinction. */
+  .btn-accent {
+    background: var(--color-accent-700);
+    border-color: var(--color-accent-700);
+    color: var(--color-on-dark);
+  }
+  .btn-accent:hover {
+    background: var(--color-accent-800);
+    border-color: var(--color-accent-800);
+    color: var(--color-on-dark);
+  }
+
   .btn-secondary:hover {
     background: color-mix(in srgb, var(--color-text) 7%, transparent);
   }
@@ -456,15 +550,26 @@
     background: color-mix(in srgb, var(--color-text) 14%, transparent);
   }
   /* Both of these live exclusively on the dark bands and hero banners, so they
-     are painted from the literal on-dark token and stay put across themes. */
+     are painted from literal tokens and stay put across themes.
+
+     .btn-invert is .btn-primary's dark-ground twin — the same "do this", in the
+     same green, repitched for the ground it lands on. It cannot simply BE
+     .btn-primary: signal-700 on an accent-900 band is 2.6:1, so the button's
+     edge dissolves into the band and only the label locates it. Inverting the
+     pair fixes both readings at once — signal-400 against the band is 6.9:1,
+     and accent-900 type on signal-400 is 6.9:1 as well.
+
+     This is also the logo's own pairing at full strength: the bright pylon
+     green against the tower navy. The closing CTA on every page is the one
+     place the brand gets to be loud. */
   .btn-invert {
-    background: var(--color-on-dark);
-    border-color: var(--color-on-dark);
+    background: var(--color-signal-400);
+    border-color: var(--color-signal-400);
     color: var(--color-accent-900);
   }
   .btn-invert:hover {
-    background: var(--color-accent-100);
-    border-color: var(--color-accent-100);
+    background: var(--color-signal-300);
+    border-color: var(--color-signal-300);
     color: var(--color-accent-900);
   }
   /* Outline button for use on the dark hero banner, where .btn-secondary's
@@ -507,6 +612,13 @@
   .tag-outline {
     border: 1px solid var(--color-accent);
     color: var(--color-link);
+  }
+  /* Reserved for facts that are certifications or pass/verified states — the
+     same rule the green follows everywhere else. Not a second colourway to
+     pick from when a row of chips looks monotonous. */
+  .tag-signal {
+    background: var(--signal-tag-bg);
+    color: var(--signal-tag-ink);
   }
 
   /* ------------------------------ forms ------------------------------- */
@@ -577,6 +689,14 @@
     opacity: 0.78;
   }
 
+  /* Every section opener carries the same two-colour signature: a short green
+     dash, then the label in accent. It is the logo's colour pair reduced to
+     16px of rule, and repeating it down the page is what makes the palette
+     read as a system rather than as two colours that happen to be present.
+
+     inline-block + vertical-align rather than flex + gap: the class is applied
+     alongside Tailwind's `block`, which would win the display property and
+     silently kill a gap. */
   .kicker {
     font-size: 12px;
     letter-spacing: 0.1em;
@@ -584,6 +704,22 @@
     font-weight: 600;
     color: var(--color-link);
     font-variant-numeric: tabular-nums;
+  }
+  .kicker::before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 2px;
+    margin-right: 9px;
+    /* Optical, not metric: a 2px bar centred on the cap height of uppercase
+       type sits a shade high. */
+    margin-bottom: 2px;
+    /* signal-600, not the brand 500. The dash carries meaning (it is the
+       section marker, not decoration), so it owes 3:1 against the page — and
+       the brand green is 2.9:1 on paper. 600 clears it on both grounds (3.8
+       light, 3.5 dark) with one value, which is why it is not themed. */
+    background: var(--color-signal-600);
   }
 
   /* ------------------- pinned project stage (/projects) ----------------- */
@@ -640,8 +776,12 @@
     background: var(--color-divider);
     transition: background 0.5s var(--ease-out-quint);
   }
+  /* Progress, so green — the same reading as the CTA ("this is moving / this
+     has passed"), not the structural accent. signal-600 for the same reason as
+     the kicker dash: a progress indicator is a meaningful graphic and owes 3:1
+     against the track behind it. */
   .pin-rail > span[data-on="true"] {
-    background: var(--color-accent);
+    background: var(--color-signal-600);
   }
 
   /* --------------------- project index (/projects) ---------------------- */
@@ -741,11 +881,98 @@
     padding-inline: var(--gutter);
   }
 
+  /* A plain hairline, and it has to stay one.
+
+     This briefly carried a 56px green lead, to echo the kicker's dash. It was
+     a bad idea for a reason that is obvious once seen: a horizontal line with a
+     coloured left-hand portion is the universal drawing of a PROGRESS BAR, and
+     .rule is also the one element that animates by drawing out from the left
+     (fx-draw, transform-origin: left). Together they read as a loader that
+     stalled at 5% — the eye waits for the green to finish and it never does.
+     The section opener already carries the brand pair in the kicker directly
+     above; it does not need restating on a track-shaped element. */
   .rule {
     height: 1px;
     border: 0;
     margin: 0;
     background: var(--color-divider);
+  }
+
+  /* ------------------------- long-form body copy -----------------------
+     The blog post body, and the only place on the site set for sustained
+     reading rather than scanning. Everything here is a departure from the
+     15px/1.55 the rest of the site uses, and each one is deliberate:
+
+       - 17.5px, not 15px. Four minutes of reading is a different job from four
+         seconds of scanning.
+       - 68ch measure. The wrap is 1240px; a paragraph run to that width loses
+         the reader at every line return.
+       - 1.72 leading, looser than the site's 1.55, which is tuned for short
+         blocks that never wrap more than twice.
+
+     The column is NOT centred in the wrap. It sits left, aligned with the
+     headline and every other section opener on the site, so the page still
+     reads as this site rather than as a generic article template. */
+  .prose {
+    max-width: 68ch;
+    font-size: 16.5px;
+    line-height: 1.72;
+  }
+  @media (min-width: 768px) {
+    .prose {
+      font-size: 17.5px;
+    }
+  }
+  .prose > p {
+    margin: 0 0 1.15em;
+  }
+  .prose > h2 {
+    font-size: clamp(21px, 3.4vw, 27px);
+    text-transform: uppercase;
+    line-height: 1.15;
+    /* Asymmetric by a wide margin: a heading belongs to what follows it, and
+       equal space above and below makes it float between two sections. */
+    margin: 2em 0 0.6em;
+  }
+  .prose > h2:first-child {
+    margin-top: 0;
+  }
+  .prose > ul {
+    margin: 0 0 1.3em;
+    padding: 0;
+    list-style: none;
+  }
+  .prose > ul > li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 0.7em;
+  }
+  /* A square rather than a disc, in the accent — the site draws no round
+     ornament anywhere else, and a default bullet reads as unstyled. */
+  .prose > ul > li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    /* Centred on the first line's cap height, not on the line box. */
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent);
+  }
+  .prose > blockquote {
+    margin: 1.8em 0;
+    padding-left: 22px;
+    /* The one green in the article body, and it is load-bearing: a pull quote
+       is the author's emphasis, which is the closest thing prose has to the
+       "this is the point" the green marks everywhere else. */
+    border-left: 2px solid var(--color-signal-600);
+  }
+  .prose > blockquote > p {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(19px, 3vw, 24px);
+    line-height: 1.35;
+    letter-spacing: -0.005em;
   }
 
   /* Keeps the carousel swipeable without a visible scrollbar. */
@@ -1012,7 +1239,7 @@
         position: absolute;
         inset: 0;
         transform-origin: left center;
-        background: var(--color-accent);
+        background: var(--color-signal-600);
         animation: fx-draw linear both;
         animation-timeline: view(block);
         animation-range: contain 0% contain 100%;

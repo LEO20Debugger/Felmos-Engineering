@@ -9,6 +9,7 @@
     "build": "next build",
     "build:fast": "next build --turbopack",
     "start": "next start",
+    "icons": "node scripts/gen-icons.mjs",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },

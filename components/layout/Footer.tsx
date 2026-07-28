@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { navLinks, site } from "@/lib/site";
 import { services } from "@/lib/content";
+import Logo from "@/components/brand/Logo";
 
 const socialIcon: Record<string, React.ComponentType<{ size?: number }>> = {
   linkedin: Linkedin,
@@ -27,8 +28,11 @@ export default function Footer() {
       <div className="wrap">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr] lg:gap-9">
           <div>
-            <h2 className="mb-3.5 font-heading text-[15px] uppercase tracking-[0.07em]">
-              Felmos Engineering
+            {/* The footer is where the lockup gets to be a size it deserves —
+                the header's 30px is a constraint of the bar, not a preference. */}
+            <h2 className="mb-4">
+              <Logo size={42} />
+              <span className="sr-only">Felmos Engineering</span>
             </h2>
             <p className="mb-4 max-w-[38ch] text-[14px] leading-[1.6] opacity-75">
               Structural testing and engineering services for developers, homeowners,
