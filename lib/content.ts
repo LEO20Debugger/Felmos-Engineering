@@ -53,7 +53,11 @@ export const stats = [
   { key: "years", value: 10, suffix: "+", label: "Years in practice" },
   { key: "projects", value: 640, suffix: "+", label: "Projects tested" },
   { key: "onTime", value: 98, suffix: "%", label: "Reports on schedule" },
-  { key: "disciplines", value: 5, suffix: "", label: "Testing disciplines" },
+  /* Kept in step with `services.length` by the guard at the foot of this file.
+     Relabelled from "Testing disciplines" when the list grew to eight: piling
+     works, drawings, project management and repairs are delivery services, not
+     testing disciplines, so the old label would have overcounted the lab. */
+  { key: "disciplines", value: 8, suffix: "", label: "Services offered" },
 ] as const;
 
 /* ──────────────────────────────── services ─────────────────────────────── */
@@ -73,16 +77,71 @@ export type Service = {
   clients: string[];
 };
 
+/* The eight below are Felmos's own service list, supplied verbatim — titles,
+   `short`, `lead` and `benefits` are company copy. Note that the practice is no
+   longer described as testing-only: 05 through 08 are delivery services
+   (piling, drawings, project management, repairs), which is why the section
+   heading and the stats label say "services" rather than "testing disciplines".
+
+   `clients` on 08 is deliberately empty — see the comment on that entry. */
 export const services: Service[] = [
   {
-    slug: "soil-investigation",
+    slug: "integrity-testing",
     num: "01",
-    title: "Soil Investigation & Testing",
-    label: "Soil Testing",
+    title: "Non-Destructive Integrity Testing",
+    label: "Integrity",
+    short: "Assess structural condition without damaging the structure.",
+    lead: "Structural condition assessed using methods that don't damage or disrupt the asset — applied to roads, buildings and bridges to determine integrity without taking them out of service.",
+    icon: Waves,
+    image: "svc-integrity-testing",
+    benefits: [
+      "Confirms condition without disrupting use of the structure",
+      "Detects deterioration before it becomes visible or urgent",
+      "Applies across roads, buildings and bridges",
+    ],
+    clients: ["Government Projects", "Property Developers", "Banks"],
+  },
+  {
+    slug: "concrete-strength",
+    num: "02",
+    title: "Concrete Compressive Strength Testing",
+    label: "Concrete",
+    short: "Confirm concrete has reached the strength the design requires.",
+    lead: "Concrete strength tested against the design specification, before load is placed on the structure or before work proceeds to the next stage.",
+    icon: Gauge,
+    image: "svc-concrete-strength",
+    benefits: [
+      "Confirms concrete meets design strength before it's load-bearing",
+      "Catches under-strength concrete before it's built over",
+      "Required for stage sign-off on most construction projects",
+    ],
+    clients: ["Construction Companies", "Property Developers", "Government Projects"],
+  },
+  {
+    slug: "pile-testing",
+    num: "03",
+    title: "Pile Integrity & Pile Load Testing",
+    label: "Pile Testing",
+    short: "Verify pile continuity and load capacity before you build on it.",
+    lead: "Piles tested for structural continuity and load-bearing capacity — before a structure is built on top, or after settlement raises doubt about an existing pile.",
+    icon: Ruler,
+    image: "svc-pile-testing",
+    benefits: [
+      "Confirms piles are sound before they carry structural load",
+      "Identifies pile defects that aren't visible from the surface",
+      "Applies to both new piling and investigation of existing foundations",
+    ],
+    clients: ["Property Developers", "Construction Companies", "Architects"],
+  },
+  {
+    slug: "subsoil-investigation",
+    num: "04",
+    title: "Sub-soil Investigation",
+    label: "Sub-soil",
     short: "Know what you're building on before you build.",
-    lead: "Geotechnical investigation that determines soil bearing capacity, composition and suitability before design begins.",
+    lead: "Ground bearing capacity and composition determined through sub-soil investigation, before foundation design begins.",
     icon: Layers,
-    image: "svc-soil",
+    image: "svc-subsoil",
     benefits: [
       "Prevents costly foundation redesign later",
       "Establishes bearing capacity and settlement risk",
@@ -91,71 +150,73 @@ export const services: Service[] = [
     clients: ["Property Developers", "Architects", "Homeowners"],
   },
   {
-    slug: "non-destructive-testing",
-    num: "02",
-    title: "Non-Destructive Structural Testing",
-    label: "Concrete Testing",
-    short: "Concrete strength verified without breaking a wall.",
-    lead: "Rebound hammer, ultrasonic pulse velocity and core sampling that evaluate concrete strength and condition without damage.",
-    icon: Waves,
-    image: "svc-ndt",
-    benefits: [
-      "Assesses concrete strength without demolition",
-      "Detects voids, cracking and deterioration early",
-      "Ideal for occupied or heritage buildings",
-    ],
-    clients: ["Construction Companies", "Homeowners", "Government Projects"],
-  },
-  {
-    slug: "structural-integrity",
-    num: "03",
-    title: "Structural Integrity Assessment",
-    label: "Integrity",
-    short: "A full condition read on an existing structure.",
-    lead: "Complete condition assessment identifying defects, deterioration and risk — with prioritised engineering recommendations.",
-    icon: Building2,
-    image: "svc-integrity",
-    benefits: [
-      "Comprehensive defect and risk identification",
-      "Supports insurance, sale and renovation decisions",
-      "Prioritised remedial recommendations",
-    ],
-    /* "Government Projects" is listed here deliberately: project 03 (the
-       heritage office block) is a Government Project delivered under this
-       discipline, so omitting it contradicted our own record. */
-    clients: ["Homeowners", "Banks", "Property Developers", "Government Projects"],
-  },
-  {
-    slug: "building-verification",
-    num: "04",
-    title: "Building Structural Verification",
-    label: "Verification",
-    short: "The independent report your lender asks for.",
-    lead: "Independent verification confirming a building's structural adequacy — commonly required before financing or occupation.",
-    icon: FileCheck2,
-    image: "svc-verify",
-    benefits: [
-      "Independent, lender-ready documentation",
-      "Confirms compliance with design and code",
-      "Accepted by financial institutions",
-    ],
-    clients: ["Banks", "Financial Institutions", "Property Developers"],
-  },
-  {
-    slug: "foundation-assessment",
+    slug: "piling-works",
     num: "05",
-    title: "Foundation Assessment & Investigation",
-    label: "Foundations",
-    short: "Find out why it's settling, cracking or moving.",
-    lead: "Diagnostic inspection of foundations showing settlement, cracking or load-bearing concerns, with cost-aware remedial guidance.",
+    title: "Piling Works & Foundation Repairs",
+    label: "Piling Works",
+    short: "Correct a failing foundation, or install piling where ground conditions demand it.",
+    lead: "Piling installation and foundation repair carried out where sub-soil investigation shows the existing foundation is inadequate, or where ground conditions require piled support from the start.",
     icon: Mountain,
-    image: "svc-foundation",
+    image: "svc-piling-works",
     benefits: [
-      "Diagnoses settlement and foundation cracking",
-      "Cost-aware, prioritised remedial options",
-      "Suited to purchase, renovation or extension",
+      "Addresses settlement, cracking or movement at the source",
+      "Piling scoped to the ground conditions confirmed by testing, not estimated",
+      "Suited to both new construction and remedial work on existing structures",
     ],
-    clients: ["Homeowners", "Construction Companies", "Architects"],
+    clients: ["Property Developers", "Homeowners", "Construction Companies"],
+  },
+  {
+    slug: "structural-drawings",
+    num: "06",
+    title: "Structural Drawing Production",
+    label: "Drawings",
+    short: "Structural drawings prepared for approval, construction or as-built record.",
+    lead: "Structural drawings produced to support design approval, construction, or renovation work — reflecting either the intended design or the as-built condition confirmed by inspection.",
+    icon: FileText,
+    image: "svc-drawings",
+    benefits: [
+      "Provides the drawing set regulators and contractors require",
+      "Aligns drawings with actual site or structural conditions",
+      "Supports both new-build design and renovation planning",
+    ],
+    clients: ["Architects", "Property Developers", "Construction Companies"],
+  },
+  {
+    slug: "project-management",
+    num: "07",
+    title: "Project Management",
+    label: "Management",
+    short: "Coordinate the project from design through completion.",
+    lead: "Engineering oversight of a construction or renovation project — coordinating design, contractors and compliance through to completion.",
+    icon: ClipboardCheck,
+    image: "svc-project-management",
+    benefits: [
+      "Single point of accountability across the project",
+      "Reduces risk of design and construction falling out of alignment",
+      "Engineering oversight through to project completion",
+    ],
+    clients: ["Property Developers", "Homeowners"],
+  },
+  {
+    slug: "building-repairs",
+    num: "08",
+    title: "Building Repairs & Renovations",
+    label: "Repairs",
+    short: "Repair or renovate a structure based on its actual condition, not guesswork.",
+    lead: "Repair and renovation work carried out on existing structures, informed by structural integrity assessment where prior testing has identified the cause of damage or deterioration.",
+    icon: Building2,
+    image: "svc-building-repairs",
+    benefits: [
+      "Repairs address the diagnosed cause, not just the visible symptom",
+      "Renovation scoped against the structure's actual condition",
+      "Suited to buildings with known cracking, settlement or deterioration",
+    ],
+    /* The supplied copy gives no client list for this service — every other
+       entry names three. Left empty rather than guessed: `clients` drives the
+       audience joins below and the tag row on /services, both of which degrade
+       cleanly on an empty array, whereas a wrong guess would route the wrong
+       audience here. Ask Felmos who this is for and fill it in. */
+    clients: [],
   },
 ];
 
@@ -204,7 +265,7 @@ export const projects: Project[] = [
     slug: "lekki-tower-verification",
     num: "01",
     title: "23-Storey Residential Tower",
-    category: "Building Verification",
+    category: "Integrity Testing",
     location: "Lekki, Lagos",
     year: "2025",
     client: "Property Developer",
@@ -214,14 +275,14 @@ export const projects: Project[] = [
       "The developer had design drawings and a contractor's warranty, but the lender wanted a third party to confirm the frame as built matched what had been approved. We surveyed the completed structure floor by floor, cored and tested concrete at every third level, and checked reinforcement against the issued-for-construction drawings.",
     result: "Report accepted by the lender without a single follow-up query.",
     metric: { value: "23", label: "Storeys verified" },
-    services: ["building-verification", "non-destructive-testing"],
+    services: ["integrity-testing", "concrete-strength"],
     image: "proj-1",
   },
   {
     slug: "ikeja-foundation-diagnosis",
     num: "02",
     title: "Settling Warehouse Foundation",
-    category: "Foundation Assessment",
+    category: "Sub-soil Investigation",
     location: "Ikeja, Lagos",
     year: "2024",
     client: "Construction Company",
@@ -231,14 +292,14 @@ export const projects: Project[] = [
       "Cracking had opened along one wall of a working warehouse and the owner had been quoted for full underpinning. We levelled the slab, opened inspection pits at four locations and tested the soil beneath the affected corner. The movement traced to a single poorly compacted fill zone, not to the foundation design.",
     result: "Root cause identified in one visit; remedial cost cut by a third.",
     metric: { value: "1/3", label: "Remedial cost avoided" },
-    services: ["foundation-assessment", "soil-investigation"],
+    services: ["subsoil-investigation", "piling-works"],
     image: "proj-2",
   },
   {
     slug: "victoria-island-integrity",
     num: "03",
     title: "Heritage Office Block Assessment",
-    category: "Structural Integrity",
+    category: "Integrity Testing",
     location: "Victoria Island, Lagos",
     year: "2024",
     client: "Government Project",
@@ -248,14 +309,14 @@ export const projects: Project[] = [
       "A public building still in daily use needed a condition read before a refurbishment budget could be set. Testing had to be non-destructive and work around occupancy. We assessed the frame, facade and slabs over eight weeks of evening and weekend access, and ranked every defect found by structural consequence rather than by visibility.",
     result: "Cleared for continued occupation with a prioritised repair plan.",
     metric: { value: "40 yrs", label: "Structure re-certified" },
-    services: ["structural-integrity", "non-destructive-testing"],
+    services: ["integrity-testing", "concrete-strength"],
     image: "proj-3",
   },
   {
     slug: "ajah-ndt-survey",
     num: "04",
     title: "Concrete Strength Survey, Housing Estate",
-    category: "Non-Destructive Testing",
+    category: "Concrete Strength Testing",
     location: "Ajah, Lagos",
     year: "2023",
     client: "Property Developer",
@@ -265,14 +326,14 @@ export const projects: Project[] = [
       "A batching inconsistency during construction put a whole phase of completed units in question. Breaking out samples would have meant making good across sixty finished homes. Rebound hammer and ultrasonic pulse velocity readings, calibrated against cores taken from a single sacrificial unit, established strength across the phase instead.",
     result: "Every unit verified without breaking a single wall.",
     metric: { value: "60", label: "Units tested, zero opened" },
-    services: ["non-destructive-testing", "structural-integrity"],
+    services: ["concrete-strength", "integrity-testing"],
     image: "proj-4",
   },
   {
     slug: "epe-soil-investigation",
     num: "05",
     title: "Coastal Plot Soil Investigation",
-    category: "Soil Investigation",
+    category: "Sub-soil Investigation",
     location: "Epe, Lagos",
     year: "2023",
     client: "Homeowner",
@@ -282,14 +343,14 @@ export const projects: Project[] = [
       "A private client bought a coastal plot and wanted to know what they were building on before an architect drew anything. Boreholes to eight metres found a competent bearing stratum shallower than the area's reputation suggested, which let the design proceed on pads rather than the piled solution that had been assumed.",
     result: "Foundation redesign avoided; approvals secured on first submission.",
     metric: { value: "1", label: "Submission to approval" },
-    services: ["soil-investigation", "foundation-assessment"],
+    services: ["subsoil-investigation", "pile-testing"],
     image: "proj-5",
   },
   {
     slug: "ikoyi-lender-verification",
     num: "06",
     title: "Mixed-Use Development Financing Report",
-    category: "Building Verification",
+    category: "Integrity Testing",
     location: "Ikoyi, Lagos",
     year: "2022",
     client: "Bank",
@@ -299,7 +360,7 @@ export const projects: Project[] = [
       "The bank was lending against a part-built mixed-use scheme and needed structural adequacy confirmed before drawing down the next tranche. We verified the completed substructure and frame against the design, and reported in the format the credit committee already used, so the findings could be actioned without translation.",
     result: "Became the bank's standard reference for the borrower's next three projects.",
     metric: { value: "3", label: "Follow-on facilities" },
-    services: ["building-verification", "structural-integrity"],
+    services: ["integrity-testing", "structural-drawings"],
     image: "proj-6",
   },
 ];
@@ -395,8 +456,8 @@ export const audiences: readonly Audience[] = [
     icon: Users,
     need: "Ground data before design, and an independent report before drawdown.",
     matches: ["Property Developers", "Property Developer"],
-    primary: "soil-investigation",
-    image: "svc-soil",
+    primary: "subsoil-investigation",
+    image: "svc-subsoil",
   },
   {
     slug: "homeowners",
@@ -404,8 +465,8 @@ export const audiences: readonly Audience[] = [
     icon: Home,
     need: "Find out what the crack actually means, before you buy or build.",
     matches: ["Homeowners", "Homeowner"],
-    primary: "foundation-assessment",
-    image: "svc-foundation",
+    primary: "piling-works",
+    image: "svc-piling-works",
   },
   {
     slug: "banks-lenders",
@@ -413,18 +474,22 @@ export const audiences: readonly Audience[] = [
     icon: Landmark,
     need: "Structural adequacy confirmed independently, in your credit committee's format.",
     matches: ["Banks", "Bank", "Financial Institutions", "Financial Institution"],
-    primary: "building-verification",
-    image: "svc-verify",
+    primary: "integrity-testing",
+    image: "svc-pile-testing",
   },
   {
     slug: "architects",
     label: "Architects",
     icon: Ruler,
-    need: "Bearing capacity established before the first foundation is drawn.",
+    /* Re-pointed from soil to drawings when the service list changed. Architects
+       match three services now (pile testing, sub-soil, drawings); drawings is
+       the one no other audience routes to, and it keeps every row on a distinct
+       photograph — which is what the old "borrowed image" note was working
+       around back when only five svc-* images existed. */
+    need: "The structural drawing set your design needs, aligned to real site conditions.",
     matches: ["Architects", "Architect"],
-    primary: "soil-investigation",
-    // Borrowed: only five svc-* images exist and all six rows need a distinct one.
-    image: "about-story",
+    primary: "structural-drawings",
+    image: "svc-drawings",
   },
   {
     slug: "construction-firms",
@@ -432,17 +497,17 @@ export const audiences: readonly Audience[] = [
     icon: HardHat,
     need: "Concrete strength and workmanship verified without stopping the job.",
     matches: ["Construction Companies", "Construction Company", "Construction Firms"],
-    primary: "non-destructive-testing",
-    image: "svc-ndt",
+    primary: "concrete-strength",
+    image: "svc-concrete-strength",
   },
   {
     slug: "government-projects",
     label: "Government Projects",
     icon: Building2,
-    need: "Condition assessment on occupied public buildings, tested non-destructively.",
+    need: "Roads, bridges and public buildings assessed without taking them out of service.",
     matches: ["Government Projects", "Government Project"],
-    primary: "structural-integrity",
-    image: "svc-integrity",
+    primary: "integrity-testing",
+    image: "svc-integrity-testing",
   },
 ] as const;
 
@@ -479,6 +544,28 @@ if (process.env.NODE_ENV !== "production") {
         console.warn(`[content] Service.clients value "${c}" (${s.slug}) matches no audience`);
       }
     }
+  }
+
+  /* Added after the service list was replaced wholesale (five entries became
+     eight, and three slugs disappeared). Every project links out to its
+     disciplines through `services.find()`, which drops an unknown slug silently
+     — so the whole set went stale at once with nothing reporting it. */
+  const slugs = new Set(services.map((s) => s.slug));
+  for (const p of projects) {
+    for (const ref of p.services) {
+      if (!slugs.has(ref)) {
+        console.warn(`[content] project "${p.slug}" references unknown service slug "${ref}"`);
+      }
+    }
+  }
+
+  /* The disciplines figure is rendered on the homepage and both banners as a
+     count of what this array holds. It is the same fact stated twice. */
+  const disciplines = stats.find((s) => s.key === "disciplines");
+  if (disciplines && disciplines.value !== services.length) {
+    console.warn(
+      `[content] stats "disciplines" says ${disciplines.value} but services has ${services.length} entries.`
+    );
   }
 }
 
@@ -563,20 +650,92 @@ export const differentiators: readonly Differentiator[] = [
 
 /* ──────────────────────────────── about ────────────────────────────────── */
 
-export const values = [
-  { icon: Gauge, title: "Precision", line: "Measured and verified, never estimated." },
-  { icon: ShieldCheck, title: "Integrity", line: "Reports reflect findings, not preference." },
-  { icon: ClipboardCheck, title: "Accountability", line: "We stand behind every result." },
-  { icon: Clock, title: "Reliability", line: "On site and on schedule." },
-  { icon: FileText, title: "Compliance", line: "Built to code and regulation." },
-  { icon: Handshake, title: "Partnership", line: "Engineers who explain the findings." },
+/* Felmos's core values, kept as ONE piece of copy rather than nine list items.
+   The company statement names the values mid-sentence, and that is how it now
+   renders: `opening`, then the nine names set inline, then `closing`. All three
+   parts are the company's own words.
+
+   This replaced a 3x3 grid where each value carried a one-line gloss. The
+   glosses were ours, not Felmos's — inventing nine definitions to fill a layout
+   put words in the company's mouth that it had never approved, and the grid
+   also read as nine separate claims when the source is a single sentence about
+   culture. Do not reintroduce per-value copy without sign-off.
+
+   `names` is a plain string list: order is the company's and is not
+   alphabetical or ranked, so don't sort it. */
+export const coreValues = {
+  opening: "A successful organization needs a strong culture. At Felmos Engineering, our culture includes",
+  names: [
+    "Quality",
+    "Integrity",
+    "Reliability",
+    "Flexibility",
+    "Innovativeness",
+    "Responsiveness",
+    "Professionalism",
+    "Mutual Respect",
+    "Accountability",
+  ],
+  closing:
+    "Wherever we find ourselves, we live and drive this value daily. People who work at Felmos Engineering are fulfilled because we have an environment that encourages creativity, innovation and a passion to constantly achieve and improve on the present.",
+} as const;
+
+/* ─────────────────────────── company philosophy ────────────────────────── */
+
+/* Company copy, supplied by Felmos. `statement` is verbatim; the six pillars
+   are the philosophy's own list, split out so the section can set them as
+   named items rather than as one run-on sentence. */
+export const philosophy = {
+  statement:
+    "Our business philosophy is based on responsibility, mutual respect, willingness to excel, professionalism, safety and efficiency. We believe that people are our most important asset.",
+  pillars: [
+    "Responsibility",
+    "Mutual Respect",
+    "Willingness to Excel",
+    "Professionalism",
+    "Safety",
+    "Efficiency",
+  ],
+} as const;
+
+/* How the company describes itself and how it gets there — supplied by Felmos.
+   `intro` is the registered-company description; `goals` are the three means
+   named in the same copy, in the order Felmos gives them. */
+export const companyIntro =
+  "Felmos Engineering Limited is an indigenous company duly registered according to the laws of Nigeria, with a track record of experience in quality control and assurance of construction materials, structural stability and integrity of existing structures, and other civil engineering services.";
+
+export const companyGoals = [
+  {
+    icon: Target,
+    title: "Resource Management",
+    line: "Goals achieved through effective resource management and core competencies at all times.",
+  },
+  {
+    icon: Users,
+    title: "Training & Re-training",
+    line: "Constant training and re-training of staff keeps competence current, not assumed.",
+  },
+  {
+    icon: Headset,
+    title: "Liaison At Every Level",
+    line: "Effective liaison and communication with staff at all levels lets us exceed the minimum standard requirement.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "HSE Management",
+    line: "Above all, we are proud of a successful HSE management system.",
+  },
 ] as const;
 
+/* The mission line is Felmos's own mission statement, supplied verbatim (it
+   arrives in full caps; set in sentence case here because it renders as body
+   copy, and the headings that carry it are uppercased by CSS anyway). The
+   vision line has no company-supplied equivalent yet — it is still ours. */
 export const missionVision = [
   {
     icon: Target,
     title: "Our Mission",
-    line: "Accurate, independently verified structural data that protects lives, property and investment at every stage of construction.",
+    line: "To consistently deliver a high-quality service in the shortest possible time, at a reasonable cost, for the complete satisfaction of our extremely valued client — through the commitment of our highly seasoned staff.",
   },
   {
     icon: Eye,
@@ -671,6 +830,15 @@ export const milestones = [
    shipping as-is is safe and is the correct action if sign-off never arrives.
    Uncomment only what Felmos can produce a current certificate for. */
 export const standards: readonly { name: string; body: string }[] = [
+  /* The one entry here is NOT invented — it is Felmos's own claim, supplied in
+     the company copy and also stated in the homepage hero. It is still the kind
+     of claim the warning above is about, so it wants a certificate on file and
+     an approval reference before launch, but it is the company's statement to
+     make rather than ours. */
+  {
+    name: "LASBCA CAP",
+    body: "Approved under the Lagos State Building Control Agency's Certified Accreditors Programme",
+  },
   // { name: "ISO 9001:2015", body: "Quality management" },          // INVENTED — verify certificate number and expiry
   // { name: "ASTM C805 / C597", body: "Rebound hammer & UPV" },     // INVENTED — confirm methods actually accredited
   // { name: "COREN", body: "Council for the Regulation of Engineering in Nigeria" }, // INVENTED — confirm registration

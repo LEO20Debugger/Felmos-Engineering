@@ -18,7 +18,10 @@ export default function ProjectIndex() {
       <SectionHead
         kicker="The Record"
         title="Six Representative Projects"
-        lead="Across all five disciplines, for developers, lenders, government and private clients."
+        /* Deliberately doesn't count the disciplines. The six case studies were
+           written against the old five-service list and now span six of eight,
+           so "all N disciplines" would be false whichever N we wrote. */
+        lead="Testing, investigation and remedial engineering — for developers, lenders, government and private clients."
       />
 
       <ol className="idx-list m-0 list-none p-0">

@@ -1,11 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, BadgeCheck, Phone } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import { images } from "@/lib/images";
 import { site } from "@/lib/site";
 
-const HEADLINE = ["Structural", "certainty,", "before", "you", "commit."];
+/* Split per word because each word animates in on its own delay. This is the
+   supplied headline verbatim; "&" is its own token so it never ends a line
+   alone, and the clamp below was widened to 20ch to hold nine words without
+   the last one dropping to a line of its own. */
+const HEADLINE = [
+  "Structural",
+  "Testing",
+  "&",
+  "Engineering",
+  "Solutions",
+  "You",
+  "Can",
+  "Trust",
+];
 
 /* The three frames of the banner, in the order they play. Stacked in this same
    order in the DOM, which is what puts each one above the last — the crossfade
@@ -93,7 +106,10 @@ export default function Hero() {
           Structural Testing &amp; Engineering
         </Reveal>
 
-        <h1 className="m-0 max-w-[16ch] text-[clamp(36px,10vw,76px)] uppercase leading-[1.02] tracking-[0.005em] text-on-dark lg:max-w-[18ch]">
+        {/* Sized down from clamp(36px,10vw,76px)/16ch: the headline went from
+            five words to eight, and at the old scale it set four full-width
+            lines and pushed the lead and both buttons off a laptop viewport. */}
+        <h1 className="m-0 max-w-[18ch] text-[clamp(32px,7.6vw,62px)] uppercase leading-[1.03] tracking-[0.005em] text-on-dark lg:max-w-[21ch]">
           {HEADLINE.map((word, i) => (
             <span key={word + i}>
               <Reveal as="span" delay={i} className="inline-block">
@@ -103,16 +119,33 @@ export default function Hero() {
           ))}
         </h1>
 
+        {/* The supplied subhead runs to three sentences. The first one — the
+            LASBCA accreditation — is a credential rather than a description, so
+            it is set below as its own line where it reads as a fact being
+            stated; the two sentences that describe the work stay here. */}
         <Reveal
           as="p"
           delay={5}
-          className="mb-9 mt-5 max-w-[48ch] text-[16px] leading-[1.6] text-on-dark/85 md:text-[18px]"
+          className="mb-6 mt-5 max-w-[52ch] text-[15.5px] leading-[1.6] text-on-dark/85 md:text-[17px]"
         >
-          Certified engineers test the soil, the concrete and the structure — and give
-          you a report you can build, lend or buy on.
+          We specialise in comprehensive testing for soil, concrete, and structural
+          safety and integrity. Our engineering reports provide the trusted data you
+          need to confidently build, lend or buy.
         </Reveal>
 
-        <Reveal delay={6} className="flex flex-col gap-3 sm:flex-row">
+        <Reveal
+          as="p"
+          delay={6}
+          className="mb-8 flex max-w-[52ch] items-start gap-2.5 text-[13.5px] leading-[1.55] text-on-dark/75"
+        >
+          <BadgeCheck size={18} strokeWidth={1.5} aria-hidden className="mt-px flex-none text-accent-300" />
+          <span>
+            An indigenous civil engineering firm approved under the Lagos State Building
+            Control Agency&rsquo;s Certified Accreditors Programme (CAP).
+          </span>
+        </Reveal>
+
+        <Reveal delay={7} className="flex flex-col gap-3 sm:flex-row">
           <Link href="/contact" className="btn btn-primary no-underline sm:px-8">
             Book Inspection
             <ArrowRight size={18} strokeWidth={1.5} />

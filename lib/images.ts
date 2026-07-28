@@ -45,11 +45,28 @@ const SOURCES = {
   "about-story": { id: "1581092580497-e0d23cbdf1dc", w: 1400, h: 1050 }, // structural engineer performing inspection on site
   "about-hero": { id: "1216589", w: 2000, h: 1000, from: "pexels" }, // structural construction site under open sky
 
-  "svc-soil": { id: "1517089152318-42ec560349c0", w: 1400, h: 1050 }, // earthworks
-  "svc-ndt": { id: "1621905251189-08b45d6a269e", w: 1400, h: 1050 }, // taking a reading
-  "svc-integrity": { id: "1487958449943-2429e8be8625", w: 1400, h: 1050 }, // facade from below
-  "svc-verify": { id: "1503387837-b154d5074bd2", w: 1400, h: 1050 }, // drawings, scale rule
-  "svc-foundation": { id: "1504307651254-35680f356dfd", w: 1400, h: 1050 }, // rebar, formwork
+  /* services — one per entry in `services`, keyed by that service's slug so a
+     renamed service can't quietly keep a photograph of something else. All from
+     Pexels, whose photo pages carry descriptions, so each was picked against a
+     read description of the subject; the comment on each line is that photo's
+     own description, abbreviated. Each was checked to return 200 at all three
+     crops the layouts ask for (1400x1050 on /services, 900x1200 for the
+     portrait showcase panel, 800x800 for the mobile tile).
+
+     One compromise worth knowing about: svc-concrete-strength. Pexels has no
+     photograph of a cube crush or a compression rig — the searches return
+     chemistry labs and sugar cubes. The instrument-against-concrete shot below
+     is the closest honest stand-in and reads as concrete being measured rather
+     than concrete being poured. Replace it first if real site photography
+     arrives. */
+  "svc-integrity-testing": { id: "8961159", w: 1400, h: 1050, from: "pexels" }, // worker inspecting a bridge structure
+  "svc-concrete-strength": { id: "31945566", w: 1400, h: 1050, from: "pexels" }, // digital instrument taking a reading off concrete
+  "svc-pile-testing": { id: "29470001", w: 1400, h: 1050, from: "pexels" }, // piling rig working below high-rise blocks
+  "svc-subsoil": { id: "15391048", w: 1400, h: 1050, from: "pexels" }, // worker operating a large drilling rig
+  "svc-piling-works": { id: "37432684", w: 1400, h: 1050, from: "pexels" }, // concrete foundation blocks with starter bars
+  "svc-drawings": { id: "4134179", w: 1400, h: 1050, from: "pexels" }, // structural drawings with a scale rule
+  "svc-project-management": { id: "9405431", w: 1400, h: 1050, from: "pexels" }, // engineering team over drawings on site
+  "svc-building-repairs": { id: "27134625", w: 1400, h: 1050, from: "pexels" }, // worker repairing a building facade from scaffolding
 
   "process-1": { id: "1454165804606-c3d57bc86b40", w: 1200, h: 800 }, // submitting the request
   "process-2": { id: "1531834685032-c34bf0d84c77", w: 1200, h: 800 }, // crew on a structure
