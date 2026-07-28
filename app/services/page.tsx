@@ -11,28 +11,31 @@ import { services } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Soil investigation, non-destructive testing, structural integrity assessment, building verification and foundation assessment — by certified engineers.",
+    "Integrity testing, concrete strength testing, pile testing, sub-soil investigation, piling works, structural drawings, project management and building repairs.",
   alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {
   /* Map to primitives here, on the server. Passing a Service across the
-     boundary would send `icon` — a function — and throw. */
+     boundary would send `icon` — a function — and throw.
+     `label` rather than the first two words of the title: with eight entries
+     the sticky bar has to hold twice as many chips, and "Non-Destructive" /
+     "Concrete Compressive" overflowed it. `label` is already the short form. */
   const navItems = services.map((s) => ({
     slug: s.slug,
     num: s.num,
-    label: s.title.split(" ").slice(0, 2).join(" "),
+    label: s.label,
   }));
 
   return (
     <>
       {/* This page keeps the plain PageHead on purpose. A photo banner, plus a
-          sticky bar, plus five photo blocks is photo overload — and the sticky
+          sticky bar, plus eight photo blocks is photo overload — and the sticky
           bar is this page's above-the-fold signal instead. */}
       <PageHead
         kicker="Our Services"
         title="Structural Testing & Engineering Services"
-        lead="From soil investigation to final building verification — delivered by certified engineers on calibrated equipment."
+        lead="From sub-soil investigation through to piling, drawings and repairs — testing that tells you what's there, and the engineering to act on it."
       />
 
       <ServicesNav items={navItems} />
@@ -113,13 +116,18 @@ export default function ServicesPage() {
                   ))}
                 </Reveal>
 
-                <Reveal delay={4} className="mb-6 flex flex-wrap gap-2">
-                  {s.clients.map((c) => (
-                    <span key={c} className="tag tag-accent">
-                      {c}
-                    </span>
-                  ))}
-                </Reveal>
+                {/* Guarded: service 08 ships with an empty client list (see
+                    lib/content.ts), and an unguarded empty flex row still laid
+                    out its mb-6 — a stray 24px gap above the button. */}
+                {s.clients.length > 0 && (
+                  <Reveal delay={4} className="mb-6 flex flex-wrap gap-2">
+                    {s.clients.map((c) => (
+                      <span key={c} className="tag tag-accent">
+                        {c}
+                      </span>
+                    ))}
+                  </Reveal>
+                )}
 
                 <Reveal delay={5}>
                   <Link href="/contact" className="btn btn-primary w-full no-underline sm:w-auto">

@@ -8,13 +8,13 @@ import SectionHead from "@/components/ui/Section";
 import Photo from "@/components/ui/Photo";
 import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/ui/CtaBand";
-import { missionVision, values } from "@/lib/content";
+import { companyGoals, companyIntro, coreValues, missionVision, philosophy } from "@/lib/content";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Felmos Engineering is a structural testing practice serving developers, homeowners, contractors and lenders with independently verified data.",
+    "Felmos Engineering Limited is an indigenous Nigerian practice in quality control and assurance of construction materials, structural stability and integrity of existing structures, and other civil engineering services.",
   alternates: { canonical: "/about" },
 };
 
@@ -38,73 +38,151 @@ export default function AboutPage() {
     <>
       <AboutHero />
 
-      {/* Story, with mission and vision folded in underneath as statements
-          rather than as a third card grid. */}
-      <section className="wrap grid grid-cols-1 items-center gap-9 py-10 md:py-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <figure className="relative order-1 m-0 lg:order-2">
-          <Photo
-            src="about-story"
-            alt="Felmos engineer conducting structural site verification and inspection"
-            ratio="4/3"
-            sizes="(max-width: 1024px) 100vw, 55vw"
-          />
-        </figure>
+      {/* Who we are, with mission and vision folded in underneath as statements
+          rather than as a third card grid. The goals strip closes the same
+          section rather than opening its own — it is the second half of one
+          piece of company copy, and splitting it out would put two
+          default-ground sections back to back before the Timeline band. */}
+      <section className="wrap py-10 md:py-14">
+        <div className="grid grid-cols-1 items-center gap-9 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+          <figure className="relative order-1 m-0 lg:order-2">
+            <Photo
+              src="about-story"
+              alt="Felmos engineer conducting structural site verification and inspection"
+              ratio="4/3"
+              sizes="(max-width: 1024px) 100vw, 55vw"
+            />
+          </figure>
 
-        <div className="order-2 lg:order-1">
-          <Reveal as="span" className="kicker mb-2.5 block">
-            Our Story
-          </Reveal>
-          <Reveal as="h2" delay={1} className="m-0 text-[clamp(24px,5.5vw,34px)] uppercase">
-            Built on precision, grown on trust
-          </Reveal>
-          <Reveal as="p" delay={2} className="mt-4 max-w-[50ch] text-[15.5px] leading-[1.65] opacity-80">
-            Felmos was founded to close a gap: reliable, independently verified structural
-            data delivered on the timeline construction actually runs on. Today our engineers
-            inspect foundations, test concrete and verify buildings across residential,
-            commercial and institutional projects.
-          </Reveal>
+          <div className="order-2 lg:order-1">
+            <Reveal as="span" className="kicker mb-2.5 block">
+              Introduction
+            </Reveal>
+            <Reveal as="h2" delay={1} className="m-0 text-[clamp(24px,5.5vw,34px)] uppercase">
+              Built on precision, grown on trust
+            </Reveal>
+            <Reveal as="p" delay={2} className="mt-4 max-w-[52ch] text-[15.5px] leading-[1.65] opacity-80">
+              {companyIntro}
+            </Reveal>
 
-          <Reveal variant="line" delay={3} className="rule mt-8" />
+            <Reveal variant="line" delay={3} className="rule mt-8" />
 
-          {/* Term/definition, not headings — these are statements of intent. */}
-          <dl className="m-0 mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
-            {missionVision.map(({ title, line }, i) => (
-              <Reveal as="div" key={title} delay={i} className="m-0">
-                <dt className="flex items-baseline gap-3">
-                  <span className="font-mono text-[12px] tracking-[0.16em] text-link">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="font-heading text-[17px] uppercase">{title}</span>
-                </dt>
-                <dd className="m-0 mt-2 max-w-[42ch] text-[14.5px] leading-[1.6] opacity-78">
-                  {line}
-                </dd>
+            {/* Term/definition, not headings — these are statements of intent.
+
+                Stacked rather than the two-up they used to be: the mission is
+                now Felmos's full formal statement and at half this column it
+                set six lines against the vision's three. Full measure, and the
+                mission takes the larger size — it is the statement the company
+                is held to, and it carried a whole section of its own before
+                this became its only home. */}
+            <dl className="m-0 mt-8 flex flex-col gap-7">
+              {missionVision.map(({ title, line }, i) => (
+                <Reveal as="div" key={title} delay={i} className="m-0">
+                  <dt className="flex items-baseline gap-3">
+                    <span className="font-mono text-[12px] tracking-[0.16em] text-link">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-heading text-[17px] uppercase">{title}</span>
+                  </dt>
+                  <dd
+                    className={`m-0 mt-2 max-w-[52ch] ${
+                      i === 0
+                        ? "font-heading text-[clamp(16.5px,2.4vw,19px)] leading-[1.45] opacity-95"
+                        : "text-[14.5px] leading-[1.6] opacity-78"
+                    }`}
+                  >
+                    {line}
+                  </dd>
+                </Reveal>
+              ))}
+            </dl>
+          </div>
+        </div>
+
+        {/* How the goals are actually met — icon-led, because this is the one
+            place on the page where the four items are means rather than claims,
+            and the numerals are already doing work in two grids above and below. */}
+        <div className="mt-14 md:mt-20">
+          <Reveal variant="line" className="rule" />
+          <h3 className="mt-8 font-heading text-[11px] uppercase tracking-[0.14em] opacity-55">
+            How those goals are met
+          </h3>
+          <ul className="m-0 mt-6 grid list-none grid-cols-1 gap-x-10 gap-y-7 p-0 sm:grid-cols-2 lg:grid-cols-4">
+            {companyGoals.map(({ icon: Icon, title, line }, i) => (
+              <Reveal as="li" key={title} delay={i % 4} className="flex gap-3.5">
+                <Icon size={22} strokeWidth={1.5} aria-hidden className="mt-0.5 flex-none text-link" />
+                <div className="min-w-0">
+                  <span className="block font-heading text-[15px] uppercase">{title}</span>
+                  <span className="mt-1.5 block text-[13.5px] leading-[1.55] opacity-75">{line}</span>
+                </div>
               </Reveal>
             ))}
-          </dl>
+          </ul>
         </div>
       </section>
 
       <Timeline />
 
-      {/* Values — surface tiles on the default ground, so the card has a shape
-          before you hover it. Numeral instead of an icon: this page had three
-          icon grids and now has none. */}
-      <section className="wrap py-10 md:py-14" aria-label="Core values">
-        <SectionHead kicker="Core Values" title="Engineering Excellence" />
-        <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0 lg:grid-cols-3">
-          {values.map(({ title, line }, i) => (
-            <Reveal as="li" key={title} delay={i % 3}>
-              <div className="mark-lift flex h-full flex-col rounded-[var(--radius-control)] bg-surface p-5 md:p-6">
-                <span className="font-mono text-[12px] tracking-[0.16em] text-link">
-                  {String(i + 1).padStart(2, "0")}
+      {/* Values — one statement, not a list. The nine names are set inline
+          exactly where the company's own sentence puts them, picked out in the
+          heading face so they still register as a set at a glance.
+
+          This replaced a nine-cell grid. The grid needed a line of copy under
+          each name to justify itself, and that copy was ours rather than
+          Felmos's — nine definitions invented to fill a layout. Setting the
+          sentence as a sentence needs none of them. */}
+      <section className="wrap py-10 md:py-14" aria-label="Core values and philosophy">
+        <SectionHead kicker="Our Core Value" title="Engineering Excellence" />
+
+        <Reveal
+          as="p"
+          className="m-0 max-w-[46ch] text-[clamp(17px,2.6vw,21px)] leading-[1.6] lg:max-w-[64ch]"
+        >
+          <span className="opacity-80">{coreValues.opening} </span>
+          {coreValues.names.map((name, i) => (
+            <span key={name}>
+              {i > 0 && (
+                <span className="opacity-80">
+                  {i === coreValues.names.length - 1 ? ", and " : ", "}
                 </span>
-                <h3 className="m-0 mt-3 font-heading text-[16px] uppercase">{title}</h3>
-                <span className="mt-1.5 text-[13.5px] leading-[1.5] opacity-75">{line}</span>
-              </div>
-            </Reveal>
+              )}
+              {/* Body face, not font-heading: the heading face is condensed and
+                  only settles in caps — in mixed case, inline, it reads as a
+                  different typeface dropped mid-sentence. Weight and colour do
+                  the picking-out on their own. */}
+              <span className="font-semibold text-link">{name}</span>
+            </span>
           ))}
-        </ul>
+          <span className="opacity-80">. {coreValues.closing}</span>
+        </Reveal>
+
+        {/* Philosophy — set as a statement, not a tenth tile. It shares this
+            section with the values because it is the same idea stated as
+            conduct, and because the next band is already on the surface ground. */}
+        <div className="mt-14 grid grid-cols-1 gap-8 md:mt-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+          <div>
+            <Reveal as="span" className="kicker mb-2.5 block">
+              Company Philosophy
+            </Reveal>
+            <Reveal
+              as="p"
+              delay={1}
+              className="m-0 max-w-[34ch] border-l-2 border-link pl-5 font-heading text-[clamp(19px,3.6vw,25px)] leading-[1.35] lg:max-w-[38ch]"
+            >
+              {philosophy.statement}
+            </Reveal>
+          </div>
+
+          <ul className="m-0 flex list-none flex-wrap content-center gap-2 p-0 lg:gap-2.5">
+            {philosophy.pillars.map((pillar, i) => (
+              <Reveal as="li" key={pillar} delay={i % 3}>
+                <span className="block rounded-full bg-surface px-4 py-2 text-[13px] uppercase tracking-[0.06em]">
+                  {pillar}
+                </span>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <TeamGrid />

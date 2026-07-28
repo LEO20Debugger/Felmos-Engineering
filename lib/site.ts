@@ -7,8 +7,11 @@ export const site = {
   name: "Felmos Engineering",
   shortName: "Felmos",
   tagline: "Structural Testing & Engineering Solutions You Can Trust",
+  /* Kept near 160 characters — this is the meta description on every page that
+     doesn't set its own, and search engines truncate past roughly that. The
+     full company subhead (with the LASBCA CAP wording) is set in the hero. */
   description:
-    "Certified structural testing, soil investigation and building verification for developers, homeowners, contractors and lenders.",
+    "Indigenous civil engineering firm approved under the Lagos State Building Control Agency CAP. Testing for soil, concrete and structural safety and integrity.",
   url: "https://felmosengineering.com",
 
   phone: "+1 (555) 014-2887",
