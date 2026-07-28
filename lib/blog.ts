@@ -70,7 +70,7 @@ export const posts: Post[] = [
     date: "2026-06-18",
     author: "S. Nwosu",
     category: "Geotechnical",
-    image: "svc-soil",
+    image: "svc-subsoil",
     body: [
       {
         kind: "p",
@@ -113,7 +113,7 @@ export const posts: Post[] = [
     date: "2026-05-27",
     author: "R. Alvarez",
     category: "Testing Methods",
-    image: "svc-ndt",
+    image: "svc-integrity-testing",
     body: [
       {
         kind: "p",
@@ -156,7 +156,7 @@ export const posts: Post[] = [
     date: "2026-04-30",
     author: "K. Adeyemi",
     category: "Assessment",
-    image: "svc-foundation",
+    image: "svc-piling-works",
     body: [
       {
         kind: "p",
@@ -196,7 +196,7 @@ export const posts: Post[] = [
     date: "2026-03-12",
     author: "T. Bello",
     category: "Verification",
-    image: "svc-verify",
+    image: "svc-drawings",
     body: [
       {
         kind: "p",
@@ -237,7 +237,7 @@ export const posts: Post[] = [
     date: "2026-02-04",
     author: "K. Adeyemi",
     category: "Homeowners",
-    image: "svc-integrity",
+    image: "svc-building-repairs",
     body: [
       {
         kind: "p",

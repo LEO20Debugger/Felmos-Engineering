@@ -40,7 +40,7 @@ export default function Audience() {
             <SectionHead
               kicker="Who We Serve"
               title="Find Yourself On This List"
-              lead="Six kinds of client, each needing a different answer from the same five disciplines."
+              lead="Six kinds of client, each needing a different answer from the same eight services."
             />
             <Reveal delay={3} className="mb-8 hidden lg:block">
               <Link href="/contact" className="btn btn-secondary text-ink no-underline">
