@@ -95,9 +95,14 @@ export default function Footer() {
             <ul className="m-0 flex list-none flex-col gap-2.5 p-0 text-[14px]">
               <li className="flex items-center gap-2">
                 <Phone size={15} strokeWidth={1.5} className="flex-none text-link" />
-                <a href={site.phoneHref} className="text-ink no-underline hover:text-link">
-                  {site.phone}
-                </a>
+                <div className="flex flex-col gap-0.5">
+                  <a href={site.phoneHref} className="text-ink no-underline hover:text-link">
+                    {site.phone}
+                  </a>
+                  <a href={site.secondaryPhoneHref} className="text-ink no-underline hover:text-link">
+                    {site.secondaryPhone}
+                  </a>
+                </div>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={15} strokeWidth={1.5} className="flex-none text-link" />
