@@ -68,22 +68,33 @@ export type CmsService = {
   image: Media | null;
 };
 
+/**
+ * Nullable almost throughout — see the note on `Project` in ./content.ts. The
+ * API returns null, not "", for a fact it does not hold, and every render site
+ * decides whether to show a field by asking whether it is there.
+ */
 export type CmsProject = {
   id: number;
   slug: string;
   num: string;
   title: string;
-  category: string;
-  location: string;
-  year: number;
-  client: string;
-  duration: string;
-  scope: string;
-  narrative: string;
-  result: string;
-  metric: { value: string; label: string };
+  category: string | null;
+  location: string | null;
+  year: number | null;
+  client: string | null;
+  duration: string | null;
+  scope: string | null;
+  narrative: string | null;
+  result: string | null;
+  metric: { value: string; label: string } | null;
   services: string[];
   image: Media | null;
+  /** The supporting photographs, in the order an editor arranged them. The
+      hero above is separate and never repeated here. */
+  gallery: Media[];
+  /** When the row last changed. Feeds the sitemap's lastModified, so a crawler
+      is told what actually moved rather than "everything, at build time". */
+  updatedAt?: string;
 };
 
 export type CmsTeamMember = {
@@ -143,7 +154,28 @@ export async function getProjects(): Promise<CmsProject[]> {
     ["projects"],
     { projects: staticProjects as unknown as CmsProject[] }
   );
-  return data.projects;
+
+  /* Guarantee the two collections exist before anything renders.
+     The bundled snapshot has no gallery — the photographs live on the media
+     volume, not in lib/content.ts — and an API deployed before galleries
+     existed would not send one either. Both cases used to reach the gallery
+     component as `undefined.length` and take the whole page down, which is a
+     poor way for a fallback to behave. */
+  return data.projects.map((project) => ({
+    ...project,
+    services: project.services ?? [],
+    gallery: project.gallery ?? [],
+  }));
+}
+
+export async function getProjectBySlug(
+  slug: string
+): Promise<CmsProject | undefined> {
+  /* Off the same cached list rather than a per-slug endpoint. Seventeen
+     projects is one small response the whole site already holds, and a second
+     route would mean a second cache tag to keep in step. */
+  const all = await getProjects();
+  return all.find((project) => project.slug === slug);
 }
 
 export async function getTeam(): Promise<CmsTeamMember[]> {

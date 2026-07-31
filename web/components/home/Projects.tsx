@@ -3,14 +3,17 @@ import { ArrowRight } from "lucide-react";
 import SectionHead from "@/components/ui/Section";
 import Photo from "@/components/ui/Photo";
 import Reveal from "@/components/ui/Reveal";
-import { projects } from "@/lib/content";
+import { getProjects } from "@/lib/cms";
 
 /**
  * Homepage teaser — the first three projects, in the same photo-card language
  * as the full /projects index, closing with a link through to the rest.
+ *
+ * "First three" is the running order set in the dashboard, so which projects
+ * lead the homepage is an editorial decision rather than a code change.
  */
-export default function Projects() {
-  const featured = projects.slice(0, 3);
+export default async function Projects() {
+  const featured = (await getProjects()).slice(0, 3);
 
   return (
     <section className="wrap py-14 md:py-20" aria-label="Past projects">
@@ -33,15 +36,19 @@ export default function Projects() {
       <ul className="m-0 grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {featured.map((p, i) => (
           <Reveal as="li" key={p.slug} delay={i}>
-            <Link href={`/projects#${p.slug}`} className="group block no-underline">
+            <Link href={`/projects/${p.slug}`} className="group block no-underline">
               <figure className="relative m-0">
                 <Photo
                   src={p.image}
-                  alt={p.title}
+                  alt={p.image?.alt || p.title}
                   ratio="4/3"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
-                <span className="absolute left-4 top-4 tag tag-accent bg-bg/90">{p.category}</span>
+                {p.category ? (
+                  <span className="absolute left-4 top-4 tag tag-accent bg-bg/90">
+                    {p.category}
+                  </span>
+                ) : null}
               </figure>
               <figcaption className="pt-4">
                 <span className="flex items-center justify-between gap-3">
@@ -54,9 +61,11 @@ export default function Projects() {
                     className="flex-none text-link transition-transform duration-300 group-hover:translate-x-1"
                   />
                 </span>
-                <span className="mt-1.5 block text-[13px] opacity-65">
-                  {p.location} · {p.year}
-                </span>
+                {p.location || p.year ? (
+                  <span className="mt-1.5 block text-[13px] opacity-65">
+                    {[p.location, p.year].filter(Boolean).join(" · ")}
+                  </span>
+                ) : null}
               </figcaption>
             </Link>
           </Reveal>
