@@ -64,18 +64,62 @@ export async function POST(request: Request) {
   }
 
   /*
-   * Delivery is deliberately not wired up yet — drop your provider in here.
+   * Forwarded to the API, which stores the enquiry and notifies whoever is on
+   * the recipient list.
    *
-   *   Resend:   await resend.emails.send({ to: site.email, subject: …, text: … })
-   *   SendGrid / Postmark / a CRM webhook all slot in the same way.
+   * Proxied server-to-server rather than posted straight from the browser, for
+   * three reasons: the most important form on the site makes no cross-origin
+   * request and needs no CORS; the API's lead endpoint stays behind an internal
+   * key instead of being an open spam target; and INTERNAL_API_KEY never
+   * reaches client-side code. The cost is one hop on a form submitted a handful
+   * of times a day.
    *
-   * Until then the request is logged server-side and the visitor gets a real
-   * success state, so the form is never silently broken in development.
+   * The visitor's address and user agent are forwarded explicitly — otherwise
+   * every enquiry would be attributed to Vercel's egress IP.
    */
-  console.info("[contact] inspection request", {
-    ...clean,
-    receivedAt: new Date().toISOString(),
-  });
+  const apiUrl = process.env.API_URL;
+  const internalKey = process.env.INTERNAL_API_KEY;
+
+  if (!apiUrl || !internalKey) {
+    /* Loud in the log, but still a success to the visitor: they filled the
+       form in correctly and there is nothing they can do about our
+       configuration. Losing the enquiry is bad; telling them their details
+       were wrong is worse. */
+    console.error(
+      "[contact] API_URL or INTERNAL_API_KEY is not set — enquiry not stored",
+      { ...clean, receivedAt: new Date().toISOString() }
+    );
+    return NextResponse.json({ ok: true });
+  }
+
+  try {
+    const forwarded = request.headers.get("x-forwarded-for") ?? "";
+
+    const response = await fetch(`${apiUrl}/public/leads`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-internal-key": internalKey,
+        "x-visitor-ip": forwarded.split(",")[0]?.trim() ?? "",
+        "x-visitor-agent": request.headers.get("user-agent") ?? "",
+      },
+      body: JSON.stringify({
+        ...clean,
+        referrer: request.headers.get("referer") ?? undefined,
+      }),
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.error(
+        `[contact] API rejected the enquiry (${response.status})`,
+        await response.text().catch(() => "")
+      );
+      /* Same reasoning as above — the submission was valid. */
+    }
+  } catch (error) {
+    console.error("[contact] could not reach the API", error);
+  }
 
   return NextResponse.json({ ok: true });
 }
