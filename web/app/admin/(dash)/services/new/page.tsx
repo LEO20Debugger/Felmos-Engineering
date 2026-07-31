@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { api } from "@/lib/admin/api";
 import { ServiceForm } from "../ServiceForm";
-import { pickerOptions } from "../images";
+import { pickerOptions } from "../../images";
 
 export const metadata = { title: "New service" };
 

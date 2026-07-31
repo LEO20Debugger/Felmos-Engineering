@@ -200,6 +200,107 @@ export async function reorderServices(ids: number[]): Promise<void> {
   revalidatePath("/admin/services");
 }
 
+/* ─────────────────────────────── projects ─────────────────────────────── */
+
+/**
+ * Shared shape-building for create and update.
+ *
+ * Optional text fields are sent as typed rather than coerced to "" — the API
+ * trims and nulls them, and the site treats null as "we don't have this fact"
+ * rather than "this fact is blank".
+ */
+function projectFrom(formData: FormData) {
+  const text = (field: string) => String(formData.get(field) ?? "").trim();
+
+  /* Both collections come back as ordered id lists. The gallery arrives as one
+     comma-separated hidden input because its order is the thing being edited;
+     services arrive as repeated checkbox values. */
+  const ids = (raw: string): number[] =>
+    raw
+      .split(",")
+      .map((part) => Number(part.trim()))
+      .filter((n) => Number.isInteger(n) && n > 0);
+
+  const imageId = text("imageId");
+
+  return {
+    slug: text("slug"),
+    num: text("num"),
+    title: text("title"),
+    category: text("category"),
+    location: text("location"),
+    year: text("year"),
+    client: text("client"),
+    duration: text("duration"),
+    scope: text("scope"),
+    narrative: text("narrative"),
+    result: text("result"),
+    metricValue: text("metricValue"),
+    metricLabel: text("metricLabel"),
+    imageId: imageId ? Number(imageId) : null,
+    status: formData.get("status") === "published" ? "published" : "draft",
+    serviceIds: formData
+      .getAll("serviceIds")
+      .map((value) => Number(value))
+      .filter((n) => Number.isInteger(n) && n > 0),
+    gallery: ids(text("gallery")),
+  };
+}
+
+export async function createProject(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  let id: number;
+  try {
+    const result = await api.post<{ id: number }>(
+      "/admin/projects",
+      projectFrom(formData)
+    );
+    id = result.id;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/projects");
+  redirect(`/admin/projects/${id}`);
+}
+
+export async function updateProject(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+
+  try {
+    await api.patch(`/admin/projects/${id}`, projectFrom(formData));
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/projects");
+  revalidatePath(`/admin/projects/${id}`);
+  return { ok: true, message: "Saved." };
+}
+
+export async function deleteProject(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.del(`/admin/projects/${id}`);
+  revalidatePath("/admin/projects");
+  redirect("/admin/projects?deleted=1");
+}
+
+export async function restoreProject(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.post(`/admin/projects/${id}/restore`);
+  revalidatePath("/admin/projects");
+}
+
+export async function reorderProjects(ids: number[]): Promise<void> {
+  await api.patch("/admin/projects/reorder", { ids });
+  revalidatePath("/admin/projects");
+}
+
 /* ──────────────────────────────── leads ──────────────────────────────── */
 
 export async function updateLead(
