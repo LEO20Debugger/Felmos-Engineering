@@ -70,7 +70,9 @@ export const ICON_NAMES = [
   "CircuitBoard",
   "Cog",
   "Construction",
-  "Crane",
+  /* No "Crane" — lucide-react has no such export, and an allowlist entry the
+     web app cannot resolve would let an editor pick an icon that renders as
+     the fallback glyph on the live site. */
   "Crosshair",
   "Database",
   "Drill",
