@@ -9,6 +9,17 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "images.pexels.com", pathname: "/**" },
+      /* Photographs uploaded through the dashboard, served off the API's
+         Railway volume. next/image refuses any host not listed here, so
+         without this every uploaded image renders broken while the stock ones
+         keep working — a confusing half-failure. */
+      {
+        protocol: "https",
+        hostname: "felmos-engineering-production.up.railway.app",
+        pathname: "/v1/media/**",
+      },
+      /* Local development, where the API runs on the same machine. */
+      { protocol: "http", hostname: "localhost", port: "4000", pathname: "/v1/media/**" },
     ],
     formats: ["image/avif", "image/webp"],
     deviceSizes: [360, 480, 640, 828, 1080, 1280, 1600, 1920],
