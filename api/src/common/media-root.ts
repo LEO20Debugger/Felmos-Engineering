@@ -13,12 +13,21 @@
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 const SENTINEL = ".felmos-volume";
 
+/**
+ * Always absolute and normalised.
+ *
+ * This matters more than it looks. `path.join` normalises its result, so
+ * joining a relative root like "./.data" with a key produces ".data/media/…",
+ * which does not start with "./.data" — a containment check comparing the two
+ * fails for every legitimate path. Resolving here means callers can compare
+ * `resolve(root, key).startsWith(root)` and have it mean what they intended.
+ */
 export function mediaRoot(): string {
-  return process.env.MEDIA_ROOT ?? "./.data";
+  return resolve(process.env.MEDIA_ROOT ?? "./.data");
 }
 
 export function assertMediaRoot(): void {
