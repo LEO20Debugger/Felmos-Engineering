@@ -1,0 +1,988 @@
+{
+  "generatedAt": "2026-07-31T03:39:01.001Z",
+  "source": "web/lib/{content,blog,images,site}.ts",
+  "company": {
+    "slug": "felmos",
+    "name": "Felmos Engineering",
+    "legalName": "Felmos Engineering",
+    "webUrl": "https://felmosengineering.com"
+  },
+  "settings": {
+    "name": "Felmos Engineering",
+    "shortName": "Felmos",
+    "tagline": "Structural Testing & Engineering Solutions You Can Trust",
+    "description": "Indigenous civil engineering firm approved under the Lagos State Building Control Agency CAP. Testing for soil, concrete and structural safety and integrity.",
+    "url": "https://felmosengineering.com",
+    "phone": "+234 (0) 811 111 8122",
+    "phoneHref": "tel:+2348111118122",
+    "secondaryPhone": "+234 (0) 706 568 0305",
+    "secondaryPhoneHref": "tel:+2347065680305",
+    "email": "felmosengineering@gmail.com",
+    "emailHref": "mailto:felmosengineering@gmail.com",
+    "addressStreet": "25 Odozi St, Ojodu",
+    "addressLocality": "Ikeja",
+    "addressRegion": "Lagos",
+    "addressPostalCode": "101233",
+    "addressCountry": "NG",
+    "addressShort": "Ojodu, Ikeja, Lagos",
+    "addressFull": "25 Odozi St, Ojodu, Ikeja 101233, Lagos",
+    "geoLat": "6.6245",
+    "geoLng": "3.368",
+    "mapEmbed": "https://www.openstreetmap.org/export/embed.html?bbox=3.3560%2C6.6155%2C3.3800%2C6.6335&layer=mapnik&marker=6.6245%2C3.3680",
+    "mapLink": "https://www.openstreetmap.org/?mlat=6.6245&mlon=3.3680#map=16/6.6245/3.3680",
+    "hours": "Mon–Fri 8:00–18:00 · Sat 9:00–13:00",
+    "hoursStructured": [
+      "Mo-Fr 08:00-18:00",
+      "Sa 09:00-13:00"
+    ],
+    "founded": 2016,
+    "socials": [
+      {
+        "label": "LinkedIn",
+        "href": "#",
+        "icon": "linkedin"
+      },
+      {
+        "label": "X",
+        "href": "#",
+        "icon": "x"
+      },
+      {
+        "label": "Instagram",
+        "href": "#",
+        "icon": "instagram"
+      }
+    ]
+  },
+  "mailRecipients": [
+    {
+      "email": "felmosengineering@gmail.com",
+      "name": "Felmos Engineering",
+      "role": "to",
+      "sortOrder": 0
+    }
+  ],
+  "media": [
+    {
+      "key": "hero",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=2000&h=1000&q=80",
+      "provider": "unsplash",
+      "providerId": "1565008447742-97f6f38c985c",
+      "width": 2000,
+      "height": 1000,
+      "alt": ""
+    },
+    {
+      "key": "hero-2",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1545186070-de624ed19875?auto=format&fit=crop&w=2000&h=1000&q=80",
+      "provider": "unsplash",
+      "providerId": "1545186070-de624ed19875",
+      "width": 2000,
+      "height": 1000,
+      "alt": ""
+    },
+    {
+      "key": "hero-3",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/5612890/pexels-photo-5612890.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=2000&h=1000",
+      "provider": "pexels",
+      "providerId": "5612890",
+      "width": 2000,
+      "height": 1000,
+      "alt": ""
+    },
+    {
+      "key": "about-story",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1400&h=1050&q=80",
+      "provider": "unsplash",
+      "providerId": "1581092580497-e0d23cbdf1dc",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "about-hero",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=2000&h=1000",
+      "provider": "pexels",
+      "providerId": "1216589",
+      "width": 2000,
+      "height": 1000,
+      "alt": ""
+    },
+    {
+      "key": "svc-integrity-testing",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/8961159/pexels-photo-8961159.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "8961159",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "svc-concrete-strength",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/31945566/pexels-photo-31945566.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "31945566",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "svc-pile-testing",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/29470001/pexels-photo-29470001.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "29470001",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "svc-subsoil",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/15391048/pexels-photo-15391048.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "15391048",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "svc-piling-works",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/37432684/pexels-photo-37432684.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "37432684",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "svc-drawings",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/4134179/pexels-photo-4134179.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "4134179",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "svc-project-management",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/9405431/pexels-photo-9405431.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "9405431",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "svc-building-repairs",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/27134625/pexels-photo-27134625.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "27134625",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "process-1",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&h=800&q=80",
+      "provider": "unsplash",
+      "providerId": "1454165804606-c3d57bc86b40",
+      "width": 1200,
+      "height": 800,
+      "alt": ""
+    },
+    {
+      "key": "process-2",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?auto=format&fit=crop&w=1200&h=800&q=80",
+      "provider": "unsplash",
+      "providerId": "1531834685032-c34bf0d84c77",
+      "width": 1200,
+      "height": 800,
+      "alt": ""
+    },
+    {
+      "key": "process-3",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=1200&h=800&q=80",
+      "provider": "unsplash",
+      "providerId": "1579154204601-01588f351e67",
+      "width": 1200,
+      "height": 800,
+      "alt": ""
+    },
+    {
+      "key": "process-4",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=1200&h=800&q=80",
+      "provider": "unsplash",
+      "providerId": "1581094288338-2314dddb7ece",
+      "width": 1200,
+      "height": 800,
+      "alt": ""
+    },
+    {
+      "key": "process-5",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&h=800&q=80",
+      "provider": "unsplash",
+      "providerId": "1581092160562-40aa08e78837",
+      "width": 1200,
+      "height": 800,
+      "alt": ""
+    },
+    {
+      "key": "process-6",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1200&h=800&q=80",
+      "provider": "unsplash",
+      "providerId": "1600880292089-90a7e086ee0c",
+      "width": 1200,
+      "height": 800,
+      "alt": ""
+    },
+    {
+      "key": "team-1",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=900&h=1125&q=80",
+      "provider": "unsplash",
+      "providerId": "1472099645785-5658abf4ff4e",
+      "width": 900,
+      "height": 1125,
+      "alt": ""
+    },
+    {
+      "key": "team-2",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&h=1125&q=80",
+      "provider": "unsplash",
+      "providerId": "1573497019940-1c28c88b4f3e",
+      "width": 900,
+      "height": 1125,
+      "alt": ""
+    },
+    {
+      "key": "team-3",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&h=1125&q=80",
+      "provider": "unsplash",
+      "providerId": "1507003211169-0a1dd7228f2d",
+      "width": 900,
+      "height": 1125,
+      "alt": ""
+    },
+    {
+      "key": "team-4",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=900&h=1125&q=80",
+      "provider": "unsplash",
+      "providerId": "1580489944761-15a19d654956",
+      "width": 900,
+      "height": 1125,
+      "alt": ""
+    },
+    {
+      "key": "cta-texture",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&h=1080&q=80",
+      "provider": "unsplash",
+      "providerId": "1486406146926-c627a92ad1ab",
+      "width": 1920,
+      "height": 1080,
+      "alt": ""
+    },
+    {
+      "key": "contact-hero",
+      "kind": "remote",
+      "remoteUrl": "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=2000&h=900&q=80",
+      "provider": "unsplash",
+      "providerId": "1521791136064-7986c2920216",
+      "width": 2000,
+      "height": 900,
+      "alt": ""
+    },
+    {
+      "key": "projects-hero",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/13057675/pexels-photo-13057675.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=2000&h=1000",
+      "provider": "pexels",
+      "providerId": "13057675",
+      "width": 2000,
+      "height": 1000,
+      "alt": ""
+    },
+    {
+      "key": "proj-1",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/5612890/pexels-photo-5612890.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "5612890",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "proj-2",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/36606405/pexels-photo-36606405.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "36606405",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "proj-3",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/8961700/pexels-photo-8961700.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "8961700",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "proj-4",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/8482824/pexels-photo-8482824.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "8482824",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "proj-5",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/14840752/pexels-photo-14840752.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "14840752",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    },
+    {
+      "key": "proj-6",
+      "kind": "remote",
+      "remoteUrl": "https://images.pexels.com/photos/8482551/pexels-photo-8482551.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1400&h=1050",
+      "provider": "pexels",
+      "providerId": "8482551",
+      "width": 1400,
+      "height": 1050,
+      "alt": ""
+    }
+  ],
+  "services": [
+    {
+      "slug": "integrity-testing",
+      "num": "01",
+      "title": "Non-Destructive Integrity Testing",
+      "label": "Integrity",
+      "short": "Assess structural condition without damaging the structure.",
+      "lead": "Structural condition assessed using methods that don't damage or disrupt the asset — applied to roads, buildings and bridges to determine integrity without taking them out of service.",
+      "icon": "Waves",
+      "imageKey": "svc-integrity-testing",
+      "benefits": [
+        "Confirms condition without disrupting use of the structure",
+        "Detects deterioration before it becomes visible or urgent",
+        "Applies across roads, buildings and bridges"
+      ],
+      "clients": [
+        "Government Projects",
+        "Property Developers",
+        "Banks"
+      ]
+    },
+    {
+      "slug": "concrete-strength",
+      "num": "02",
+      "title": "Concrete Compressive Strength Testing",
+      "label": "Concrete",
+      "short": "Confirm concrete has reached the strength the design requires.",
+      "lead": "Concrete strength tested against the design specification, before load is placed on the structure or before work proceeds to the next stage.",
+      "icon": "Gauge",
+      "imageKey": "svc-concrete-strength",
+      "benefits": [
+        "Confirms concrete meets design strength before it's load-bearing",
+        "Catches under-strength concrete before it's built over",
+        "Required for stage sign-off on most construction projects"
+      ],
+      "clients": [
+        "Construction Companies",
+        "Property Developers",
+        "Government Projects"
+      ]
+    },
+    {
+      "slug": "pile-testing",
+      "num": "03",
+      "title": "Pile Integrity & Pile Load Testing",
+      "label": "Pile Testing",
+      "short": "Verify pile continuity and load capacity before you build on it.",
+      "lead": "Piles tested for structural continuity and load-bearing capacity — before a structure is built on top, or after settlement raises doubt about an existing pile.",
+      "icon": "Ruler",
+      "imageKey": "svc-pile-testing",
+      "benefits": [
+        "Confirms piles are sound before they carry structural load",
+        "Identifies pile defects that aren't visible from the surface",
+        "Applies to both new piling and investigation of existing foundations"
+      ],
+      "clients": [
+        "Property Developers",
+        "Construction Companies",
+        "Architects"
+      ]
+    },
+    {
+      "slug": "subsoil-investigation",
+      "num": "04",
+      "title": "Sub-soil Investigation",
+      "label": "Sub-soil",
+      "short": "Know what you're building on before you build.",
+      "lead": "Ground bearing capacity and composition determined through sub-soil investigation, before foundation design begins.",
+      "icon": "Layers",
+      "imageKey": "svc-subsoil",
+      "benefits": [
+        "Prevents costly foundation redesign later",
+        "Establishes bearing capacity and settlement risk",
+        "Required for most municipal approvals"
+      ],
+      "clients": [
+        "Property Developers",
+        "Architects",
+        "Homeowners"
+      ]
+    },
+    {
+      "slug": "piling-works",
+      "num": "05",
+      "title": "Piling Works & Foundation Repairs",
+      "label": "Piling Works",
+      "short": "Correct a failing foundation, or install piling where ground conditions demand it.",
+      "lead": "Piling installation and foundation repair carried out where sub-soil investigation shows the existing foundation is inadequate, or where ground conditions require piled support from the start.",
+      "icon": "Mountain",
+      "imageKey": "svc-piling-works",
+      "benefits": [
+        "Addresses settlement, cracking or movement at the source",
+        "Piling scoped to the ground conditions confirmed by testing, not estimated",
+        "Suited to both new construction and remedial work on existing structures"
+      ],
+      "clients": [
+        "Property Developers",
+        "Homeowners",
+        "Construction Companies"
+      ]
+    },
+    {
+      "slug": "structural-drawings",
+      "num": "06",
+      "title": "Structural Drawing Production",
+      "label": "Drawings",
+      "short": "Structural drawings prepared for approval, construction or as-built record.",
+      "lead": "Structural drawings produced to support design approval, construction, or renovation work — reflecting either the intended design or the as-built condition confirmed by inspection.",
+      "icon": "FileText",
+      "imageKey": "svc-drawings",
+      "benefits": [
+        "Provides the drawing set regulators and contractors require",
+        "Aligns drawings with actual site or structural conditions",
+        "Supports both new-build design and renovation planning"
+      ],
+      "clients": [
+        "Architects",
+        "Property Developers",
+        "Construction Companies"
+      ]
+    },
+    {
+      "slug": "project-management",
+      "num": "07",
+      "title": "Project Management",
+      "label": "Management",
+      "short": "Coordinate the project from design through completion.",
+      "lead": "Engineering oversight of a construction or renovation project — coordinating design, contractors and compliance through to completion.",
+      "icon": "ClipboardCheck",
+      "imageKey": "svc-project-management",
+      "benefits": [
+        "Single point of accountability across the project",
+        "Reduces risk of design and construction falling out of alignment",
+        "Engineering oversight through to project completion"
+      ],
+      "clients": [
+        "Property Developers",
+        "Homeowners"
+      ]
+    },
+    {
+      "slug": "building-repairs",
+      "num": "08",
+      "title": "Building Repairs & Renovations",
+      "label": "Repairs",
+      "short": "Repair or renovate a structure based on its actual condition, not guesswork.",
+      "lead": "Repair and renovation work carried out on existing structures, informed by structural integrity assessment where prior testing has identified the cause of damage or deterioration.",
+      "icon": "Building2",
+      "imageKey": "svc-building-repairs",
+      "benefits": [
+        "Repairs address the diagnosed cause, not just the visible symptom",
+        "Renovation scoped against the structure's actual condition",
+        "Suited to buildings with known cracking, settlement or deterioration"
+      ],
+      "clients": []
+    }
+  ],
+  "projects": [
+    {
+      "slug": "lekki-tower-verification",
+      "num": "01",
+      "title": "23-Storey Residential Tower",
+      "category": "Integrity Testing",
+      "location": "Lekki, Lagos",
+      "year": 2025,
+      "client": "Property Developer",
+      "duration": "6 weeks",
+      "scope": "Independent structural verification ahead of construction financing.",
+      "narrative": "The developer had design drawings and a contractor's warranty, but the lender wanted a third party to confirm the frame as built matched what had been approved. We surveyed the completed structure floor by floor, cored and tested concrete at every third level, and checked reinforcement against the issued-for-construction drawings.",
+      "result": "Report accepted by the lender without a single follow-up query.",
+      "metricValue": "23",
+      "metricLabel": "Storeys verified",
+      "serviceSlugs": [
+        "integrity-testing",
+        "concrete-strength"
+      ],
+      "imageKey": "proj-1"
+    },
+    {
+      "slug": "ikeja-foundation-diagnosis",
+      "num": "02",
+      "title": "Settling Warehouse Foundation",
+      "category": "Sub-soil Investigation",
+      "location": "Ikeja, Lagos",
+      "year": 2024,
+      "client": "Construction Company",
+      "duration": "9 days on site",
+      "scope": "Diagnostic investigation of visible cracking and uneven settlement.",
+      "narrative": "Cracking had opened along one wall of a working warehouse and the owner had been quoted for full underpinning. We levelled the slab, opened inspection pits at four locations and tested the soil beneath the affected corner. The movement traced to a single poorly compacted fill zone, not to the foundation design.",
+      "result": "Root cause identified in one visit; remedial cost cut by a third.",
+      "metricValue": "1/3",
+      "metricLabel": "Remedial cost avoided",
+      "serviceSlugs": [
+        "subsoil-investigation",
+        "piling-works"
+      ],
+      "imageKey": "proj-2"
+    },
+    {
+      "slug": "victoria-island-integrity",
+      "num": "03",
+      "title": "Heritage Office Block Assessment",
+      "category": "Integrity Testing",
+      "location": "Victoria Island, Lagos",
+      "year": 2024,
+      "client": "Government Project",
+      "duration": "8 weeks",
+      "scope": "Full condition assessment of a 40-year-old occupied structure.",
+      "narrative": "A public building still in daily use needed a condition read before a refurbishment budget could be set. Testing had to be non-destructive and work around occupancy. We assessed the frame, facade and slabs over eight weeks of evening and weekend access, and ranked every defect found by structural consequence rather than by visibility.",
+      "result": "Cleared for continued occupation with a prioritised repair plan.",
+      "metricValue": "40 yrs",
+      "metricLabel": "Structure re-certified",
+      "serviceSlugs": [
+        "integrity-testing",
+        "concrete-strength"
+      ],
+      "imageKey": "proj-3"
+    },
+    {
+      "slug": "ajah-ndt-survey",
+      "num": "04",
+      "title": "Concrete Strength Survey, Housing Estate",
+      "category": "Concrete Strength Testing",
+      "location": "Ajah, Lagos",
+      "year": 2023,
+      "client": "Property Developer",
+      "duration": "3 weeks",
+      "scope": "Rebound hammer and UPV testing across 60 residential units.",
+      "narrative": "A batching inconsistency during construction put a whole phase of completed units in question. Breaking out samples would have meant making good across sixty finished homes. Rebound hammer and ultrasonic pulse velocity readings, calibrated against cores taken from a single sacrificial unit, established strength across the phase instead.",
+      "result": "Every unit verified without breaking a single wall.",
+      "metricValue": "60",
+      "metricLabel": "Units tested, zero opened",
+      "serviceSlugs": [
+        "concrete-strength",
+        "integrity-testing"
+      ],
+      "imageKey": "proj-4"
+    },
+    {
+      "slug": "epe-soil-investigation",
+      "num": "05",
+      "title": "Coastal Plot Soil Investigation",
+      "category": "Sub-soil Investigation",
+      "location": "Epe, Lagos",
+      "year": 2023,
+      "client": "Homeowner",
+      "duration": "2 weeks",
+      "scope": "Bearing capacity and composition testing ahead of design.",
+      "narrative": "A private client bought a coastal plot and wanted to know what they were building on before an architect drew anything. Boreholes to eight metres found a competent bearing stratum shallower than the area's reputation suggested, which let the design proceed on pads rather than the piled solution that had been assumed.",
+      "result": "Foundation redesign avoided; approvals secured on first submission.",
+      "metricValue": "1",
+      "metricLabel": "Submission to approval",
+      "serviceSlugs": [
+        "subsoil-investigation",
+        "pile-testing"
+      ],
+      "imageKey": "proj-5"
+    },
+    {
+      "slug": "ikoyi-lender-verification",
+      "num": "06",
+      "title": "Mixed-Use Development Financing Report",
+      "category": "Integrity Testing",
+      "location": "Ikoyi, Lagos",
+      "year": 2022,
+      "client": "Bank",
+      "duration": "5 weeks",
+      "scope": "Independent adequacy verification for a construction loan facility.",
+      "narrative": "The bank was lending against a part-built mixed-use scheme and needed structural adequacy confirmed before drawing down the next tranche. We verified the completed substructure and frame against the design, and reported in the format the credit committee already used, so the findings could be actioned without translation.",
+      "result": "Became the bank's standard reference for the borrower's next three projects.",
+      "metricValue": "3",
+      "metricLabel": "Follow-on facilities",
+      "serviceSlugs": [
+        "integrity-testing",
+        "structural-drawings"
+      ],
+      "imageKey": "proj-6"
+    }
+  ],
+  "team": [
+    {
+      "slug": "k-adeyemi",
+      "name": "K. Adeyemi",
+      "role": "Principal Structural Engineer",
+      "tag": "P.Eng · 18 yrs",
+      "bio": "Signs off every verification report the practice issues.",
+      "imageKey": "team-1"
+    },
+    {
+      "slug": "s-nwosu",
+      "name": "S. Nwosu",
+      "role": "Lead Geotechnical Engineer",
+      "tag": "M.Sc Geotech",
+      "bio": "Runs the ground investigation programme, borehole to bearing capacity.",
+      "imageKey": "team-2"
+    },
+    {
+      "slug": "r-alvarez",
+      "name": "R. Alvarez",
+      "role": "NDT Testing Specialist",
+      "tag": "ACI Certified",
+      "bio": "Rebound hammer, ultrasonic pulse velocity and coring on occupied structures.",
+      "imageKey": "team-3"
+    },
+    {
+      "slug": "t-bello",
+      "name": "T. Bello",
+      "role": "Quality Assurance Lead",
+      "tag": "Chartered Engineer",
+      "bio": "Checks every reading against method before it reaches a client.",
+      "imageKey": "team-4"
+    }
+  ],
+  "posts": [
+    {
+      "slug": "what-a-soil-investigation-tells-you",
+      "title": "What a soil investigation actually tells you",
+      "excerpt": "Most clients book one because a planning officer asked for it. The report answers a more useful question than the one on the form.",
+      "date": "2026-06-18",
+      "authorName": "S. Nwosu",
+      "authorSlug": "s-nwosu",
+      "category": "Geotechnical",
+      "imageKey": "svc-subsoil",
+      "body": [
+        {
+          "kind": "p",
+          "text": "A soil investigation is usually commissioned to satisfy someone else — a planning condition, a lender's checklist, an architect who will not draw a foundation without one. That framing is why so many of them are filed and never read. The report is treated as a permission slip rather than as what it is, which is the only description you will ever get of the material your building has to stand on."
+        },
+        {
+          "kind": "h2",
+          "text": "Three questions it answers"
+        },
+        {
+          "kind": "p",
+          "text": "Strip away the tables and a ground investigation is answering three things, in order of how much money each one moves."
+        },
+        {
+          "kind": "list",
+          "items": [
+            "What is down there, and at what depth does it change. Layers matter more than any single reading — a competent stratum under two metres of fill is a different building from the same stratum at surface.",
+            "How much load it will take before it moves. Bearing capacity is the number everyone quotes, but the useful figure is usually settlement: not whether it will fail, but how far it will sink and whether the movement will be even.",
+            "What water is doing. Groundwater level, and whether it varies seasonally, decides half the buildability of a plot and most of the temporary works cost."
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Why the depth of the boreholes is the whole report"
+        },
+        {
+          "kind": "p",
+          "text": "The commonest way a ground investigation misleads is not a wrong reading. It is a borehole that stopped above the layer that mattered. Depth is specified against the load the structure will impose and the depth of influence beneath the foundation — not against a standard figure, and certainly not against budget. A shallow investigation on a heavily loaded plot produces a report that is accurate about the wrong soil."
+        },
+        {
+          "kind": "quote",
+          "text": "An investigation that stops short does not produce less information. It produces confident information about the wrong stratum."
+        },
+        {
+          "kind": "h2",
+          "text": "Reading it before the architect does"
+        },
+        {
+          "kind": "p",
+          "text": "The best time to read a ground report is before anyone has committed to a foundation type, because that is the one decision it can still change cheaply. Once a design assumes piles, an investigation showing competent ground at two metres saves money. Once construction has started, the same finding saves nothing at all — it just documents what was already paid for."
+        }
+      ]
+    },
+    {
+      "slug": "rebound-hammer-or-ultrasonic",
+      "title": "Rebound hammer or ultrasonic: which test, and when",
+      "excerpt": "Two non-destructive methods, routinely treated as interchangeable. They measure different properties, and the difference decides which one answers your question.",
+      "date": "2026-05-27",
+      "authorName": "R. Alvarez",
+      "authorSlug": "r-alvarez",
+      "category": "Testing Methods",
+      "imageKey": "svc-integrity-testing",
+      "body": [
+        {
+          "kind": "p",
+          "text": "Non-destructive testing gets requested as a single item — \"can you test the concrete\" — as though the methods were graded by accuracy and you simply pick the best one you can afford. They are not graded. They measure different physical properties, and each is close to useless at the other's job."
+        },
+        {
+          "kind": "h2",
+          "text": "What each one is actually measuring"
+        },
+        {
+          "kind": "p",
+          "text": "A rebound hammer measures surface hardness. A calibrated mass strikes the concrete and the instrument records how far it bounces back. Harder surface, higher rebound. It reads the outer few centimetres and nothing beyond them."
+        },
+        {
+          "kind": "p",
+          "text": "Ultrasonic pulse velocity measures how fast sound crosses the element. A pulse is sent in one face and timed at the other. Sound travels quickly through sound, dense concrete and slowly through concrete containing voids, cracking or poor compaction — so UPV reads the whole thickness, but reads it as a single averaged path."
+        },
+        {
+          "kind": "h2",
+          "text": "Choosing between them"
+        },
+        {
+          "kind": "list",
+          "items": [
+            "Uniformity across a large pour, or a quick comparative survey of many elements: rebound hammer. It is fast, needs one face, and is well suited to finding the outlier among fifty columns.",
+            "Suspected voids, honeycombing, internal cracking or depth of damage: UPV. Surface hardness will tell you nothing about a void behind it.",
+            "An actual strength figure you intend to rely on: neither, alone. Both are correlations. They need calibrating against cores taken from the same concrete before a number from either means anything defensible."
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "The pairing that works"
+        },
+        {
+          "kind": "p",
+          "text": "In practice the two are complementary and are usually run together. UPV locates where the concrete is not behaving as it should; the rebound hammer covers ground quickly across everything else; and a small number of cores, taken where the other two disagree, anchor the whole survey to a real measured strength. That combination is what lets a survey cover an entire phase of completed units while opening only one of them."
+        },
+        {
+          "kind": "quote",
+          "text": "Both methods are correlations. A number from either, uncalibrated, is an opinion with a decimal point."
+        }
+      ]
+    },
+    {
+      "slug": "reading-a-crack",
+      "title": "Reading a crack: which ones matter",
+      "excerpt": "Not every crack is structural, and the alarming-looking ones are often the least serious. What an engineer looks at before deciding.",
+      "date": "2026-04-30",
+      "authorName": "K. Adeyemi",
+      "authorSlug": "k-adeyemi",
+      "category": "Assessment",
+      "imageKey": "svc-piling-works",
+      "body": [
+        {
+          "kind": "p",
+          "text": "Cracking is the most common reason a homeowner calls an engineer, and the most common finding is that the crack is not the problem. That is worth saying plainly, because the fear that brings people to the phone is usually disproportionate to what is happening — and occasionally it is not disproportionate at all, which is exactly why guessing is a poor strategy."
+        },
+        {
+          "kind": "h2",
+          "text": "What gets looked at"
+        },
+        {
+          "kind": "list",
+          "items": [
+            "Direction. Vertical cracking in masonry is frequently shrinkage or thermal movement. Diagonal cracking, particularly running from the corner of an opening, is more often differential movement and is taken more seriously.",
+            "Width, and whether it changes along its length. A crack that tapers is telling you something is rotating. One of constant width more often is not.",
+            "Whether it passes through units or follows the joints. A crack that has split the blocks themselves has been driven by more force than one that took the easy path around them.",
+            "Whether it is moving. A single visit establishes what a crack looks like today. Only monitoring over time establishes whether it is live, and that distinction changes the remedy completely."
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Why photographs are rarely enough"
+        },
+        {
+          "kind": "p",
+          "text": "Clients often send a photograph hoping for a verdict, and it is an entirely reasonable thing to try. The reason it seldom works is that the important information is not in the crack. It is in what is around it — the load path above, the ground conditions below, whether the same pattern repeats elsewhere in the building, whether a tree was removed, whether a neighbouring plot was excavated. A crack is a symptom presenting at the surface. The diagnosis is somewhere else."
+        },
+        {
+          "kind": "quote",
+          "text": "A crack is a symptom presenting at the surface. What caused it is almost always somewhere else in the structure."
+        },
+        {
+          "kind": "h2",
+          "text": "When to stop waiting"
+        },
+        {
+          "kind": "p",
+          "text": "Most cracking can be watched rather than acted on. The signals that change that are worth knowing: cracking that widens measurably over weeks, doors and windows that begin to bind having previously worked, cracking that appears in more than one element at once, and any crack accompanied by visible deflection in a beam or slab. Those are not the moment to start monitoring. They are the moment to have someone look."
+        }
+      ]
+    },
+    {
+      "slug": "what-lenders-look-for",
+      "title": "What lenders actually look for in a verification report",
+      "excerpt": "A technically correct report can still be rejected. Usually the problem is not the engineering — it is that the report answers a different question than the one the credit committee asked.",
+      "date": "2026-03-12",
+      "authorName": "T. Bello",
+      "authorSlug": "t-bello",
+      "category": "Verification",
+      "imageKey": "svc-drawings",
+      "body": [
+        {
+          "kind": "p",
+          "text": "Reports come back for rework more often than they are found to be wrong. The engineering holds up; the document does not do the job the reader needed it to do. That is a format problem, and format problems are avoidable if you know who is reading."
+        },
+        {
+          "kind": "h2",
+          "text": "The reader is not an engineer"
+        },
+        {
+          "kind": "p",
+          "text": "A verification report is commissioned by a lender, but the person who has to act on it usually sits in credit risk. They are competent, and they are not structural engineers. If the conclusion only becomes clear after reading nine pages of method, the report will be sent back with a request to clarify — not because it is unclear to an engineer, but because it is unclear to its actual audience."
+        },
+        {
+          "kind": "h2",
+          "text": "What makes one straightforward to act on"
+        },
+        {
+          "kind": "list",
+          "items": [
+            "A conclusion that appears before the evidence, stated in plain language, with the qualifications attached to it rather than buried later.",
+            "Scope stated as much by exclusion as inclusion. What was not inspected, and why, is frequently the first question asked and the most common reason for a follow-up.",
+            "Findings ranked by consequence rather than by the order they were encountered on site. A defect list in survey sequence makes the reader do the prioritising.",
+            "Every instrument's calibration status included rather than referenced. A certificate that has to be requested separately is a delay built into the document.",
+            "A named, signing engineer who can be reached. Anonymous reports raise a question that costs more time to resolve than it would have to answer up front."
+          ]
+        },
+        {
+          "kind": "quote",
+          "text": "Reports are rarely rejected for being wrong. They are returned for being hard to act on."
+        },
+        {
+          "kind": "h2",
+          "text": "Independence is part of the format"
+        },
+        {
+          "kind": "p",
+          "text": "A verification report exists because someone wants a view that is not the contractor's and not the developer's. That independence has to be visible in the document, not merely true of it — which means the report should read the same whichever party commissioned it, and should be as willing to record what was satisfactory as what was not."
+        }
+      ]
+    },
+    {
+      "slug": "five-checks-before-you-buy",
+      "title": "Five structural checks worth making before you buy",
+      "excerpt": "None of these replace an inspection. All of them are things you can look at yourself on a first viewing, and any one of them is a reason to book one.",
+      "date": "2026-02-04",
+      "authorName": "K. Adeyemi",
+      "authorSlug": "k-adeyemi",
+      "category": "Homeowners",
+      "imageKey": "svc-building-repairs",
+      "body": [
+        {
+          "kind": "p",
+          "text": "A buyer gets very little time in a property before committing, usually in the company of someone who would prefer they commit. None of what follows substitutes for a structural assessment. It is a list of things that are visible on a first viewing and that tell you whether one is worth commissioning."
+        },
+        {
+          "kind": "h2",
+          "text": "One: the line of the roof"
+        },
+        {
+          "kind": "p",
+          "text": "Step back and sight along the ridge from outside. A ridge that dips or a roof plane that waves is describing movement in the structure below it, and it is one of the few whole-building signals visible from the pavement in a few seconds."
+        },
+        {
+          "kind": "h2",
+          "text": "Two: doors and windows that bind"
+        },
+        {
+          "kind": "p",
+          "text": "Open and close several, particularly upstairs. Frames that have gone out of square catch, stick or leave uneven gaps. One sticking door is a door. Several, on the same side of the building, is a pattern."
+        },
+        {
+          "kind": "h2",
+          "text": "Three: recent decoration in one room only"
+        },
+        {
+          "kind": "p",
+          "text": "Fresh paint is not suspicious. Fresh paint in a single room of an otherwise untouched house is worth a question, particularly where it is confined to one wall or one corner. It is often innocent. It is also the cheapest way to make cracking disappear before a viewing."
+        },
+        {
+          "kind": "h2",
+          "text": "Four: what is happening outside the walls"
+        },
+        {
+          "kind": "p",
+          "text": "Look at ground levels against the building, where rainwater discharges, and what is growing nearby. Mature trees close to a foundation, a downpipe emptying against a wall, or ground built up above the damp course are all causes rather than symptoms, and they are all visible without entering the house."
+        },
+        {
+          "kind": "h2",
+          "text": "Five: the extension junction"
+        },
+        {
+          "kind": "p",
+          "text": "Where an extension meets the original building, two structures of different age, weight and foundation depth are trying to move together. They rarely do. That junction is the single most productive place to look for cracking in an extended property, and it is usually the last place a viewer thinks to check."
+        },
+        {
+          "kind": "quote",
+          "text": "None of these tell you a building is unsound. They tell you whether the question is worth asking properly."
+        }
+      ]
+    }
+  ],
+  "testimonials": [
+    {
+      "slug": "a-okonkwo",
+      "quote": "Felmos delivered our soil investigation two days early. The bank accepted it without a single follow-up question.",
+      "author": "A. Okonkwo",
+      "role": "Property Developer",
+      "sortOrder": 0
+    },
+    {
+      "slug": "m-reyes",
+      "quote": "We had visible cracking in a ten-year-old building. Their testing pinpointed the cause without breaking a wall.",
+      "author": "M. Reyes",
+      "role": "Homeowner",
+      "sortOrder": 1
+    },
+    {
+      "slug": "d-whitfield",
+      "quote": "Their verification reports are now our standard requirement before we approve any construction loan.",
+      "author": "D. Whitfield",
+      "role": "Credit Risk Manager",
+      "sortOrder": 2
+    }
+  ]
+}
