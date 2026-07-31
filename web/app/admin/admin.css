@@ -165,6 +165,47 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Notices — tinted glass panels rather than a plain card with a coloured
+   stripe down one edge.
+
+   The tint is mixed from the theme's own accent and danger tokens, so it
+   follows the palette in both light and dark instead of being two fixed
+   pastels. backdrop-filter blurs whatever sits behind, which is what gives it
+   depth rather than looking like a flat coloured rectangle; browsers without
+   it simply get the tint, which is a perfectly good fallback.
+
+   Text stays on --color-ink: a coloured panel is decoration, and recolouring
+   the words as well is where these usually stop being readable. */
+.adm-note {
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  /* Prefixed declaration first, unprefixed second. In the other order
+     Lightning CSS (Tailwind v4's parser) dropped the standard property
+     altogether — verified: the parsed rule carried no backdrop-filter at all,
+     so the panels rendered as flat tint with no blur. */
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+  /* Inner top highlight — the thing that reads as a glass edge catching
+     light, and the reason this looks lit rather than merely transparent. */
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+    var(--shadow-sm);
+}
+
+.adm-note strong { color: var(--color-ink); }
+.adm-note p { color: color-mix(in srgb, var(--color-ink) 82%, transparent); }
+
+.adm-note-info {
+  background: color-mix(in srgb, var(--color-accent-500) 15%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent-500) 38%, transparent);
+}
+
+.adm-note-warn {
+  background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 42%, transparent);
+}
+
 .adm-h1 {
   font-family: var(--font-heading);
   font-size: 1.6rem;
