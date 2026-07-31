@@ -1,63 +1,83 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import SectionHead from "@/components/ui/Section";
+import Photo from "@/components/ui/Photo";
 import Reveal from "@/components/ui/Reveal";
-import { imageAt } from "@/lib/images";
-import { projects } from "@/lib/content";
+import type { CmsProject } from "@/lib/cms";
 
 /**
- * The index: every project as one dense typographic row, doubling as the jump
- * menu for the dossiers below.
+ * The index: every project as a card, linking through to its own page.
  *
- * The hover preview is pure CSS (`.idx-row:hover .idx-peek` in globals.css), so
- * this stays a server component with no JavaScript at all. Below lg the preview
- * is never rendered as anything visible and the rows simply read as a list.
+ * This replaced a dense typographic row list with a hover preview. That layout
+ * was built for six case studies on a single scrolling page, where the row was
+ * a jump menu to a dossier further down. With seventeen projects each holding
+ * its own page and its own gallery, the row's job is now to sell the click, and
+ * a photograph does that better than a line of type.
+ *
+ * Still a server component with no JavaScript — the card is a link and the
+ * hover treatment is CSS.
  */
-export default function ProjectIndex() {
+export default function ProjectIndex({ projects }: { projects: CmsProject[] }) {
   return (
     <section className="wrap py-12 md:py-16" aria-label="Project index">
       <SectionHead
         kicker="The Record"
-        title="Six Representative Projects"
-        /* Deliberately doesn't count the disciplines. The six case studies were
-           written against the old five-service list and now span six of eight,
-           so "all N disciplines" would be false whichever N we wrote. */
-        lead="Testing, investigation and remedial engineering — for developers, lenders, government and private clients."
+        /* Counted, never written down. The old copy said "Six Representative
+           Projects" and would have been wrong the moment a project was added
+           from the dashboard. */
+        title={`${projects.length} Projects On Record`}
+        lead="Testing, investigation and assessment — for government, developers, universities, hotels and estate companies across Nigeria."
       />
 
-      <ol className="idx-list m-0 list-none p-0">
+      <ul className="m-0 grid list-none grid-cols-1 gap-x-6 gap-y-9 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p, i) => (
-          <Reveal as="li" key={p.slug} delay={i % 3} className="idx-row">
-            <a href={`#${p.slug}`}>
-              <span className="font-mono text-[12px] tracking-[0.14em] text-link">
-                {p.num}
-              </span>
+          <Reveal as="li" key={p.slug} delay={i % 3}>
+            <Link href={`/projects/${p.slug}`} className="group block no-underline">
+              <figure className="relative m-0">
+                <Photo
+                  src={p.image}
+                  alt={p.image?.alt || p.title}
+                  ratio="4/3"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  priority={i < 3}
+                />
+                {p.category ? (
+                  <span className="absolute left-4 top-4 tag tag-accent bg-bg/90">
+                    {p.category}
+                  </span>
+                ) : null}
+              </figure>
 
-              <span className="font-heading text-[clamp(17px,2.6vw,25px)] uppercase leading-tight">
-                {p.title}
-              </span>
+              <figcaption className="pt-4">
+                <span className="flex items-baseline gap-3 font-mono text-[12px] tracking-[0.14em] text-link">
+                  {p.num}
+                  <span aria-hidden className="h-px w-8 self-center bg-accent/40" />
+                </span>
 
-              {/* Category and year sit on their own row below sm, where the
-                  four-column grid would crush the title. */}
-              <span className="col-start-2 text-[12.5px] uppercase tracking-[0.06em] opacity-55 sm:col-start-auto">
-                {p.category}
-              </span>
+                <span className="mt-2 flex items-start justify-between gap-3">
+                  <strong className="font-heading text-[16.5px] uppercase leading-tight text-ink">
+                    {p.title}
+                  </strong>
+                  <ArrowRight
+                    size={17}
+                    strokeWidth={1.5}
+                    className="mt-0.5 flex-none text-link transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </span>
 
-              <span className="hidden font-mono text-[13px] opacity-55 sm:block">{p.year}</span>
-            </a>
-
-            {/* Decoration only — the row text already carries every fact. */}
-            <Image
-              aria-hidden
-              alt=""
-              src={imageAt(p.image, 360, 240)}
-              width={180}
-              height={120}
-              sizes="180px"
-              className="idx-peek"
-            />
+                {/* Location and year are joined from whatever exists — several
+                    projects have one and not the other, and none of them
+                    should show a stray separator. */}
+                {p.location || p.year ? (
+                  <span className="mt-1.5 block text-[13px] opacity-65">
+                    {[p.location, p.year].filter(Boolean).join(" · ")}
+                  </span>
+                ) : null}
+              </figcaption>
+            </Link>
           </Reveal>
         ))}
-      </ol>
+      </ul>
     </section>
   );
 }
