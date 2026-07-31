@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { api, type AdminService } from "@/lib/admin/api";
 import { DeleteServiceForm, ServiceForm } from "../ServiceForm";
+import { pickerOptions } from "../images";
 
 export const metadata = { title: "Edit service" };
 
@@ -16,9 +17,10 @@ export default async function EditServicePage({
      comes from the API rather than a local constant so the allowlist has a
      single source of truth — the web app and the API can't drift into
      disagreeing about which icons exist. */
-  const [{ service }, { icons }] = await Promise.all([
+  const [{ service }, { icons }, images] = await Promise.all([
     api.get<{ service: AdminService }>(`/admin/services/${id}`),
     api.get<{ icons: string[] }>("/meta/icons"),
+    pickerOptions(),
   ]);
 
   return (
@@ -30,7 +32,7 @@ export default async function EditServicePage({
         {service.title}
       </h1>
 
-      <ServiceForm service={service} icons={icons} />
+      <ServiceForm service={service} icons={icons} images={images} />
 
       <div style={{ marginTop: "1rem" }}>
         <DeleteServiceForm id={service.id} />
