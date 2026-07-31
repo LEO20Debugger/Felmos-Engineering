@@ -24,8 +24,12 @@
 
 type Provider = "unsplash" | "pexels";
 
-/** id + the crop the layout asks for by default, + which host serves it. */
-const SOURCES = {
+/** id + the crop the layout asks for by default, + which host serves it.
+ *
+ *  Exported so scripts/export-content.ts can read the provider and id directly
+ *  when seeding the database, rather than regexing them back out of a built
+ *  URL. Nothing in the app should import this — use `images` or `imageAt()`. */
+export const SOURCES = {
   // hero — first frame of the full-bleed banner slideshow: tower cranes over a
   // glass-clad tower going up, with open sky on the left for the headline.
   hero: { id: "1565008447742-97f6f38c985c", w: 2000, h: 1000 },
