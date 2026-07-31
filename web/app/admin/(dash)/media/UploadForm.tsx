@@ -4,6 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { uploadMedia, type FormState } from "../../actions";
+import { Toast } from "../Toast";
 
 function Submit({ ready }: { ready: boolean }) {
   const { pending } = useFormStatus();
@@ -69,16 +70,14 @@ export function UploadForm() {
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <Submit ready={Boolean(fileName) && alt.trim().length > 0} />
-          {state.message ? (
-            <span
-              role="status"
-              className={state.ok ? "adm-muted" : "adm-error"}
-              style={{ margin: 0 }}
-            >
+          {!state.ok && state.message ? (
+            <span className="adm-error" style={{ margin: 0 }}>
               {state.message}
             </span>
           ) : null}
         </div>
+
+        <Toast state={state} />
       </div>
     </form>
   );
