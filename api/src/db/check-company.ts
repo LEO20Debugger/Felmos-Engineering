@@ -9,10 +9,46 @@
  * That is a hard failure to diagnose and a trivial one to check.
  */
 
+import { eq } from "drizzle-orm";
+
 import { closeDb, getDb } from "./client";
 import { companies } from "./schema";
 
+/**
+ * Optionally repoint a company at its canonical domain:
+ *
+ *   npm run check-company -- --slug=felmos --set-web-url=https://www.example.com
+ *
+ * The canonical form matters. If the site redirects www to non-www (or the
+ * reverse) and this holds the redirecting one, every revalidation request and
+ * every link in a lead notification takes an extra hop — and a POST that gets
+ * redirected across hosts is exactly the sort of thing that works in testing
+ * and fails quietly in production.
+ */
 async function main(): Promise<void> {
+  const arg = (name: string): string | undefined =>
+    process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
+
+  const setWebUrl = arg("set-web-url");
+
+  if (setWebUrl) {
+    const slug = arg("slug") ?? "felmos";
+    const url = setWebUrl.replace(/\/+$/, "");
+
+    await getDb()
+      .update(companies)
+      .set({
+        webUrl: url,
+        /* Kept in step deliberately: allowedOrigins gates the analytics
+           beacon, and leaving it on the old host would reject every beacon
+           from the site that is actually being served. */
+        allowedOrigins: [url],
+      })
+      .where(eq(companies.slug, slug));
+
+    console.info(`[check-company] ${slug} → ${url}`);
+  }
+
   const rows = await getDb()
     .select({
       id: companies.id,
