@@ -1,0 +1,409 @@
+{
+  "_readme": [
+    "The seventeen engagements from FELMOS PRESENTATION.pptx, the company's own",
+    "brief of its work. Photographs live in ./deck (gitignored) and are named by",
+    "the slug they belong to.",
+    "",
+    "Provenance rules this file follows:",
+    "  - client, year and location are transcribed from the report title pages",
+    "    photographed in the deck. Where a project has no title page in the deck,",
+    "    they are null — nothing here is inferred or estimated.",
+    "  - title and copy are the deck's own wording, corrected for spelling and",
+    "    set in sentence case. No claim was added that the deck does not make.",
+    "  - duration, result and metric are absent from the source entirely and are",
+    "    left for the dashboard.",
+    "  - report title pages, structural drawings and location screenshots were",
+    "    extracted but are deliberately not listed here. They carry client",
+    "    reference numbers, signatures and laboratory stamps, and belong in a",
+    "    report rather than on a public gallery.",
+    "  - the equipment photographs on slide 30 are vendor product shots for",
+    "    third-party instruments, so they are not imported at all."
+  ],
+
+  "_serviceImagesReadme": [
+    "Service slug -> a photograph imported below, replacing the Unsplash/Pexels",
+    "stock the services page launched with. Real work beats a stock photo of",
+    "someone else's building, and these are already on the volume.",
+    "",
+    "The same media row ends up referenced twice — once as a service image, once",
+    "in a project gallery. That is intentional and safe: deleteIfUnused checks",
+    "both, so neither reference can be removed out from under the other.",
+    "",
+    "structural-drawings is deliberately absent. The only drawings in the brief",
+    "are the annotated column-layout sheets from the reports, which carry client",
+    "markings and reference numbers, and no photograph of an engineer with a",
+    "clipboard honestly says 'we produce structural drawings'. It keeps its stock",
+    "image until there is a real one."
+  ],
+
+  "serviceImages": {
+    "integrity-testing": "bua-group-office-tower-05.jpg",
+    "concrete-strength": "bua-group-office-tower-06.jpg",
+    "pile-testing": "dynamic-load-testing-01.jpg",
+    "subsoil-investigation": "citadel-hotel-uromi-04.jpg",
+    "piling-works": "dynamic-load-testing-03.jpg",
+    "project-management": "gr-estate-development-02.jpg",
+    "building-repairs": "teju-industrial-clinic-01.jpg"
+  },
+
+  "projects": [
+    {
+      "slug": "tafawa-balewa-square",
+      "num": "01",
+      "title": "Tafawa Balewa Square",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Onikan, Lagos Island, Lagos",
+      "year": 2023,
+      "client": "Tafawa Balewa Square Management Board",
+      "scope": "Non-destructive integrity testing of every structural member across Nigeria's foremost ceremonial ground.",
+      "narrative": "Built in 1972 and holding over 55,000 people, Tafawa Balewa Square is Nigeria's foremost ceremonial ground and games centre. Felmos Engineering carried out an in-situ non-destructive integrity test on all the structural members within the facility — the pavilion, the towers, the terrace and the office complex among them — working throughout with ultrasonic equipment so that a building of this standing was never cut into.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "tafawa-balewa-square-02.jpg",
+      "gallery": [
+        { "file": "tafawa-balewa-square-01.jpg", "alt": "The Tafawa Balewa Square complex seen from the street at Onikan, Lagos" },
+        { "file": "tafawa-balewa-square-03.jpg", "alt": "One of the towers standing within the Tafawa Balewa Square complex" },
+        { "file": "tafawa-balewa-square-05.jpg", "alt": "An engineer taking an ultrasonic reading on a column beside the terrace railing" },
+        { "file": "tafawa-balewa-square-06.jpg", "alt": "An engineer reaching up to test the underside of a concrete beam" },
+        { "file": "tafawa-balewa-square-07.jpg", "alt": "An engineer taking a reading on a wall in one of the covered walkways" }
+      ],
+      "heroAlt": "The main pavilion at Tafawa Balewa Square, its cantilevered roof over the terraced seating"
+    },
+
+    {
+      "slug": "st-nicholas-house",
+      "num": "02",
+      "title": "St. Nicholas House",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "26 Catholic Mission Street, Lagos Island, Lagos",
+      "year": 2023,
+      "client": "St. Nicholas",
+      "scope": "Integrity testing of a fifteen-floor high rise in continuous use as a hospital, offices and car park.",
+      "narrative": "St. Nicholas House is a fifteen-floor high-rise on Lagos Island housing a hospital, an office complex and a car park. Felmos Engineering tested the compressive strength of the structural elements in situ, floor by floor, without taking the building out of use — the whole survey ran non-destructively around an operating hospital.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "st-nicholas-house-01.jpg",
+      "heroAlt": "St. Nicholas House, a banded high-rise on Catholic Mission Street, Lagos Island",
+      "gallery": [
+        { "file": "st-nicholas-house-03.jpg", "alt": "An engineer taking a reading on the ribbed soffit of a floor slab" },
+        { "file": "st-nicholas-house-04.jpg", "alt": "An engineer testing an internal wall on one of the upper floors" },
+        { "file": "st-nicholas-house-06.png", "alt": "An ultrasonic reading taken at the junction of a wall and ceiling" },
+        { "file": "st-nicholas-house-07.jpg", "alt": "An engineer testing beside a window, with Lagos Island visible beyond" }
+      ]
+    },
+
+    {
+      "slug": "eko-electricity-distribution",
+      "num": "03",
+      "title": "Eko Electricity Distribution Company",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Marina, Lagos Island, Lagos",
+      "year": null,
+      "client": null,
+      "scope": "Integrity testing of all structural members in a sixteen-floor high rise at the centre of Lagos power distribution.",
+      "narrative": "A sixteen-floor high-rise structure and the home of Eko Electricity Distribution Company. Felmos Engineering conducted a non-destructive integrity test on all the structural members within the facility, working around occupied offices throughout.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "eko-electricity-distribution-03.jpg",
+      "heroAlt": "An engineer taking a reading on an internal wall of the office block",
+      "gallery": [
+        { "file": "eko-electricity-distribution-02.jpg", "alt": "An engineer working inside an opened ceiling void to reach the slab above" }
+      ]
+    },
+
+    {
+      "slug": "iddo-modern-market",
+      "num": "04",
+      "title": "Iddo Modern Market",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Mainland L.C.D.A., Lagos",
+      "year": 2023,
+      "client": "Total Value Integrated Services Limited",
+      "scope": "Testing of an ongoing commercial centre of six units, two floors each.",
+      "narrative": "An ongoing six-unit commercial centre, two floors to each unit. Felmos Engineering tested the compressive strength of the structural elements in situ while the building was still under construction, which is when a strength problem is cheapest to put right.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "iddo-modern-market-03.jpg",
+      "heroAlt": "The market frame under construction, with standing water across the site",
+      "gallery": [
+        { "file": "iddo-modern-market-04.jpg", "alt": "An engineer taking a reading on a column of one of the six units" },
+        { "file": "iddo-modern-market-05.jpg", "alt": "One of the two-floor units at blockwork stage" }
+      ]
+    },
+
+    {
+      "slug": "british-canadian-university",
+      "num": "05",
+      "title": "British-Canadian University",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Obudu, Cross River",
+      "year": 2022,
+      "client": "British-Canadian University",
+      "scope": "Campus-wide testing across the administration block, faculty building, hostels, library and staff quarters.",
+      "narrative": "Felmos Engineering carried out non-destructive testing across the university's campus at Obudu: the administration block, the faculty building, hostels one and two, the library, and staff quarters one and two. A single mobilisation covered the whole campus rather than returning building by building.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "british-canadian-university-04.jpg",
+      "heroAlt": "A four-storey campus building at Obudu with rooftop water tanks",
+      "gallery": [
+        { "file": "british-canadian-university-01.jpg", "alt": "A long three-storey block on the Obudu campus seen across open ground" },
+        { "file": "british-canadian-university-07.jpg", "alt": "A campus block seen across bare red earth" },
+        { "file": "british-canadian-university-10.jpg", "alt": "The tarred approach road to one of the campus blocks" },
+        { "file": "british-canadian-university-05.png", "alt": "A campus building with a dark pitched roof" },
+        { "file": "british-canadian-university-02.jpg", "alt": "A rebar detector held against an exposed concrete surface" },
+        { "file": "british-canadian-university-03.jpg", "alt": "An engineer testing a soffit where the plaster had come away" },
+        { "file": "british-canadian-university-08.jpg", "alt": "An engineer taking a reading at ground level beside a column base" },
+        { "file": "british-canadian-university-09.jpg", "alt": "A reading taken on a column with its finish removed" }
+      ]
+    },
+
+    {
+      "slug": "wemabod-marina",
+      "num": "06",
+      "title": "Wemabod, Marina",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "37 Marina Road, Lagos Island, Lagos",
+      "year": 2022,
+      "client": "Wemabod",
+      "scope": "Integrity testing of all structural members in a twenty-floor building on the Marina.",
+      "narrative": "A twenty-floor building on Marina Road. Felmos Engineering conducted non-destructive testing on all the structural members — slabs, beams, columns and walls — across the height of the tower.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "wemabod-marina-01.jpg",
+      "heroAlt": "The Wemabod tower on Marina Road, Lagos Island",
+      "gallery": [
+        { "file": "wemabod-marina-03.png", "alt": "Two engineers setting up an ultrasonic reading between them" },
+        { "file": "wemabod-marina-05.jpg", "alt": "An engineer testing a slab soffit between temporary props" },
+        { "file": "wemabod-marina-06.jpg", "alt": "An engineer taking a reading on a curved section of soffit" },
+        { "file": "wemabod-marina-07.jpg", "alt": "A reading taken where a wall finish had been stripped back to the concrete" }
+      ]
+    },
+
+    {
+      "slug": "barracuda-beach-resort",
+      "num": "07",
+      "title": "Barracuda Beach Resort & Water Park",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Okun-Ajah Road, off Ogombo Road, Lekki Phase 2, Eti-Osa, Lagos",
+      "year": 2023,
+      "client": "Barracuda Beach Resort & Water Park Limited",
+      "scope": "Testing of every structure across the resort — hotel, offices, lounge, pool house, laundry, bar, kitchen, games house and security post.",
+      "narrative": "Felmos Engineering conducted a non-destructive integrity test on all the structures within the resort: the hotel, the office complex, the lounge and hall, the pool house, the laundry, the bar, the kitchen and hall, the preview building, the MTN house, the security post and the games house. Eleven separate buildings, surveyed across one engagement.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "barracuda-beach-resort-04.jpg",
+      "heroAlt": "The main resort building with its curved external staircase, the survey team on site",
+      "gallery": [
+        { "file": "barracuda-beach-resort-01.jpg", "alt": "A blue-painted beach building with an external staircase" },
+        { "file": "barracuda-beach-resort-02.jpg", "alt": "The resort's painted frontage facing the sand" },
+        { "file": "barracuda-beach-resort-03.jpg", "alt": "A yellow and pink painted block within the resort" },
+        { "file": "barracuda-beach-resort-05.jpg", "alt": "An engineer testing a ceiling slab inside the hotel building" },
+        { "file": "barracuda-beach-resort-07.jpg", "alt": "An engineer taking a reading on a corridor wall" },
+        { "file": "barracuda-beach-resort-08.png", "alt": "A reading taken on an external wall of one of the resort buildings" }
+      ]
+    },
+
+    {
+      "slug": "lagos-state-college-of-nursing",
+      "num": "08",
+      "title": "Lagos State College of Nursing Sewage Treatment Plant",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Igando, Lasu-Iba Road, Lagos",
+      "year": 2023,
+      "client": "Lagos State College of Nursing, Igando",
+      "scope": "Non-destructive testing of an existing sewage treatment plant.",
+      "narrative": "Felmos Engineering conducted a non-destructive test on the college's existing sewage treatment plant, working across the aeration, clarifier and effluent sections. Testing a wet, buried structure means reaching the concrete through opened covers and narrow excavations rather than working from a clear face.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "lagos-state-college-of-nursing-01.jpg",
+      "heroAlt": "The Lagos State College of Nursing at Igando",
+      "gallery": [
+        { "file": "lagos-state-college-of-nursing-03.jpg", "alt": "The concrete covers over the treatment tanks, lifted for access" },
+        { "file": "lagos-state-college-of-nursing-04.jpg", "alt": "One of the open treatment tanks" },
+        { "file": "lagos-state-college-of-nursing-02.png", "alt": "An engineer taking a reading with the tank covers lifted" },
+        { "file": "lagos-state-college-of-nursing-05.png", "alt": "An engineer reaching down into a tank to take a reading" },
+        { "file": "lagos-state-college-of-nursing-08.jpg", "alt": "An engineer taking a reading at the edge of a tank wall" }
+      ]
+    },
+
+    {
+      "slug": "teju-industrial-clinic",
+      "num": "09",
+      "title": "Teju Industrial Clinic",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Fola Osibo Street, Lekki Phase 1, Eti-Osa, Lagos",
+      "year": null,
+      "client": null,
+      "scope": "Testing of an ongoing six-floor commercial building at Lekki Phase 1.",
+      "narrative": "An ongoing six-floor commercial building on Fola Osibo Street. Felmos Engineering tested the structural members in situ during construction.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "teju-industrial-clinic-01.jpg",
+      "heroAlt": "The six-floor building under construction on Fola Osibo Street, Lekki",
+      "gallery": [
+        { "file": "teju-industrial-clinic-02.jpg", "alt": "An engineer taking a reading on an external wall at street level" }
+      ]
+    },
+
+    {
+      "slug": "agl-property-marina",
+      "num": "10",
+      "title": "AGL Property",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Marina Road, Lagos Island, Lagos",
+      "year": null,
+      "client": null,
+      "scope": "Testing of a multi-functional structure on Marina Road.",
+      "narrative": "A multi-functional structure on Marina Road, Lagos Island. Felmos Engineering tested the structural members in situ, working from bamboo scaffolding and beneath the slabs where no other access existed.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "agl-property-marina-01.jpg",
+      "heroAlt": "The red-clad building on Marina Road, Lagos Island",
+      "gallery": [
+        { "file": "agl-property-marina-02.jpg", "alt": "An ultrasonic reading taken on a wall with the finish removed" },
+        { "file": "agl-property-marina-03.jpg", "alt": "An engineer testing a slab soffit from below" },
+        { "file": "agl-property-marina-04.jpg", "alt": "An engineer testing a soffit from bamboo scaffolding" }
+      ]
+    },
+
+    {
+      "slug": "high-point-properties",
+      "num": "11",
+      "title": "High Point Properties",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "5 MacGregor Road, Ikoyi, Lagos",
+      "year": 2023,
+      "client": "High Point Properties Limited",
+      "scope": "Integrity testing of all structural members in an ongoing three-floor building complex.",
+      "narrative": "An ongoing three-floor building complex at Ikoyi. Felmos Engineering conducted a non-destructive integrity test on all the structural members within the facility while the frame was still going up.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "high-point-properties-01.jpg",
+      "heroAlt": "The frame under construction at MacGregor Road, Ikoyi",
+      "gallery": [
+        { "file": "high-point-properties-05.jpg", "alt": "The building at frame stage, with formwork above" },
+        { "file": "high-point-properties-03.jpg", "alt": "An engineer taking a reading on a column" },
+        { "file": "high-point-properties-04.jpg", "alt": "An engineer testing between the props supporting the floor above" },
+        { "file": "high-point-properties-06.jpg", "alt": "A reading taken on the concrete frame" }
+      ]
+    },
+
+    {
+      "slug": "bua-group-office-tower",
+      "num": "12",
+      "title": "Office Development for BUA Group",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "10 Mulliner Road, Ikoyi, Eti-Osa, Lagos",
+      "year": 2022,
+      "client": "BUA Group",
+      "scope": "Testing of all structural members in a seven-floor commercial building — the proposed office tower for Intercontinental Bank Plc.",
+      "narrative": "A building of seven floors built for commercial purposes, the proposed office tower for Intercontinental Bank Plc. Felmos Engineering tested all the structural members in situ, working from the scaffold and from the slabs above as the frame rose.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "bua-group-office-tower-02.jpg",
+      "heroAlt": "The office tower under construction at Mulliner Road, Ikoyi, with its tower crane",
+      "gallery": [
+        { "file": "bua-group-office-tower-03.jpg", "alt": "An engineer testing a slab soffit on an upper floor, the city below" },
+        { "file": "bua-group-office-tower-04.jpg", "alt": "An engineer taking a reading on an upper-floor wall beside the scaffold" },
+        { "file": "bua-group-office-tower-05.jpg", "alt": "An engineer testing the underside of a beam" },
+        { "file": "bua-group-office-tower-06.jpg", "alt": "A reading taken on a wall of the frame" },
+        { "file": "bua-group-office-tower-07.jpg", "alt": "An engineer testing a soffit from the scaffold" }
+      ]
+    },
+
+    {
+      "slug": "gr-estate-development",
+      "num": "13",
+      "title": "G&R Estate Development",
+      "category": "Sub-Structure Integrity Testing",
+      "location": "19B Cooper Road, off Bourdillon Road, Ikoyi, Lagos",
+      "year": 2023,
+      "client": "G&R Estate Development Company Limited",
+      "scope": "Integrity testing of all sub-structural members ahead of a proposed thirteen-floor building.",
+      "narrative": "A proposed thirteen-floor building at Ikoyi. Felmos Engineering conducted a non-destructive integrity test on all the sub-structural members — the part of a tower that becomes unreachable the moment the frame goes up, and the only sensible time to test it is before that happens.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "gr-estate-development-01.jpg",
+      "heroAlt": "The substructure with starter bars in place at Cooper Road, Ikoyi",
+      "gallery": [
+        { "file": "gr-estate-development-02.jpg", "alt": "The survey team on site during the substructure test" },
+        { "file": "gr-estate-development-04.jpg", "alt": "An engineer taking a reading on a sub-structural wall" },
+        { "file": "gr-estate-development-05.jpg", "alt": "A reading taken on a freshly struck concrete face" },
+        { "file": "gr-estate-development-06.jpg", "alt": "Readings being recorded as they are taken" },
+        { "file": "gr-estate-development-07.jpg", "alt": "An engineer taking a reading inside the substructure" }
+      ]
+    },
+
+    {
+      "slug": "holy-rosary-auditorium",
+      "num": "14",
+      "title": "Holy Rosary Secondary School Auditorium",
+      "category": "Failure Investigation",
+      "location": "Umuahia, Abia",
+      "year": null,
+      "client": null,
+      "scope": "Investigation into the cause of a collapsed auditorium at finishing stage.",
+      "narrative": "An ongoing auditorium at finishing stage collapsed at Holy Rosary Secondary School. Felmos Engineering was engaged to conduct a non-destructive test to investigate the cause or causes. Work ran from the failed roof structure down to foundations reached by hand excavation.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "holy-rosary-auditorium-01.jpg",
+      "heroAlt": "The collapsed auditorium roof at Holy Rosary Secondary School, Umuahia",
+      "gallery": [
+        { "file": "holy-rosary-auditorium-02.jpg", "alt": "The failed arched roof structure seen from the side" },
+        { "file": "holy-rosary-auditorium-03.jpg", "alt": "An engineer taking a reading on a foundation exposed by excavation" },
+        { "file": "holy-rosary-auditorium-05.jpg", "alt": "An engineer working in a narrow excavation alongside a footing" },
+        { "file": "holy-rosary-auditorium-04.jpg", "alt": "An engineer testing a column of the surviving structure" },
+        { "file": "holy-rosary-auditorium-06.jpg", "alt": "A reading taken beside an opening cut in a wall" },
+        { "file": "holy-rosary-auditorium-07.jpg", "alt": "Recording the condition of the structure from inside" }
+      ]
+    },
+
+    {
+      "slug": "citadel-hotel-uromi",
+      "num": "15",
+      "title": "Citadel Hotel",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "New Agbor Road, Uromi, Esan North-East, Edo",
+      "year": null,
+      "client": null,
+      "scope": "Testing of both sub-structure and super-structure on an ongoing five-floor commercial building.",
+      "narrative": "An ongoing five-floor building at finishing stage, built for commercial purposes. Both the sub-structure and the super-structure were tested by Felmos Engineering using up-to-date equipment, which meant excavating down to the foundations as well as working through the finished floors above.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "citadel-hotel-uromi-01.jpg",
+      "heroAlt": "The hotel at finishing stage in scaffolding, Uromi",
+      "gallery": [
+        { "file": "citadel-hotel-uromi-02.jpg", "alt": "An engineer taking a reading on the exposed substructure" },
+        { "file": "citadel-hotel-uromi-04.jpg", "alt": "An engineer working inside an excavation at a foundation" },
+        { "file": "citadel-hotel-uromi-03.jpg", "alt": "An instrument set against a structural member in an unlit space" },
+        { "file": "citadel-hotel-uromi-05.jpg", "alt": "Testing at the edge of a structural member below ground" },
+        { "file": "citadel-hotel-uromi-06.jpg", "alt": "An engineer taking a reading on an internal wall" },
+        { "file": "citadel-hotel-uromi-07.jpg", "alt": "A reading taken at the base of an external wall" }
+      ]
+    },
+
+    {
+      "slug": "national-stadium-surulere",
+      "num": "16",
+      "title": "National Stadium, Surulere",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Surulere, Lagos",
+      "year": null,
+      "client": null,
+      "scope": "Testing of the facility ahead of renovation.",
+      "narrative": "Built in 1972, the National Stadium is a major sports venue and a symbol of national pride. Felmos Engineering was commissioned to conduct a non-destructive test on the facility prior to renovation — establishing what the existing structure could still carry before anything was designed on top of it.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "national-stadium-surulere-01.jpg",
+      "heroAlt": "The National Stadium bowl at Surulere, track and terracing",
+      "gallery": [
+        { "file": "national-stadium-surulere-03.jpg", "alt": "The terracing and scoreboard before renovation" },
+        { "file": "national-stadium-surulere-02.jpg", "alt": "Two engineers recording readings on the terrace steps" },
+        { "file": "national-stadium-surulere-04.jpg", "alt": "Engineers testing the terracing, with vegetation grown through the seating" }
+      ]
+    },
+
+    {
+      "slug": "dynamic-load-testing",
+      "num": "17",
+      "title": "Dynamic Load Testing",
+      "category": "Pile Load Testing",
+      "location": "Lagos and Akwa Ibom",
+      "year": null,
+      "client": null,
+      "scope": "Dynamic load tests on working piles, carried out on sites in Lagos State and Akwa Ibom.",
+      "narrative": "Dynamic load testing establishes the capacity of a pile already in the ground by measuring its response to a controlled impact, rather than by stacking kentledge on top of it. Felmos Engineering has carried these out on sites in Lagos State and in Akwa Ibom, with the site team briefed at the pile before each test.",
+      "serviceSlugs": ["pile-testing", "piling-works"],
+      "hero": "dynamic-load-testing-01.jpg",
+      "heroAlt": "A test pile prepared for a dynamic load test",
+      "gallery": [
+        { "file": "dynamic-load-testing-02.jpg", "alt": "The site team briefed at the pile before a dynamic load test" },
+        { "file": "dynamic-load-testing-03.jpg", "alt": "The piling rig working at the test location" }
+      ]
+    }
+  ]
+}
