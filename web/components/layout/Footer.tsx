@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { navLinks, site } from "@/lib/site";
-import { services } from "@/lib/content";
+import { getServices } from "@/lib/cms";
 import Logo from "@/components/brand/Logo";
 
 const socialIcon: Record<string, React.ComponentType<{ size?: number }>> = {
@@ -20,7 +20,9 @@ function XIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-export default function Footer() {
+export default async function Footer() {
+  const services = await getServices();
+
   return (
     // Extra bottom padding on mobile so the fixed booking bar never covers the
     // final row of links.

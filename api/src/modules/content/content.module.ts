@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 
+import { PublicContentController } from "./public.controller";
 import {
   AdminServicesController,
   PublicServicesController,
@@ -7,7 +8,11 @@ import {
 import { ServicesRepository } from "./services.repository";
 
 @Module({
-  controllers: [PublicServicesController, AdminServicesController],
+  controllers: [
+    PublicServicesController,
+    PublicContentController,
+    AdminServicesController,
+  ],
   providers: [ServicesRepository],
   exports: [ServicesRepository],
 })

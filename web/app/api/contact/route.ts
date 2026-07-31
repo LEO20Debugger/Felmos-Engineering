@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
-import { services } from "@/lib/content";
+import { getServices } from "@/lib/cms";
 
 export const runtime = "nodejs";
 
-const SERVICE_TITLES = new Set<string>([
-  ...services.map((s) => s.title),
-  "Not sure — advise me",
-]);
+/**
+ * The service names this form will accept.
+ *
+ * Read from the same source the dropdown is built from, rather than a static
+ * copy: once services are editable, a hardcoded list here would start
+ * rejecting the very options the form offers, the moment anyone renamed one.
+ * The fetch is cached, so this costs nothing per submission.
+ */
+async function serviceTitles(): Promise<Set<string>> {
+  const services = await getServices();
+  return new Set<string>([
+    ...services.map((s) => s.title),
+    "Not sure — advise me",
+  ]);
+}
 
 type Payload = {
   name: string;
@@ -22,7 +33,7 @@ type Payload = {
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 
-function validate(body: Partial<Payload>) {
+function validate(body: Partial<Payload>, titles: Set<string>) {
   const errors: Record<string, string> = {};
   const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
 
@@ -38,7 +49,7 @@ function validate(body: Partial<Payload>) {
   if (phone.replace(/\D/g, "").length < 7) errors.phone = "Please enter a reachable phone number.";
   if (!isEmail(email)) errors.email = "Please enter a valid email address.";
   if (location.length < 2) errors.location = "Please tell us where the project is.";
-  if (!SERVICE_TITLES.has(service)) errors.service = "Please choose a service.";
+  if (!titles.has(service)) errors.service = "Please choose a service.";
   if (date && Number.isNaN(Date.parse(date))) errors.date = "That date doesn't look right.";
   if (message.length > 2000) errors.message = "Please keep the message under 2000 characters.";
 
@@ -58,7 +69,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const { errors, clean } = validate(body);
+  const { errors, clean } = validate(body, await serviceTitles());
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }

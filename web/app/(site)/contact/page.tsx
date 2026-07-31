@@ -7,6 +7,7 @@ import Faq from "@/components/contact/Faq";
 import Reveal from "@/components/ui/Reveal";
 import { site } from "@/lib/site";
 import { faqs } from "@/lib/content";
+import { getServices } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Book an Inspection",
@@ -25,7 +26,11 @@ const faqJsonLd = {
   })),
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  /* Fetched here rather than inside the form: ContactForm is a client
+     component and cannot read the database. */
+  const services = await getServices();
+
   return (
     <>
       <ContactHero />
@@ -33,7 +38,7 @@ export default function ContactPage() {
       <section className="wrap pb-12 pt-10 md:pt-14" aria-label="Contact">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
           <Reveal>
-            <ContactForm />
+            <ContactForm serviceTitles={services.map((s) => s.title)} />
           </Reveal>
 
           <Reveal delay={1} className="flex flex-col gap-5">

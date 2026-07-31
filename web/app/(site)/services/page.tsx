@@ -6,7 +6,8 @@ import ServicesNav from "@/components/services/ServicesNav";
 import Photo from "@/components/ui/Photo";
 import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/ui/CtaBand";
-import { services } from "@/lib/content";
+import { getServices } from "@/lib/cms";
+import { Icon } from "@/lib/icons";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -15,9 +16,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/services" },
 };
 
-export default function ServicesPage() {
-  /* Map to primitives here, on the server. Passing a Service across the
-     boundary would send `icon` — a function — and throw.
+export default async function ServicesPage() {
+  const services = await getServices();
+
+  /* Map to primitives here, on the server.
      `label` rather than the first two words of the title: with eight entries
      the sticky bar has to hold twice as many chips, and "Non-Destructive" /
      "Concrete Compressive" overflowed it. `label` is already the short form. */
@@ -41,7 +43,6 @@ export default function ServicesPage() {
       <ServicesNav items={navItems} />
 
       {services.map((s, idx) => {
-        const Icon = s.icon;
         const flip = idx % 2 === 1;
         return (
           <section
@@ -61,7 +62,13 @@ export default function ServicesPage() {
             >
               <div className="svc-head">
                 <Reveal className="mb-3 flex items-center gap-3">
-                  <Icon size={28} strokeWidth={1.5} aria-hidden className="text-link" />
+                  <Icon
+                    name={s.icon}
+                    size={28}
+                    strokeWidth={1.5}
+                    aria-hidden
+                    className="text-link"
+                  />
                   <span className="font-mono text-[12px] tracking-[0.16em] text-link">
                     {s.num}
                   </span>
