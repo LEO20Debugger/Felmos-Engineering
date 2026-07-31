@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { resendLead, updateLead, type FormState } from "../../actions";
+import { Toast } from "../Toast";
 
 export type Lead = {
   id: number;
@@ -189,13 +190,11 @@ export function LeadCard({ lead }: { lead: Lead }) {
 
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
               <button className="adm-btn">Save</button>
-              {saveState.message ? (
-                <span className={saveState.ok ? "adm-muted" : "adm-error"}>
-                  {saveState.message}
-                </span>
-              ) : null}
             </div>
           </form>
+
+          <Toast state={saveState} />
+          <Toast state={resendState} />
 
           {lead.emailStatus !== "sent" ? (
             <form action={resend} style={{ marginTop: "0.9rem" }}>
@@ -203,14 +202,6 @@ export function LeadCard({ lead }: { lead: Lead }) {
               <button className="adm-btn adm-btn-ghost">
                 Try sending the email again
               </button>
-              {resendState.message ? (
-                <span
-                  className={resendState.ok ? "adm-muted" : "adm-error"}
-                  style={{ marginLeft: "0.5rem" }}
-                >
-                  {resendState.message}
-                </span>
-              ) : null}
             </form>
           ) : null}
         </div>
