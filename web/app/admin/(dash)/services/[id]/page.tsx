@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { api, type AdminService } from "@/lib/admin/api";
 import { DeleteServiceForm, ServiceForm } from "../ServiceForm";
-import { pickerOptions } from "../images";
+import { pickerOptions } from "../../images";
 
 export const metadata = { title: "Edit service" };
 

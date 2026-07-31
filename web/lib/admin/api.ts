@@ -125,6 +125,42 @@ export type AdminService = {
   image: AdminImage | null;
 };
 
+/**
+ * A project as the dashboard sees it.
+ *
+ * Most fields are nullable, and that is the point: the company's own project
+ * record supplies a title, a location and a description, and rarely a client
+ * name, a duration or an outcome figure. The site omits what is missing rather
+ * than rendering an empty cell, so "not recorded" has to survive the round trip
+ * as null instead of collapsing to "".
+ */
+export type AdminProject = {
+  id: number;
+  slug: string;
+  num: string;
+  title: string;
+  category: string | null;
+  location: string | null;
+  year: number | null;
+  client: string | null;
+  duration: string | null;
+  scope: string | null;
+  narrative: string | null;
+  result: string | null;
+  metricValue: string | null;
+  metricLabel: string | null;
+  status: "draft" | "published";
+  sortOrder: number;
+  isDeleted: number;
+  updatedAt: string;
+  image: AdminImage | null;
+  /** Service slugs, for display. */
+  services: string[];
+  /** Service ids, for the picker. */
+  serviceIds: number[];
+  gallery: (AdminImage & { caption: string | null })[];
+};
+
 export type AdminMedia = AdminImage & {
   title: string | null;
   bytes: number | null;
