@@ -23,7 +23,7 @@ export default async function LoginPage({
     <div className="adm" style={{ display: "grid", placeItems: "center", padding: "1.5rem" }}>
       <div style={{ width: "100%", maxWidth: "24rem" }}>
         <h1 className="adm-h1" style={{ marginBottom: "0.25rem" }}>
-          Felmos Admin
+          Felmos Engineering Admin
         </h1>
         <p className="adm-muted" style={{ marginBottom: "1.5rem" }}>
           Sign in to manage the website.

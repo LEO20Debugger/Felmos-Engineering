@@ -197,6 +197,57 @@
   color: var(--color-danger);
 }
 
+/* Input with a leading icon, and optionally a trailing button.
+   The icon is decorative and pointer-events:none, so clicking it still focuses
+   the field underneath rather than doing nothing. */
+.adm-inputwrap {
+  position: relative;
+  display: block;
+}
+
+.adm-inputwrap > svg:first-of-type {
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-neutral-600);
+}
+
+.adm-inputwrap .adm-input {
+  padding-left: 2.4rem;
+}
+
+.adm-inputwrap .adm-input.has-trailing {
+  padding-right: 2.9rem;
+}
+
+/* The reveal toggle. 44px square so it is a real touch target on a phone,
+   which is where mistyping a password into an invisible field hurts most. */
+.adm-reveal {
+  position: absolute;
+  right: 0.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-neutral-700);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+}
+
+.adm-reveal:hover { color: var(--color-ink); }
+
+.adm-reveal:focus-visible {
+  outline: 2px solid var(--color-accent-600);
+  outline-offset: -2px;
+}
+
 /* ── buttons ─────────────────────────────────────────────────────────── */
 
 .adm-btn {

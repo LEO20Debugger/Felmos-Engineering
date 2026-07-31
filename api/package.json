@@ -19,7 +19,8 @@
     "verify": "tsx src/db/verify.ts",
     "create-owner": "tsx src/db/create-owner.ts",
     "create-api-key": "tsx src/db/create-api-key.ts",
-    "check-company": "tsx src/db/check-company.ts"
+    "check-company": "tsx src/db/check-company.ts",
+    "set-password": "tsx src/db/set-password.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
