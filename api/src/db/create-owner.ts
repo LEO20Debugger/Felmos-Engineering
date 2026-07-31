@@ -103,7 +103,13 @@ async function main(): Promise<void> {
     );
   }
 
-  const password = await prompt("Password (hidden): ", true);
+  /* OWNER_PASSWORD lets this run unattended (CI, scripted provisioning).
+     An environment variable rather than an argument: argv is visible in `ps`
+     while the process runs and is recorded by shell history and Railway's
+     deploy logs, whereas an env var is only visible to the process itself. */
+  const fromEnv = process.env.OWNER_PASSWORD;
+  const password = fromEnv ?? (await prompt("Password (hidden): ", true));
+
   if (password.length < 12) {
     /* A length floor rather than a composition rule. Character-class
        requirements push people toward predictable substitutions; length is
@@ -111,9 +117,13 @@ async function main(): Promise<void> {
     throw new Error("Password must be at least 12 characters.");
   }
 
-  const confirm = await prompt("Confirm password: ", true);
-  if (password !== confirm) {
-    throw new Error("Passwords did not match. Nothing was written.");
+  /* Only ask for confirmation when a human typed it — there is nothing to
+     mistype when it came from the environment. */
+  if (!fromEnv) {
+    const confirm = await prompt("Confirm password: ", true);
+    if (password !== confirm) {
+      throw new Error("Passwords did not match. Nothing was written.");
+    }
   }
 
   await db.insert(users).values({
