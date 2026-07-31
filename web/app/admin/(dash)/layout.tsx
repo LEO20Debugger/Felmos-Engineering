@@ -31,7 +31,7 @@ export default async function DashboardLayout({
     <div className="adm">
       <header className="adm-top">
         <a href="/admin" className="adm-brand">
-          Felmos Admin
+          Felmos Engineering Admin
         </a>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
