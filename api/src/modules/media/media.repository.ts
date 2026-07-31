@@ -3,7 +3,7 @@ import { and, desc, eq, or, sql } from "drizzle-orm";
 
 import { DB } from "@/db/db.module";
 import type { Db } from "@/db/client";
-import { media, posts, projects, services, team } from "@/db/schema";
+import { media, posts, projectMedia, projects, services, team } from "@/db/schema";
 import { TenantRepository } from "@/common/tenant-repository";
 import type { TenantContext } from "@/common/tenant-context";
 
@@ -136,28 +136,50 @@ export class MediaRepository extends TenantRepository<typeof media> {
         )
         .limit(5);
 
-    const [inServices, inProjects, inPosts, inTeam] = await Promise.all([
-      scoped(services),
-      scoped(projects),
-      scoped(posts),
-      this.db
-        .select({ title: team.name })
-        .from(team)
-        .where(
-          and(
-            eq(team.companyId, ctx.companyId),
-            eq(team.isDeleted, 0),
-            eq(team.imageId, id)
+    const [inServices, inProjects, inPosts, inTeam, inGalleries] =
+      await Promise.all([
+        scoped(services),
+        scoped(projects),
+        scoped(posts),
+        this.db
+          .select({ title: team.name })
+          .from(team)
+          .where(
+            and(
+              eq(team.companyId, ctx.companyId),
+              eq(team.isDeleted, 0),
+              eq(team.imageId, id)
+            )
           )
-        )
-        .limit(5),
-    ]);
+          .limit(5),
+        /* A gallery photograph is referenced through the join table rather than
+           by a column on the project, so the four queries above cannot see it.
+           Without this a supporting photo would delete cleanly and leave a hole
+           in the project page — the one failure this method exists to prevent. */
+        this.db
+          .select({ title: projects.title })
+          .from(projectMedia)
+          .innerJoin(projects, eq(projects.id, projectMedia.projectId))
+          .where(
+            and(
+              eq(projectMedia.companyId, ctx.companyId),
+              eq(projectMedia.mediaId, id),
+              eq(projects.isDeleted, 0)
+            )
+          )
+          .limit(5),
+      ]);
 
     const used = [
       ...inServices.map((r) => `service “${r.title}”`),
       ...inProjects.map((r) => `project “${r.title}”`),
       ...inPosts.map((r) => `article “${r.title}”`),
       ...inTeam.map((r) => `team member “${r.title}”`),
+      /* An image can be both a project's hero and a photo in its own gallery.
+         Naming that project twice tells the editor nothing extra. */
+      ...inGalleries
+        .filter((g) => !inProjects.some((p) => p.title === g.title))
+        .map((r) => `the gallery of project “${r.title}”`),
     ];
 
     if (used.length > 0) {
