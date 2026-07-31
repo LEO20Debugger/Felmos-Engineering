@@ -183,3 +183,97 @@ export async function reorderServices(ids: number[]): Promise<void> {
   await api.patch("/admin/services/reorder", { ids });
   revalidatePath("/admin/services");
 }
+
+/* ──────────────────────────────── media ──────────────────────────────── */
+
+/**
+ * Upload an image.
+ *
+ * Unlike the other actions this forwards the raw multipart body rather than
+ * re-encoding it as JSON — the file is already a Blob in the FormData, and
+ * rebuilding it would mean base64 in memory for no gain. `fetch` sets the
+ * multipart boundary itself, so no content-type header is set here.
+ */
+export async function uploadMedia(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const file = formData.get("file");
+  const alt = String(formData.get("alt") ?? "").trim();
+
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, message: "Choose an image first." };
+  }
+
+  if (!alt) {
+    /* Enforced here rather than only on the model. Alt text describes the
+       image to screen readers and to search engines, and it is never added
+       retroactively — the moment of upload is the only time anyone knows what
+       the picture shows. */
+    return {
+      ok: false,
+      message: "Describe the image before uploading.",
+      errors: { alt: "Required." },
+    };
+  }
+
+  const body = new FormData();
+  body.append("file", file);
+
+  const jar = await cookies();
+  const response = await fetch(
+    `${API_URL}/admin/media?alt=${encodeURIComponent(alt)}`,
+    {
+      method: "POST",
+      headers: { cookie: jar.toString() },
+      body,
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => ({}))) as {
+      message?: string;
+    };
+    return { ok: false, message: payload.message ?? "Upload failed." };
+  }
+
+  revalidatePath("/admin/media");
+  return { ok: true, message: `Uploaded ${file.name}.` };
+}
+
+export async function updateMedia(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+
+  try {
+    await api.patch(`/admin/media/${id}`, {
+      alt: String(formData.get("alt") ?? ""),
+      focalX: Number(formData.get("focalX") ?? 50),
+      focalY: Number(formData.get("focalY") ?? 50),
+    });
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/media");
+  return { ok: true, message: "Saved." };
+}
+
+export async function deleteMedia(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  try {
+    await api.del(`/admin/media/${Number(formData.get("id"))}`);
+  } catch (error) {
+    /* A 409 here lists exactly what still uses the image, which is the useful
+       part — surface it rather than a generic failure. */
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/media");
+  return { ok: true, message: "Deleted." };
+}

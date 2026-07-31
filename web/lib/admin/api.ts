@@ -125,6 +125,38 @@ export type AdminService = {
   image: AdminImage | null;
 };
 
+export type AdminMedia = AdminImage & {
+  title: string | null;
+  bytes: number | null;
+  createdAt: string;
+};
+
+/**
+ * Build a URL for a media row at a given size.
+ *
+ * Mirrors the crop logic the site has always used: the stock providers do the
+ * cropping server-side via URL parameters, and the API's own media endpoint
+ * exposes the same capability, so both kinds of image can be requested at
+ * whatever size a layout needs rather than being scaled in the browser.
+ */
+export function mediaUrl(
+  image: AdminImage | null,
+  width: number,
+  height?: number
+): string | null {
+  if (!image) return null;
+
+  if (image.kind === "remote" && image.providerId) {
+    const h = height ?? Math.round(width * 0.75);
+    return image.provider === "pexels"
+      ? `https://images.pexels.com/photos/${image.providerId}/pexels-photo-${image.providerId}.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=${width}&h=${h}`
+      : `https://images.unsplash.com/photo-${image.providerId}?auto=format&fit=crop&w=${width}&h=${h}&q=75`;
+  }
+
+  const base = process.env.NEXT_PUBLIC_API_URL ?? "";
+  return `${base}/media/${image.id}?w=${width}${height ? `&h=${height}` : ""}`;
+}
+
 export type SessionUser = {
   id: number;
   companyId: number;
