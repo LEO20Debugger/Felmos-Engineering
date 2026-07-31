@@ -16,10 +16,24 @@
  * photography will replace the stock placeholders without touching content.
  */
 
-import { index, mysqlTable, smallint, tinyint, varchar } from "drizzle-orm/mysql-core";
+import {
+  index,
+  mysqlTable,
+  smallint,
+  tinyint,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm";
 
-import { actors, bigintId, pk, softDelete, timestamps } from "./_base";
+import {
+  activeCopyOf,
+  actors,
+  bigintId,
+  pk,
+  softDelete,
+  timestamps,
+} from "./_base";
 import { companies } from "./tenancy";
 
 export const media = mysqlTable(
@@ -33,8 +47,16 @@ export const media = mysqlTable(
     kind: varchar("kind", { length: 8 }).notNull().$type<"local" | "remote">(),
 
     /** local — path under MEDIA_ROOT, namespaced by company:
-        media/<company_id>/<yyyy>/<nanoid>. Variants live inside as <width>.webp. */
+        media/<company_id>/<yyyy>/<nanoid>. Variants live inside as <width>.webp.
+        For seeded remote rows this holds the old ImageKey ("svc-pile-testing"),
+        which gives every row a stable natural key.
+
+        That key is what makes the seed idempotent: without a unique index here,
+        re-running the seed inserts a second copy of all 32 photographs instead
+        of updating them, and every content row keeps pointing at the original
+        while the duplicates accumulate invisibly. */
     storageKey: varchar("storage_key", { length: 255 }),
+    storageKeyActive: activeCopyOf("storage_key", 255),
 
     /** remote — the provider's default-crop URL, plus the pieces needed to
         rebuild any other crop. Keeping `provider` and `providerId` (rather than
@@ -71,6 +93,7 @@ export const media = mysqlTable(
     ...actors,
   },
   (t) => [
+    uniqueIndex("uq_media_storage_key_active").on(t.companyId, t.storageKeyActive),
     index("ix_media_company").on(t.companyId, t.isDeleted, t.id),
     index("ix_media_kind").on(t.companyId, t.kind, t.isDeleted),
   ]
