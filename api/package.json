@@ -17,7 +17,8 @@
     "db:studio": "drizzle-kit studio",
     "seed": "tsx src/db/seed.ts",
     "verify": "tsx src/db/verify.ts",
-    "create-owner": "tsx src/db/create-owner.ts"
+    "create-owner": "tsx src/db/create-owner.ts",
+    "create-api-key": "tsx src/db/create-api-key.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",

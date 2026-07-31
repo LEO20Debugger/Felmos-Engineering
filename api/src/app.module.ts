@@ -3,6 +3,8 @@ import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerModule } from "@nestjs/throttler";
 
+import { AuthModule } from "./modules/auth/auth.module";
+import { ContentModule } from "./modules/content/content.module";
 import { DbModule } from "./db/db.module";
 import { HealthModule } from "./modules/health/health.module";
 import { MetaModule } from "./modules/meta/meta.module";
@@ -17,6 +19,8 @@ import { MetaModule } from "./modules/meta/meta.module";
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
 
     DbModule,
+    AuthModule,
+    ContentModule,
     HealthModule,
     MetaModule,
   ],

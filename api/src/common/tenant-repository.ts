@@ -14,13 +14,19 @@
  * The same argument applies to `isDeleted`. A missed filter there means deleted
  * services quietly reappear on the public site.
  *
- * So: modules never import a table and query it directly. They extend this
- * class, which owns the predicate. `.eslintrc` enforces the import ban; this
- * file is the single place the rule is allowed to be broken.
+ * So: modules never import a table and query it directly. They go through this
+ * class, which owns the predicate.
+ *
+ * The TenantContext is passed per call rather than injected. Injecting it would
+ * mean making every repository REQUEST-scoped, which forces Nest to rebuild the
+ * entire dependency subtree on each request — and worse, silently promotes any
+ * service that injects one, so a single request-scoped repository can turn the
+ * whole graph request-scoped without anyone noticing. An explicit argument is
+ * cheaper and makes the scoping visible at every call site.
  */
 
 import { ConflictException, NotFoundException } from "@nestjs/common";
-import { and, eq, type SQL } from "drizzle-orm";
+import { and, eq, sql, type SQL } from "drizzle-orm";
 import type { AnyMySqlColumn, MySqlTable } from "drizzle-orm/mysql-core";
 
 import type { Db } from "@/db/client";
@@ -31,10 +37,11 @@ import type { TenantContext } from "./tenant-context";
  *  Drizzle's column generics don't survive this abstraction — the whole point
  *  is to operate on any table that spreads `base`, which TypeScript can't
  *  express against Drizzle's builder types without naming every column. The
- *  cast is confined to `this.c` so it happens once here rather than at each
- *  call site, and the columns it names (`companyId`, `isDeleted`, `id`) are
- *  guaranteed by `base`. */
+ *  cast is confined to `col()` so it happens once here rather than at each
+ *  call site, and the columns it names are guaranteed by `base`. */
 type Cols = Record<string, AnyMySqlColumn>;
+
+type BaseColumn = "id" | "companyId" | "isDeleted" | "slug" | "sortOrder";
 
 export abstract class TenantRepository<T extends MySqlTable> {
   protected constructor(
@@ -51,7 +58,7 @@ export abstract class TenantRepository<T extends MySqlTable> {
    * a missing `companyId` silently dropped from the predicate is exactly the
    * unscoped query this class exists to prevent.
    */
-  private col(name: "id" | "companyId" | "isDeleted"): AnyMySqlColumn {
+  protected col(name: BaseColumn): AnyMySqlColumn {
     const column = (this.table as unknown as Cols)[name];
     if (!column) {
       throw new Error(
@@ -69,29 +76,13 @@ export abstract class TenantRepository<T extends MySqlTable> {
    * deleted" view — and is deliberately explicit at each use so it can never
    * be the accidental default.
    */
-  protected scope(extra?: SQL, includeDeleted = false): SQL {
-    const parts: (SQL | undefined)[] = [
-      eq(this.col("companyId"), this.ctxCompanyId()),
-    ];
-
-    if (!includeDeleted) {
-      parts.push(eq(this.col("isDeleted"), 0));
-    }
-    if (extra) {
-      parts.push(extra);
-    }
-
-    /* and() over a non-empty list always returns a SQL node. */
-    return and(...parts) as SQL;
-  }
-
-  /* The context is supplied per request; subclasses wire it in their
-     constructor or via a request-scoped provider. */
-  protected abstract context(): TenantContext;
-
-  private ctxCompanyId(): number {
-    const id = this.context().companyId;
-    if (!Number.isInteger(id) || id <= 0) {
+  protected scope(
+    ctx: TenantContext,
+    extra?: SQL,
+    includeDeleted = false
+  ): SQL {
+    const companyId = ctx.companyId;
+    if (!Number.isInteger(companyId) || companyId <= 0) {
       /* Defensive, and worth the check: a context that somehow arrived without
          a company must fail loudly, not fall back to "no filter". */
       throw new Error(
@@ -99,12 +90,16 @@ export abstract class TenantRepository<T extends MySqlTable> {
           "an unscoped query."
       );
     }
-    return id;
+
+    const parts: (SQL | undefined)[] = [eq(this.col("companyId"), companyId)];
+    if (!includeDeleted) parts.push(eq(this.col("isDeleted"), 0));
+    if (extra) parts.push(extra);
+
+    return and(...parts) as SQL;
   }
 
   /** Columns to stamp on insert. */
-  protected createStamps(): Record<string, unknown> {
-    const ctx = this.context();
+  protected createStamps(ctx: TenantContext): Record<string, unknown> {
     return {
       companyId: ctx.companyId,
       createdBy: ctx.actorUserId,
@@ -115,38 +110,42 @@ export abstract class TenantRepository<T extends MySqlTable> {
   /** Columns to stamp on update. `companyId` is never among them — a row does
       not change tenant, and allowing the column in an update payload would
       reintroduce the hole this class exists to close. */
-  protected updateStamps(): Record<string, unknown> {
-    return { updatedBy: this.context().actorUserId };
+  protected updateStamps(ctx: TenantContext): Record<string, unknown> {
+    return { updatedBy: ctx.actorUserId };
   }
 
   /**
-   * Soft delete. Sets both flag and timestamp together — they are only ever
-   * written as a pair, which is what lets the `slug_active` generated column
-   * key off `is_deleted` alone.
+   * Soft delete. Sets flag and timestamp together — they are only ever written
+   * as a pair, which is what lets the `slug_active` generated column key off
+   * `is_deleted` alone.
    */
-  protected deleteStamps(): Record<string, unknown> {
+  protected deleteStamps(ctx: TenantContext): Record<string, unknown> {
     return {
       isDeleted: 1,
-      deletedAt: new Date().toISOString().slice(0, 23).replace("T", " "),
-      deletedBy: this.context().actorUserId,
+      deletedAt: sql`CURRENT_TIMESTAMP(3)`,
+      deletedBy: ctx.actorUserId,
     };
   }
 
-  protected restoreStamps(): Record<string, unknown> {
+  protected restoreStamps(ctx: TenantContext): Record<string, unknown> {
     return {
       isDeleted: 0,
       deletedAt: null,
       deletedBy: null,
-      updatedBy: this.context().actorUserId,
+      updatedBy: ctx.actorUserId,
     };
   }
 
   /** Fetch one row by id within the tenant, or 404. */
-  async findByIdOrFail(id: number, includeDeleted = false): Promise<unknown> {
+  protected async requireRow<R = Record<string, unknown>>(
+    ctx: TenantContext,
+    id: number,
+    includeDeleted = false
+  ): Promise<R> {
     const [row] = await this.db
       .select()
       .from(this.table as MySqlTable)
-      .where(this.scope(eq(this.col("id"), id), includeDeleted))
+      .where(this.scope(ctx, eq(this.col("id"), id), includeDeleted))
       .limit(1);
 
     if (!row) {
@@ -155,7 +154,48 @@ export abstract class TenantRepository<T extends MySqlTable> {
          ids are real in someone else's account. */
       throw new NotFoundException("Not found.");
     }
-    return row;
+    return row as R;
+  }
+
+  /** Soft-delete by id. Returns nothing; 404s if it isn't this tenant's. */
+  async softDelete(ctx: TenantContext, id: number): Promise<void> {
+    await this.requireRow(ctx, id);
+    await this.db
+      .update(this.table as MySqlTable)
+      .set(this.deleteStamps(ctx) as never)
+      .where(this.scope(ctx, eq(this.col("id"), id)));
+  }
+
+  /** Undo a soft delete — the "Undo" affordance behind every delete action. */
+  async restore(ctx: TenantContext, id: number): Promise<void> {
+    await this.requireRow(ctx, id, true);
+    try {
+      await this.db
+        .update(this.table as MySqlTable)
+        .set(this.restoreStamps(ctx) as never)
+        .where(this.scope(ctx, eq(this.col("id"), id), true));
+    } catch (error) {
+      /* Restoring can collide: the slug may have been reused since. That is a
+         genuine conflict the user has to resolve, not an internal error. */
+      this.rethrowDuplicate(error, "slug");
+    }
+  }
+
+  /**
+   * Apply a manual ordering as one statement per row inside a transaction.
+   *
+   * Takes the complete ordered list of ids rather than a pair to swap, so
+   * concurrent reorders can't interleave into a half-applied order.
+   */
+  async reorder(ctx: TenantContext, orderedIds: number[]): Promise<void> {
+    await this.db.transaction(async (tx) => {
+      for (const [index, id] of orderedIds.entries()) {
+        await tx
+          .update(this.table as MySqlTable)
+          .set({ sortOrder: index, ...this.updateStamps(ctx) } as never)
+          .where(this.scope(ctx, eq(this.col("id"), id)));
+      }
+    });
   }
 
   /**
