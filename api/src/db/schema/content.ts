@@ -156,6 +156,42 @@ export const projectServices = mysqlTable(
   ]
 );
 
+/**
+ * The supporting photographs behind a project — everything except the hero.
+ *
+ * `projects.imageId` stays the single hero image: it is what the index cards,
+ * the homepage teaser and the open-graph tag all read, and none of them want a
+ * list. This table is the gallery on the project's own page, which is where the
+ * site actually has room for five photographs of one building.
+ *
+ * Carries `companyId` for the same reason `project_services` does — a row can
+ * never join a project in one tenant to an image in another, even if an id is
+ * guessed or a bug leaks one.
+ */
+export const projectMedia = mysqlTable(
+  "project_media",
+  {
+    companyId: bigintId("company_id")
+      .notNull()
+      .references(() => companies.id),
+    projectId: bigintId("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    mediaId: bigintId("media_id")
+      .notNull()
+      .references(() => media.id),
+    sortOrder: smallint("sort_order").notNull().default(0),
+    /** Optional per-photograph caption. `media.alt` describes the picture for
+        someone who cannot see it; this says something about it to someone who
+        can, and most galleries want neither the same text nor any text. */
+    caption: varchar("caption", { length: 200 }),
+  },
+  (t) => [
+    primaryKey({ columns: [t.projectId, t.mediaId] }),
+    index("ix_project_media_media").on(t.companyId, t.mediaId),
+  ]
+);
+
 /* ───────────────────────────────── team ───────────────────────────────── */
 
 export const team = mysqlTable(
@@ -267,6 +303,18 @@ export const servicesRelations = relations(services, ({ one, many }) => ({
 export const projectsRelations = relations(projects, ({ one, many }) => ({
   image: one(media, { fields: [projects.imageId], references: [media.id] }),
   services: many(projectServices),
+  gallery: many(projectMedia),
+}));
+
+export const projectMediaRelations = relations(projectMedia, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectMedia.projectId],
+    references: [projects.id],
+  }),
+  media: one(media, {
+    fields: [projectMedia.mediaId],
+    references: [media.id],
+  }),
 }));
 
 export const projectServicesRelations = relations(projectServices, ({ one }) => ({
