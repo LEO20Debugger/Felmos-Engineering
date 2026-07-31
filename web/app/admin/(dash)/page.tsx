@@ -47,16 +47,9 @@ export default async function OverviewPage() {
       </div>
 
       {missingAlt > 0 ? (
-        <div
-          className="adm-card"
-          style={{
-            padding: "1rem",
-            marginBottom: "1.5rem",
-            borderLeft: "3px solid var(--color-accent-600)",
-          }}
-        >
+        <div className="adm-note adm-note-info" style={{ marginBottom: "1.5rem" }}>
           <strong>{missingAlt} image{missingAlt === 1 ? "" : "s"} without alt text.</strong>
-          <p className="adm-muted" style={{ margin: "0.35rem 0 0" }}>
+          <p style={{ margin: "0.35rem 0 0", fontSize: "0.875rem" }}>
             Alt text is read aloud by screen readers and used by search engines.
             The stock photographs were imported without it — add descriptions as
             you edit each item.

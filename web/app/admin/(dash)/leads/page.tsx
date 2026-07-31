@@ -66,19 +66,12 @@ export default async function LeadsPage({
       </div>
 
       {undelivered > 0 ? (
-        <div
-          className="adm-card"
-          style={{
-            padding: "0.9rem",
-            marginBottom: "1rem",
-            borderLeft: "3px solid var(--color-danger)",
-          }}
-        >
+        <div className="adm-note adm-note-warn" style={{ marginBottom: "1rem" }}>
           <strong>
             {undelivered} request{undelivered === 1 ? " was" : "s were"} not
             emailed.
           </strong>
-          <p className="adm-muted" style={{ margin: "0.3rem 0 0" }}>
+          <p style={{ margin: "0.3rem 0 0", fontSize: "0.875rem" }}>
             They are saved here and nothing is lost. This usually means no
             sending account is configured yet — once it is, they go out
             automatically within fifteen minutes.
