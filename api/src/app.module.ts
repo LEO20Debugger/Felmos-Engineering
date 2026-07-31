@@ -7,6 +7,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { ContentModule } from "./modules/content/content.module";
 import { DbModule } from "./db/db.module";
 import { HealthModule } from "./modules/health/health.module";
+import { LeadsModule } from "./modules/leads/leads.module";
 import { MediaModule } from "./modules/media/media.module";
 import { MetaModule } from "./modules/meta/meta.module";
 
@@ -23,6 +24,7 @@ import { MetaModule } from "./modules/meta/meta.module";
     AuthModule,
     ContentModule,
     HealthModule,
+    LeadsModule,
     MediaModule,
     MetaModule,
   ],

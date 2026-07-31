@@ -184,6 +184,42 @@ export async function reorderServices(ids: number[]): Promise<void> {
   revalidatePath("/admin/services");
 }
 
+/* ──────────────────────────────── leads ──────────────────────────────── */
+
+export async function updateLead(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+
+  try {
+    await api.patch(`/admin/leads/${id}`, {
+      status: String(formData.get("status") ?? "new"),
+      internalNotes: String(formData.get("internalNotes") ?? ""),
+    });
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/leads");
+  return { ok: true, message: "Saved." };
+}
+
+/** Manual retry for a notification that failed or was never configured. */
+export async function resendLead(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  try {
+    await api.post(`/admin/leads/${Number(formData.get("id"))}/resend`);
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/leads");
+  return { ok: true, message: "Sent." };
+}
+
 /* ──────────────────────────────── media ──────────────────────────────── */
 
 /**
