@@ -1,3 +1,10 @@
+/* Loads .env for the standalone scripts — migrate, seed, create-owner. Those
+   run as plain Node processes with no Nest container, so ConfigModule never
+   gets a chance to read the file. Importing it here rather than in each script
+   means a new script cannot forget it. Harmlessly redundant under Nest, which
+   has already loaded the same file by the time this runs. */
+import "dotenv/config";
+
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 
