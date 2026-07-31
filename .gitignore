@@ -15,3 +15,5 @@ tsconfig.tsbuildinfo
 **/scripts/.image-cache
 **/dist
 **/.turbo
+# Local stand-in for the Railway media volume.
+api/.data

@@ -1,0 +1,54 @@
+{
+  "name": "felmos-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Felmos Engineering content, leads and analytics API.",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/db/migrate.js && node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:studio": "drizzle-kit studio",
+    "seed": "tsx src/db/seed.ts",
+    "create-owner": "tsx src/db/create-owner.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/schedule": "^5.0.0",
+    "@nestjs/throttler": "^6.4.0",
+    "@node-rs/argon2": "^2.0.2",
+    "cookie-parser": "^1.4.7",
+    "drizzle-orm": "^0.38.0",
+    "file-type": "^19.6.0",
+    "helmet": "^8.0.0",
+    "isbot": "^5.1.0",
+    "mysql2": "^3.11.0",
+    "nanoid": "^5.0.9",
+    "nestjs-zod": "^4.0.0",
+    "reflect-metadata": "^0.2.2",
+    "resend": "^4.0.0",
+    "rxjs": "^7.8.1",
+    "sharp": "^0.33.5",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "drizzle-kit": "^0.30.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
