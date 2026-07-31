@@ -10,4 +10,8 @@ npm-debug.log*
 next-env.d.ts
 .vercel
 tsconfig.tsbuildinfo
-scripts/.image-cache
+# Leading-slash paths are anchored to the repo root, so these must be globbed to
+# keep matching now that the site lives in web/ (and api/, admin/ alongside it).
+**/scripts/.image-cache
+**/dist
+**/.turbo
