@@ -4,7 +4,9 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import type { AdminService } from "@/lib/admin/api";
+import { ConfirmButton } from "../ConfirmButton";
 import { ImagePicker, type PickerOption } from "../ImagePicker";
+import { Toast } from "../Toast";
 import {
   createService,
   deleteService,
@@ -207,16 +209,15 @@ export function ServiceForm({
         </label>
       </div>
 
-      {state.message ? (
-        <p
-          role="status"
-          className={state.ok ? "adm-muted" : "adm-error"}
-          style={{ marginTop: "0.75rem" }}
-        >
+      {/* Field-level problems stay inline beside their input; the toast
+          carries the overall outcome. */}
+      {!state.ok && state.message ? (
+        <p className="adm-error" style={{ marginTop: "0.75rem" }}>
           {state.message}
         </p>
       ) : null}
 
+      <Toast state={state} />
       <SaveBar service={service} />
 
       {service ? (
@@ -237,7 +238,7 @@ export function DeleteServiceForm({ id }: { id: number }) {
   return (
     <form action={deleteService}>
       <input type="hidden" name="id" value={id} />
-      <button className="adm-btn adm-btn-danger">Delete service</button>
+      <ConfirmButton confirmLabel="Yes, delete it">Delete service</ConfirmButton>
     </form>
   );
 }

@@ -4,6 +4,8 @@ import { useActionState, useState } from "react";
 
 import type { AdminMedia } from "@/lib/admin/api";
 import { deleteMedia, updateMedia, type FormState } from "../../actions";
+import { ConfirmButton } from "../ConfirmButton";
+import { Toast } from "../Toast";
 
 type Item = AdminMedia & { thumb: string | null };
 
@@ -189,25 +191,22 @@ function Editor({ item, onClose }: { item: Item; onClose: () => void }) {
 
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
               <button className="adm-btn">Save</button>
-              {saveState.message ? (
-                <span className={saveState.ok ? "adm-muted" : "adm-error"}>
-                  {saveState.message}
-                </span>
-              ) : null}
             </div>
           </form>
 
           <form action={remove} style={{ marginTop: "1.25rem" }}>
             <input type="hidden" name="id" value={item.id} />
-            <button className="adm-btn adm-btn-danger">Delete image</button>
-            {deleteState.message ? (
-              /* The API's 409 names every service, project, article or person
-                 still using this image, which is the actionable part. */
-              <p className={deleteState.ok ? "adm-muted" : "adm-error"}>
-                {deleteState.message}
-              </p>
+            <ConfirmButton confirmLabel="Yes, delete it">Delete image</ConfirmButton>
+            {!deleteState.ok && deleteState.message ? (
+              /* Kept inline as well as in the toast: the API's 409 names every
+                 service, project, article or person still using this image,
+                 which is a list worth reading rather than watching fade. */
+              <p className="adm-error">{deleteState.message}</p>
             ) : null}
           </form>
+
+          <Toast state={saveState} />
+          <Toast state={deleteState} />
         </div>
       </div>
     </div>
