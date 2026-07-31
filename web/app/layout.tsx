@@ -1,10 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import MobileCta from "@/components/layout/MobileCta";
 import { site } from "@/lib/site";
 import "./globals.css";
+
+/*
+ * Only what is genuinely global lives here: the html/body elements, the fonts,
+ * and the theme script that has to run before first paint.
+ *
+ * The site's header, footer, mobile CTA and business JSON-LD moved to
+ * app/(site)/layout.tsx when /admin was added, so the dashboard no longer
+ * renders inside the marketing chrome.
+ */
 
 /* next/font downloads these at build time and serves them from our own origin —
    no request to fonts.googleapis.com, no render-blocking stylesheet. */
@@ -78,35 +84,6 @@ export const viewport: Viewport = {
    preference there, not fail to render. */
 const themeScript = `try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t}catch(e){}`;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: site.name,
-  description: site.description,
-  url: site.url,
-  telephone: site.phone,
-  email: site.email,
-  foundingDate: String(site.founded),
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: site.address.street,
-    addressLocality: site.address.locality,
-    addressRegion: site.address.region,
-    postalCode: site.address.postalCode,
-    addressCountry: site.address.country,
-  },
-  geo: { "@type": "GeoCoordinates", latitude: site.geo.lat, longitude: site.geo.lng },
-  openingHours: site.hoursStructured,
-  areaServed: site.address.region,
-  knowsAbout: [
-    "Soil investigation",
-    "Non-destructive structural testing",
-    "Structural integrity assessment",
-    "Building structural verification",
-    "Foundation assessment",
-  ],
-};
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     /* suppressHydrationWarning: the script below sets data-theme on this
@@ -120,20 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-bg focus:px-4 focus:py-3 focus:outline focus:outline-2 focus:outline-accent"
-        >
-          Skip to content
-        </a>
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
-        <MobileCta />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {children}
       </body>
     </html>
   );
