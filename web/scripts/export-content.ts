@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 
 import type { LucideIcon } from "lucide-react";
 
-import { projects, services, team, testimonials } from "../lib/content";
+import { services, team, testimonials } from "../lib/content";
 import { posts } from "../lib/blog";
 import { SOURCES, images, type ImageKey } from "../lib/images";
 import { site } from "../lib/site";
@@ -203,35 +203,14 @@ function main(): void {
       clients: [...s.clients],
     })),
 
-    projects: projects.map((p) => ({
-      slug: p.slug,
-      num: p.num,
-      title: p.title,
-      category: p.category,
-      location: p.location,
-      /* String in the source ("2025"), smallint in the database. Parsed here so
-         a non-numeric year fails the export rather than silently becoming
-         NULL during the load. */
-      year: (() => {
-        const n = Number.parseInt(p.year, 10);
-        if (!Number.isInteger(n)) {
-          throw new Error(`Project "${p.slug}" has a non-numeric year: ${p.year}`);
-        }
-        return n;
-      })(),
-      client: p.client,
-      duration: p.duration,
-      scope: p.scope,
-      narrative: p.narrative,
-      result: p.result,
-      metricValue: p.metric.value,
-      metricLabel: p.metric.label,
-      /* Service slugs; the seed resolves them to ids and fails if one is
-         unknown — the database replacement for the dev-only invariant that
-         currently guards this join in lib/content.ts. */
-      serviceSlugs: [...p.services],
-      imageKey: p.image,
-    })),
+    /* Projects are deliberately NOT exported here.
+       They no longer come from this file's arrays: the seventeen real
+       engagements are transcribed in api/seed/deck-projects.json and loaded by
+       `npm run import:deck`, along with their photographs. Exporting them again
+       from lib/content.ts would give the same content two loaders that
+       overwrite each other on (company_id, slug) — and this one has no
+       photographs to offer. The array in lib/content.ts is now the build-time
+       fallback only. */
 
     team: team.map((member) => ({
       slug: slugify(member.name),
@@ -260,9 +239,10 @@ function main(): void {
 
   console.info(
     `[export] wrote ${OUT}\n` +
-      `         ${seed.services.length} services · ${seed.projects.length} projects · ` +
-      `${seed.posts.length} posts · ${seed.team.length} team · ` +
-      `${seed.testimonials.length} testimonials · ${seed.media.length} media`
+      `         ${seed.services.length} services · ${seed.posts.length} posts · ` +
+      `${seed.team.length} team · ${seed.testimonials.length} testimonials · ` +
+      `${seed.media.length} media\n` +
+      `         projects are loaded separately — see api/seed/deck-projects.json`
   );
 }
 

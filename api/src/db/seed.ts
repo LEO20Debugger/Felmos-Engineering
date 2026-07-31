@@ -26,8 +26,6 @@ import {
   mailRecipients,
   media,
   posts,
-  projectServices,
-  projects,
   services,
   siteSettings,
   team,
@@ -64,23 +62,9 @@ type Seed = {
     benefits: string[];
     clients: string[];
   }[];
-  projects: {
-    slug: string;
-    num: string;
-    title: string;
-    category: string;
-    location: string;
-    year: number;
-    client: string;
-    duration: string;
-    scope: string;
-    narrative: string;
-    result: string;
-    metricValue: string;
-    metricLabel: string;
-    serviceSlugs: string[];
-    imageKey: string;
-  }[];
+  /* No `projects` key. They are loaded by import-deck.ts from
+     seed/deck-projects.json, which is the only source that also carries the
+     photographs. See the note in web/scripts/export-content.ts. */
   team: {
     slug: string;
     name: string;
@@ -331,60 +315,11 @@ async function main(): Promise<void> {
     teamIds.set(member.slug, id);
   }
 
-  for (const [index, p] of seed.projects.entries()) {
-    const projectId = await upsert(
-      db,
-      projects,
-      { name: "slug" },
-      {
-        companyId,
-        slug: p.slug,
-        num: p.num,
-        title: p.title,
-        category: p.category,
-        location: p.location,
-        year: p.year,
-        client: p.client,
-        duration: p.duration,
-        scope: p.scope,
-        narrative: p.narrative,
-        result: p.result,
-        metricValue: p.metricValue,
-        metricLabel: p.metricLabel,
-        imageId: imageId(p.imageKey),
-        sortOrder: index,
-        ...published,
-      },
-      companyId,
-      p.slug
-    );
-
-    /* Replace the join wholesale — simpler than diffing, and the set is tiny.
-       An unknown slug is fatal: this is the constraint that used to be a
-       dev-only console warning in lib/content.ts, and silently dropping the
-       link would empty a row on the live site with nothing reporting it. */
-    await db
-      .delete(projectServices)
-      .where(
-        and(
-          eq(projectServices.companyId, companyId),
-          eq(projectServices.projectId, projectId)
-        )
-      );
-
-    for (const [order, slug] of p.serviceSlugs.entries()) {
-      const serviceId = serviceIds.get(slug);
-      if (!serviceId) {
-        throw new Error(
-          `Project "${p.slug}" references service "${slug}", which is not in ` +
-            `the seed. Fix the reference in web/lib/content.ts and re-export.`
-        );
-      }
-      await db
-        .insert(projectServices)
-        .values({ companyId, projectId, serviceId, sortOrder: order });
-    }
-  }
+  /* Projects used to be seeded here. They moved to import-deck.ts, which is
+     the only loader that has their photographs — running both would mean two
+     sources upserting the same (company_id, slug) and the last one winning.
+     `npm run seed` sets everything else up; `npm run import:deck` brings in the
+     projects and the ~87 site photographs that go with them. */
 
   for (const [index, post] of seed.posts.entries()) {
     await upsert(

@@ -17,6 +17,14 @@ tsconfig.tsbuildinfo
 **/.turbo
 # Local stand-in for the Railway media volume.
 api/.data
+api/.data-scratch
+
+# The project photographs pulled out of the company presentation. ~35 MB of
+# originals that exist to be run through `npm run import:deck` once; after that
+# the canonical copies are the WebP variants on the media volume. The manifest
+# beside it (seed/deck-projects.json) IS committed — it is the editorial record
+# of what came from where.
+api/seed/deck
 
 # Scratch files holding production credentials, written during deployment
 # setup. Delete once the values are in the hosting provider.
