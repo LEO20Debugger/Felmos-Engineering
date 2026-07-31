@@ -1,0 +1,298 @@
+/*
+ * Dashboard-only styling.
+ *
+ * Built on the site's existing tokens from globals.css rather than a second
+ * palette, so the admin reads as part of Felmos rather than a bolted-on tool.
+ * Scoped under .adm so nothing here can reach the public pages.
+ *
+ * Mobile-first throughout: every rule is the small-screen case, with min-width
+ * queries adding the desktop layout. The dashboard is genuinely expected to be
+ * used from a phone on site.
+ */
+
+.adm {
+  --adm-gap: 1rem;
+  --adm-bar: 3.5rem;
+  min-height: 100dvh;
+  background: var(--color-neutral-100);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+/* ── shell ───────────────────────────────────────────────────────────── */
+
+.adm-top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  height: var(--adm-bar);
+  padding: 0 var(--adm-gap);
+  background: var(--color-accent-900);
+  color: var(--color-on-dark);
+}
+
+.adm-top a { color: inherit; text-decoration: none; }
+
+.adm-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.adm-main {
+  padding: var(--adm-gap);
+  /* Clear the bottom tab bar plus the home indicator on iOS. */
+  padding-bottom: calc(var(--adm-bar) + 2.5rem + env(safe-area-inset-bottom));
+}
+
+/* Bottom tab bar on phones; becomes a sidebar at md. */
+.adm-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: var(--color-neutral-100);
+  border-top: 1px solid var(--color-divider);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.adm-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  /* 44px minimum touch target. */
+  min-height: 3.25rem;
+  padding: 0.4rem 0.25rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: var(--color-neutral-700);
+}
+
+.adm-nav a[aria-current="page"] {
+  color: var(--color-accent-700);
+  box-shadow: inset 0 2px 0 var(--color-accent-600);
+  background: var(--color-accent-100);
+}
+
+/* Nine targets don't fit a phone tab bar. The five daily destinations stay;
+   the rest reappear in the sidebar at md+.
+
+   Written as `.adm-nav a.adm-nav-overflow` rather than `.adm-nav-overflow`
+   because `.adm-nav a` above already sets display:flex and would win on
+   specificity — the bare class rule silently does nothing. */
+.adm-nav a.adm-nav-overflow { display: none; }
+
+@media (min-width: 48rem) {
+  .adm-body {
+    display: grid;
+    grid-template-columns: 15rem 1fr;
+    align-items: start;
+  }
+
+  .adm-nav {
+    position: sticky;
+    top: var(--adm-bar);
+    bottom: auto;
+    display: block;
+    height: calc(100dvh - var(--adm-bar));
+    border-top: 0;
+    border-right: 1px solid var(--color-divider);
+    padding: 0.75rem 0.5rem;
+  }
+
+  .adm-nav a {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+  }
+
+  .adm-nav a[aria-current="page"] { box-shadow: none; }
+  .adm-nav a.adm-nav-overflow { display: flex; }
+  .adm-main { padding: 1.5rem 2rem 4rem; }
+}
+
+/* ── surfaces ────────────────────────────────────────────────────────── */
+
+.adm-card {
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.adm-h1 {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.adm-muted { color: var(--color-neutral-700); font-size: 0.875rem; }
+
+.adm-grid { display: grid; gap: var(--adm-gap); }
+@media (min-width: 40rem) { .adm-grid-2 { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 64rem) { .adm-grid-4 { grid-template-columns: repeat(4, 1fr); } }
+
+/* ── forms ───────────────────────────────────────────────────────────── */
+
+.adm-field { display: block; margin-bottom: 1rem; }
+.adm-field > span {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-neutral-800);
+}
+
+.adm-input,
+.adm-select,
+.adm-textarea {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--color-ink);
+  /* 16px minimum — anything smaller makes iOS Safari zoom on focus, which
+     then leaves the layout scrolled sideways. */
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.adm-textarea { min-height: 6rem; resize: vertical; line-height: 1.5; }
+
+.adm-input:focus-visible,
+.adm-select:focus-visible,
+.adm-textarea:focus-visible {
+  outline: 2px solid var(--color-accent-600);
+  outline-offset: 1px;
+  border-color: var(--color-accent-600);
+}
+
+.adm-error {
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--color-danger);
+}
+
+/* ── buttons ─────────────────────────────────────────────────────────── */
+
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-700);
+  color: var(--color-on-dark);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.adm-btn:hover { background: var(--color-accent-800); }
+.adm-btn[disabled] { opacity: 0.6; cursor: progress; }
+
+.adm-btn-ghost {
+  background: transparent;
+  color: var(--color-accent-700);
+  border-color: var(--color-neutral-400);
+}
+.adm-btn-ghost:hover { background: var(--color-neutral-200); }
+
+.adm-btn-danger { background: var(--color-danger); }
+.adm-btn-danger:hover { background: #8f342d; }
+
+/* Sticky save bar — the single most important affordance on a phone, where
+   the submit button would otherwise sit below a long form. */
+.adm-savebar {
+  position: sticky;
+  bottom: calc(var(--adm-bar) + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1.25rem;
+  padding: 0.75rem;
+  background: color-mix(in srgb, #fff 92%, transparent);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+}
+
+@media (min-width: 48rem) {
+  .adm-savebar { bottom: 1rem; }
+}
+
+/* ── lists ───────────────────────────────────────────────────────────── */
+
+.adm-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-divider);
+  text-decoration: none;
+  color: inherit;
+}
+
+.adm-row:last-child { border-bottom: 0; }
+.adm-row:hover { background: var(--color-neutral-100); }
+
+.adm-thumb {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  background: var(--color-neutral-300);
+}
+
+.adm-pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.adm-pill-live { background: var(--color-signal-100); color: var(--color-signal-800); }
+.adm-pill-draft { background: var(--color-neutral-200); color: var(--color-neutral-800); }
+.adm-pill-gone { background: #f7e7e6; color: #8f342d; }
+
+/* ── stats ───────────────────────────────────────────────────────────── */
+
+.adm-stat { padding: 1rem; }
+.adm-stat b {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  line-height: 1.1;
+}
