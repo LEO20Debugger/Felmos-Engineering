@@ -17,3 +17,7 @@ tsconfig.tsbuildinfo
 **/.turbo
 # Local stand-in for the Railway media volume.
 api/.data
+
+# Scratch files holding production credentials, written during deployment
+# setup. Delete once the values are in the hosting provider.
+VERCEL-ENV.txt
