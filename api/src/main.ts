@@ -1,4 +1,3 @@
-import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import cookieParser from "cookie-parser";
@@ -31,16 +30,13 @@ async function bootstrap(): Promise<void> {
 
   app.setGlobalPrefix("v1");
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      /* Reject unknown properties outright rather than stripping them. A
-         payload carrying `companyId` is either a bug or an attempt to write
-         across tenants, and silently dropping it hides both. */
-      forbidNonWhitelisted: true,
-      transform: true,
-    })
-  );
+  /* No global ValidationPipe here.
+     Nest's ValidationPipe is built on class-validator, which this project
+     deliberately does not use: the post body is a discriminated union of block
+     kinds, which zod expresses natively and class-validator does not, and the
+     same zod schemas are reused by the dashboard's forms so client and server
+     reject identically. Validation is applied per route via nestjs-zod's
+     ZodValidationPipe on the DTO instead. */
 
   const origins = (process.env.CORS_ORIGINS ?? "")
     .split(",")
