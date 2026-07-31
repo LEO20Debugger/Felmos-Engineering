@@ -13,10 +13,27 @@
 .adm {
   --adm-gap: 1rem;
   --adm-bar: 3.5rem;
+
+  /* Card surface as a token rather than a literal colour.
+     The site has a dark theme, and globals.css deliberately walks the neutral
+     ramp backwards under [data-theme="dark"] so "higher number = further from
+     the page" stays true in both. Hardcoding #fff here broke that: the text
+     colours flipped to their light-theme-inverted values while the card stayed
+     white, leaving pale grey labels on a white panel. */
+  --adm-card: #fff;
+  --adm-field: #fff;
+
   min-height: 100dvh;
   background: var(--color-neutral-100);
   color: var(--color-ink);
   font-family: var(--font-body);
+}
+
+[data-theme="dark"] .adm {
+  /* One step up the ramp from the page, so a card still reads as sitting
+     above the background rather than cut into it. */
+  --adm-card: var(--color-neutral-200);
+  --adm-field: var(--color-neutral-300);
 }
 
 /* ── shell ───────────────────────────────────────────────────────────── */
@@ -45,6 +62,15 @@
   font-size: 1.05rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Shown only from md up. Used for the parts of the brand and the user's name
+   that a phone-width bar has no room for. */
+.adm-wide-only { display: none; }
+
+@media (min-width: 48rem) {
+  .adm-wide-only { display: inline; }
 }
 
 .adm-main {
@@ -133,7 +159,7 @@
 /* ── surfaces ────────────────────────────────────────────────────────── */
 
 .adm-card {
-  background: #fff;
+  background: var(--adm-card);
   border: 1px solid var(--color-divider);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -149,6 +175,18 @@
 
 .adm-muted { color: var(--color-neutral-700); font-size: 0.875rem; }
 
+/* Browser autofill paints its own background and text colour, which on a dark
+   card renders as near-black text on pale blue — unreadable, and the reason
+   the saved password looked greyed out. Repainting via an inset shadow is the
+   only reliable way to override it in Chrome. */
+.adm-input:-webkit-autofill,
+.adm-input:-webkit-autofill:hover,
+.adm-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-ink);
+  -webkit-box-shadow: 0 0 0 60px var(--adm-field) inset;
+  caret-color: var(--color-ink);
+}
+
 .adm-grid { display: grid; gap: var(--adm-gap); }
 @media (min-width: 40rem) { .adm-grid-2 { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 64rem) { .adm-grid-4 { grid-template-columns: repeat(4, 1fr); } }
@@ -156,14 +194,20 @@
 /* ── forms ───────────────────────────────────────────────────────────── */
 
 .adm-field { display: block; margin-bottom: 1rem; }
-.adm-field > span {
+
+/* `:not(.adm-inputwrap)` matters. The wrapper that positions the field icons
+   is also a direct span child, so a bare `.adm-field > span` styled it as a
+   label — inheriting uppercase and a 0.8rem size into the input inside it. */
+.adm-field > span:not(.adm-inputwrap) {
   display: block;
   margin-bottom: 0.3rem;
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--color-neutral-800);
+  /* neutral-900, not 800: uppercase text at 0.8rem has thin strokes and needs
+     the extra contrast to stay comfortably readable in both themes. */
+  color: var(--color-neutral-900);
 }
 
 .adm-input,
@@ -173,7 +217,7 @@
   padding: 0.6rem 0.7rem;
   border: 1px solid var(--color-neutral-400);
   border-radius: var(--radius-md);
-  background: #fff;
+  background: var(--adm-field);
   color: var(--color-ink);
   /* 16px minimum — anything smaller makes iOS Safari zoom on focus, which
      then leaves the layout scrolled sideways. */
@@ -290,7 +334,7 @@
   align-items: center;
   margin-top: 1.25rem;
   padding: 0.75rem;
-  background: color-mix(in srgb, #fff 92%, transparent);
+  background: color-mix(in srgb, var(--adm-card) 92%, transparent);
   backdrop-filter: blur(6px);
   border: 1px solid var(--color-divider);
   border-radius: var(--radius-lg);
@@ -334,9 +378,20 @@
   text-transform: uppercase;
 }
 
-.adm-pill-live { background: var(--color-signal-100); color: var(--color-signal-800); }
-.adm-pill-draft { background: var(--color-neutral-200); color: var(--color-neutral-800); }
-.adm-pill-gone { background: #f7e7e6; color: #8f342d; }
+/* Tinted from the theme's own tokens rather than fixed pastels, so they stay
+   legible on a dark card instead of becoming pale blocks. */
+.adm-pill-live {
+  background: color-mix(in srgb, var(--color-signal-500) 18%, transparent);
+  color: var(--color-signal-ink);
+}
+.adm-pill-draft {
+  background: color-mix(in srgb, var(--color-neutral-500) 22%, transparent);
+  color: var(--color-neutral-900);
+}
+.adm-pill-gone {
+  background: color-mix(in srgb, var(--color-danger) 16%, transparent);
+  color: var(--color-danger);
+}
 
 /* ── stats ───────────────────────────────────────────────────────────── */
 
