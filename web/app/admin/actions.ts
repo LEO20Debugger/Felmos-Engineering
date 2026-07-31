@@ -37,12 +37,28 @@ export async function login(
   /* Called with fetch rather than the shared client because this is the one
      place that needs the *response* headers — the API's Set-Cookie has to be
      copied onto this origin's cookie jar. */
-  const response = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ email, password }),
-    cache: "no-store",
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      cache: "no-store",
+      /* A hung API must not hold the sign-in request open indefinitely. */
+      signal: AbortSignal.timeout(15_000),
+    });
+  } catch (error) {
+    /* An unreachable API would otherwise throw out of the action and render
+       Next's generic "Application error" screen — which tells the person
+       signing in nothing, and looks identical to the site being broken. The
+       API restarting, or waking from sleep, both land here. */
+    console.error("[admin] could not reach the API to sign in", error);
+    return {
+      ok: false,
+      message:
+        "Could not reach the server. It may be restarting — wait a moment and try again.",
+    };
+  }
 
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as {
