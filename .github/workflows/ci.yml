@@ -13,8 +13,22 @@ concurrency:
 
 jobs:
   verify:
-    name: Typecheck & build
+    name: Typecheck & build (${{ matrix.app }})
     runs-on: ubuntu-latest
+
+    strategy:
+      # One leg per deployable app. `api` and `admin` join this list as they
+      # land — each needs its own package.json with `typecheck` and `build`
+      # scripts, and nothing else here changes.
+      matrix:
+        app: [web]
+      # A red web build shouldn't hide a red api build.
+      fail-fast: false
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.app }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +37,8 @@ jobs:
           # Matches the Node version Vercel builds with.
           node-version: 22
           cache: npm
+          # setup-node resolves this from the repo root, not working-directory.
+          cache-dependency-path: ${{ matrix.app }}/package-lock.json
 
       - run: npm ci
 
