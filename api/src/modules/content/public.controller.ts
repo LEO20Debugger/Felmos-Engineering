@@ -1,17 +1,9 @@
 import { Controller, Get, Inject, UseGuards } from "@nestjs/common";
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 
 import { DB } from "@/db/db.module";
 import type { Db } from "@/db/client";
-import {
-  media,
-  posts,
-  projectServices,
-  projects,
-  services,
-  team,
-  testimonials,
-} from "@/db/schema";
+import { media, posts, team, testimonials } from "@/db/schema";
 import { Tenant } from "@/common/tenant.decorator";
 import type { TenantContext } from "@/common/tenant-context";
 import { InternalKeyGuard } from "@/modules/auth/auth.guards";
@@ -55,74 +47,10 @@ function withImage(row: Row): Row {
 export class PublicContentController {
   constructor(@Inject(DB) private readonly db: Db) {}
 
-  @Get("projects")
-  async projects(@Tenant() tenant: TenantContext) {
-    const rows = await this.db
-      .select({
-        id: projects.id,
-        slug: projects.slug,
-        num: projects.num,
-        title: projects.title,
-        category: projects.category,
-        location: projects.location,
-        year: projects.year,
-        client: projects.client,
-        duration: projects.duration,
-        scope: projects.scope,
-        narrative: projects.narrative,
-        result: projects.result,
-        metricValue: projects.metricValue,
-        metricLabel: projects.metricLabel,
-        image: imageShape,
-      })
-      .from(projects)
-      .leftJoin(media, eq(media.id, projects.imageId))
-      .where(
-        and(
-          eq(projects.companyId, tenant.companyId),
-          eq(projects.isDeleted, 0),
-          eq(projects.status, "published")
-        )
-      )
-      .orderBy(asc(projects.sortOrder), desc(projects.id));
-
-    /* The service slugs each project exercised, fetched in one query rather
-       than per project — six projects would otherwise mean seven round trips
-       to render a single page. */
-    const ids = rows.map((r) => r.id);
-    const joins = ids.length
-      ? await this.db
-          .select({
-            projectId: projectServices.projectId,
-            slug: services.slug,
-          })
-          .from(projectServices)
-          .innerJoin(services, eq(services.id, projectServices.serviceId))
-          .where(
-            and(
-              eq(projectServices.companyId, tenant.companyId),
-              inArray(projectServices.projectId, ids)
-            )
-          )
-          .orderBy(asc(projectServices.sortOrder))
-      : [];
-
-    const byProject = new Map<number, string[]>();
-    for (const join of joins) {
-      const list = byProject.get(join.projectId) ?? [];
-      list.push(join.slug);
-      byProject.set(join.projectId, list);
-    }
-
-    return {
-      projects: rows.map((row) => ({
-        ...withImage(row as Row),
-        /* Shaped as the nested object the existing components read. */
-        metric: { value: row.metricValue ?? "", label: row.metricLabel ?? "" },
-        services: byProject.get(row.id) ?? [],
-      })),
-    };
-  }
+  /* Projects used to be read here too. It moved to PublicProjectsController,
+     which shares ProjectsRepository with the dashboard — a project now carries
+     a gallery and a service list, and two hand-written copies of that shape
+     would only stay in step until the first one was edited alone. */
 
   @Get("posts")
   async posts(@Tenant() tenant: TenantContext) {
