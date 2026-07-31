@@ -44,6 +44,7 @@ CREATE TABLE `media` (
 	`company_id` bigint unsigned NOT NULL,
 	`kind` varchar(8) NOT NULL,
 	`storage_key` varchar(255),
+	`storage_key_active` varchar(255) GENERATED ALWAYS AS ((if(`is_deleted` = 0, `storage_key`, null))) STORED,
 	`remote_url` varchar(600),
 	`provider` varchar(16),
 	`provider_id` varchar(64),
@@ -63,7 +64,8 @@ CREATE TABLE `media` (
 	`created_by` bigint unsigned,
 	`updated_by` bigint unsigned,
 	`deleted_by` bigint unsigned,
-	CONSTRAINT `media_id` PRIMARY KEY(`id`)
+	CONSTRAINT `media_id` PRIMARY KEY(`id`),
+	CONSTRAINT `uq_media_storage_key_active` UNIQUE(`company_id`,`storage_key_active`)
 );
 --> statement-breakpoint
 CREATE TABLE `posts` (
