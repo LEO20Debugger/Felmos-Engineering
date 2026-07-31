@@ -224,7 +224,7 @@
   --logo-mass: var(--color-accent-300);
 
   /* A 14%-black shadow is invisible on a dark ground, so the depth cue that
-     .mark-lift and .idx-peek rely on is re-cut against near-black. */
+     .mark-lift relies on is re-cut against near-black. */
   --shadow-sm: 0 1px 2px color-mix(in srgb, #000 55%, transparent);
   --shadow-md: 0 3px 12px color-mix(in srgb, #000 62%, transparent);
   --shadow-lg: 0 14px 38px color-mix(in srgb, #000 68%, transparent);
@@ -722,69 +722,9 @@
     background: var(--color-signal-600);
   }
 
-  /* ------------------- pinned project stage (/projects) ----------------- */
-  /* CAUTION: nothing in .pin-col's ancestor chain may set overflow other than
-     visible -- an overflow'd ancestor cancels a sticky descendant silently.
-     The same applies to .idx-list, whose hover preview overflows its row. */
-
-  /* The default is the honest one: no pinning, photograph in the flow. The
-     pinned column only switches on where it can actually work -- wide enough
-     to spare the space, and with the scripting to drive it. */
-  .pin-col {
-    display: none;
-  }
-  .dossier-media {
-    display: block;
-  }
-  @media (min-width: 1024px) and (scripting: enabled) {
-    .pin-col {
-      display: block;
-      position: sticky;
-      /* Clears the sticky header, plus a little air. */
-      top: calc(var(--header-h) + 24px);
-    }
-    /* The in-flow figure only stands down once the stage has replaced it. */
-    .dossier-media {
-      display: none;
-    }
-  }
-
-  .pin-stage {
-    position: relative;
-    overflow: hidden;
-    background: var(--color-surface);
-    border-radius: var(--radius-control);
-    /* Sized against the viewport rather than by aspect ratio: a sticky box
-       taller than the screen pins to the wrong edge and reads as broken. */
-    height: min(calc(100svh - var(--header-h) - 140px), 660px);
-  }
-  .pin-img {
-    /* A transition rather than an animation, so the global reduced-motion
-       block zeroes it into a hard cut without any JS involvement. */
-    transition: opacity 0.7s var(--ease-out-quint);
-  }
-
-  .pin-rail {
-    position: relative;
-    display: flex;
-    gap: 4px;
-    margin-top: 14px;
-  }
-  .pin-rail > span {
-    height: 2px;
-    flex: 1 1 0%;
-    background: var(--color-divider);
-    transition: background 0.5s var(--ease-out-quint);
-  }
-  /* Progress, so green — the same reading as the CTA ("this is moving / this
-     has passed"), not the structural accent. signal-600 for the same reason as
-     the kicker dash: a progress indicator is a meaningful graphic and owes 3:1
-     against the track behind it. */
-  .pin-rail > span[data-on="true"] {
-    background: var(--color-signal-600);
-  }
-
-  /* --------------------- project index (/projects) ---------------------- */
+  /* ---------------- index rows (homepage "Who We Serve") ---------------- */
+  /* Named for /projects, where they started. The projects index is a card
+     grid now; .aud-row below is the only thing that still extends this. */
   .idx-row {
     position: relative;
     border-top: 1px solid var(--color-divider);
@@ -804,32 +744,13 @@
       grid-template-columns: 34px 1fr auto auto;
     }
   }
-  .idx-peek {
-    display: none;
-  }
-  /* The preview is a hover affordance, so it exists only where hovering does.
-     Nothing is lost on touch: the row text already carries every fact. */
+  /* The hover indent and colour shift are the row's own; the photo preview
+     that used to fly out of it went with the dossier page, which now shows the
+     photograph on the card itself. */
   @media (hover: hover) and (min-width: 1024px) {
-    .idx-peek {
-      display: block;
-      position: absolute;
-      right: 20%;
-      top: 50%;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0;
-      transform: translateY(-40%) scale(0.96);
-      border-radius: var(--radius-control);
-      box-shadow: var(--shadow-lg);
-      transition: opacity 0.4s var(--ease-out-quint), transform 0.4s var(--ease-out-quint);
-    }
     .idx-row:hover > a {
       padding-left: 20px;
       color: var(--color-link);
-    }
-    .idx-row:hover .idx-peek {
-      opacity: 1;
-      transform: translateY(-50%) scale(1);
     }
   }
 
@@ -1027,7 +948,8 @@
 
   /* ---------------- sticky service index (/services) -------------------
      Sticky is proven in this codebase under body{overflow-x:hidden} — the
-     Header and .pin-col both rely on it. The overflow-x:auto lives on the
+     Header and the project dossier's photo column both rely on it. The
+     overflow-x:auto lives on the
      inner <ul>; only an ANCESTOR's overflow cancels stickiness, so do not
      move that overflow up onto .svc-nav. */
   .svc-nav {
@@ -1231,19 +1153,6 @@
         animation-range: entry 5% entry 65%;
       }
 
-      /* A continuous reading-progress fill, drawn under the six discrete
-         segments the observer drives. Browsers without scroll timelines keep
-         the segments alone, which already tell the whole story. */
-      .pin-rail::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        transform-origin: left center;
-        background: var(--color-signal-600);
-        animation: fx-draw linear both;
-        animation-timeline: view(block);
-        animation-range: contain 0% contain 100%;
-      }
     }
   }
 }

@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
 import { images } from "@/lib/images";
-import { projects, stats } from "@/lib/content";
+import { stats } from "@/lib/content";
 
 /**
  * The projects banner. Same full-bleed language as the homepage Hero and the
  * contact banner, with a reversed stat strip along the base — on the page that
  * exists to establish track record, the numbers belong above the fold.
  */
-export default function ProjectsHero() {
+export default function ProjectsHero({ count }: { count: number }) {
   /* Read from the same source as the rest of the site rather than retyping the
      figures, so the banner can never drift from the Stats row. Keyed on `key`,
      not `label` — the strip filters out misses, so a label rename used to drop
@@ -19,7 +19,10 @@ export default function ProjectsHero() {
   const strip = [
     tested && { value: `${tested.value}${tested.suffix}`, label: "Projects tested" },
     years && { value: `${years.value}${years.suffix}`, label: "Years in practice" },
-    { value: String(projects.length).padStart(2, "0"), label: "Case studies below" },
+    /* Passed in rather than read from lib/content: the projects come from the
+       database now, and a hardcoded count would contradict the grid below it
+       the first time one was published. */
+    { value: String(count).padStart(2, "0"), label: "Projects on record" },
   ].filter(Boolean) as { value: string; label: string }[];
 
   return (

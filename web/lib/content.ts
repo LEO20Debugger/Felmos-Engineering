@@ -1,11 +1,13 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  Activity,
   Award,
   Building2,
   CalendarCheck,
   ClipboardCheck,
   Clock,
   Compass,
+  Crosshair,
   Eye,
   FileCheck2,
   FileText,
@@ -19,6 +21,7 @@ import {
   Layers,
   LineChart,
   Mountain,
+  Radar,
   Ruler,
   Scale,
   Search,
@@ -230,138 +233,350 @@ export type ProjectMetric = {
   label: string;
 };
 
+/**
+ * Most of a project is optional, and that is the shape of the real data rather
+ * than laziness about the type.
+ *
+ * The company's project record supplies a title, a location and an account of
+ * the work. It supplies a client name and a year only for the engagements whose
+ * report title page was photographed, and it supplies no duration, outcome or
+ * headline figure at all. Rather than invent them — on a page whose entire job
+ * is to be credible — every field that can be absent is nullable, and the fact
+ * grid, the metric block and the outcome line each render only when they have
+ * something to say.
+ */
 export type Project = {
   slug: string;
   num: string;
   title: string;
-  category: string;
-  location: string;
-  year: string;
-  client: string;
-  /** How long the engagement ran — fills the fourth cell of the fact grid. */
-  duration: string;
+  category: string | null;
+  location: string | null;
+  year: number | null;
+  client: string | null;
+  /** How long the engagement ran — fills a cell of the fact grid. */
+  duration: string | null;
   /** One line. Used by the homepage teaser and the index, where there is no
       room for the narrative. */
   scope: string;
   /** The dossier body: what was found, and how. */
   narrative: string;
-  result: string;
-  metric: ProjectMetric;
+  result: string | null;
+  metric: ProjectMetric | null;
   /** Slugs from `services` above. Rendered as links through to /services#slug,
       so a project shows which disciplines it drew on. Kept as string[] rather
       than a slug union — `Service["slug"]` is plain string, and narrowing it
       would ripple through five other files for no real gain. The render site
       guards with `services.find()`. */
   services: string[];
-  image: ImageKey;
+  /** Null in the fallback: these seventeen have real photographs, but they live
+      on the media volume rather than in lib/images.ts. A build that falls back
+      to this array renders the text and leaves the frames blank. */
+  image: ImageKey | null;
 };
 
-/* The six entries below are illustrative case studies, not real engagements —
-   the copy, clients and figures are all placeholder. Replace them with real
-   project records before this goes live. */
+/* The seventeen engagements below are the company's real record, transcribed
+   from its own project brief (the source manifest is api/seed/deck-projects.json,
+   and the photographs went in with it).
+
+   This array is now only a fallback. The site reads projects from the database
+   through getProjects(); these entries are what renders if the API is
+   unreachable at build time, which must never fail a Vercel deploy. Treat them
+   as a snapshot, not the source of truth — corrections belong in the dashboard.
+
+   Nulls are deliberate. The brief records no duration, outcome or headline
+   figure for any of this work, and client and year only where a report title
+   page was photographed. Nothing here is estimated; the render sites omit a
+   fact they do not have rather than printing a gap. */
 
 export const projects: Project[] = [
   {
-    slug: "lekki-tower-verification",
+    slug: "tafawa-balewa-square",
     num: "01",
-    title: "23-Storey Residential Tower",
-    category: "Integrity Testing",
-    location: "Lekki, Lagos",
-    year: "2025",
-    client: "Property Developer",
-    duration: "6 weeks",
-    scope: "Independent structural verification ahead of construction financing.",
+    title: "Tafawa Balewa Square",
+    category: "Non-Destructive Integrity Testing",
+    location: "Onikan, Lagos Island, Lagos",
+    year: 2023,
+    client: "Tafawa Balewa Square Management Board",
+    duration: null,
+    scope: "Non-destructive integrity testing of every structural member across Nigeria's foremost ceremonial ground.",
     narrative:
-      "The developer had design drawings and a contractor's warranty, but the lender wanted a third party to confirm the frame as built matched what had been approved. We surveyed the completed structure floor by floor, cored and tested concrete at every third level, and checked reinforcement against the issued-for-construction drawings.",
-    result: "Report accepted by the lender without a single follow-up query.",
-    metric: { value: "23", label: "Storeys verified" },
+      "Built in 1972 and holding over 55,000 people, Tafawa Balewa Square is Nigeria's foremost ceremonial ground and games centre. Felmos Engineering carried out an in-situ non-destructive integrity test on all the structural members within the facility â€” the pavilion, the towers, the terrace and the office complex among them â€” working throughout with ultrasonic equipment so that a building of this standing was never cut into.",
+    result: null,
+    metric: null,
     services: ["integrity-testing", "concrete-strength"],
-    image: "proj-1",
+    image: null,
   },
   {
-    slug: "ikeja-foundation-diagnosis",
+    slug: "st-nicholas-house",
     num: "02",
-    title: "Settling Warehouse Foundation",
-    category: "Sub-soil Investigation",
-    location: "Ikeja, Lagos",
-    year: "2024",
-    client: "Construction Company",
-    duration: "9 days on site",
-    scope: "Diagnostic investigation of visible cracking and uneven settlement.",
+    title: "St. Nicholas House",
+    category: "Non-Destructive Integrity Testing",
+    location: "26 Catholic Mission Street, Lagos Island, Lagos",
+    year: 2023,
+    client: "St. Nicholas",
+    duration: null,
+    scope: "Integrity testing of a fifteen-floor high rise in continuous use as a hospital, offices and car park.",
     narrative:
-      "Cracking had opened along one wall of a working warehouse and the owner had been quoted for full underpinning. We levelled the slab, opened inspection pits at four locations and tested the soil beneath the affected corner. The movement traced to a single poorly compacted fill zone, not to the foundation design.",
-    result: "Root cause identified in one visit; remedial cost cut by a third.",
-    metric: { value: "1/3", label: "Remedial cost avoided" },
-    services: ["subsoil-investigation", "piling-works"],
-    image: "proj-2",
-  },
-  {
-    slug: "victoria-island-integrity",
-    num: "03",
-    title: "Heritage Office Block Assessment",
-    category: "Integrity Testing",
-    location: "Victoria Island, Lagos",
-    year: "2024",
-    client: "Government Project",
-    duration: "8 weeks",
-    scope: "Full condition assessment of a 40-year-old occupied structure.",
-    narrative:
-      "A public building still in daily use needed a condition read before a refurbishment budget could be set. Testing had to be non-destructive and work around occupancy. We assessed the frame, facade and slabs over eight weeks of evening and weekend access, and ranked every defect found by structural consequence rather than by visibility.",
-    result: "Cleared for continued occupation with a prioritised repair plan.",
-    metric: { value: "40 yrs", label: "Structure re-certified" },
+      "St. Nicholas House is a fifteen-floor high-rise on Lagos Island housing a hospital, an office complex and a car park. Felmos Engineering tested the compressive strength of the structural elements in situ, floor by floor, without taking the building out of use â€” the whole survey ran non-destructively around an operating hospital.",
+    result: null,
+    metric: null,
     services: ["integrity-testing", "concrete-strength"],
-    image: "proj-3",
+    image: null,
   },
   {
-    slug: "ajah-ndt-survey",
+    slug: "eko-electricity-distribution",
+    num: "03",
+    title: "Eko Electricity Distribution Company",
+    category: "Non-Destructive Integrity Testing",
+    location: "Marina, Lagos Island, Lagos",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Integrity testing of all structural members in a sixteen-floor high rise at the centre of Lagos power distribution.",
+    narrative:
+      "A sixteen-floor high-rise structure and the home of Eko Electricity Distribution Company. Felmos Engineering conducted a non-destructive integrity test on all the structural members within the facility, working around occupied offices throughout.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "iddo-modern-market",
     num: "04",
-    title: "Concrete Strength Survey, Housing Estate",
-    category: "Concrete Strength Testing",
-    location: "Ajah, Lagos",
-    year: "2023",
-    client: "Property Developer",
-    duration: "3 weeks",
-    scope: "Rebound hammer and UPV testing across 60 residential units.",
+    title: "Iddo Modern Market",
+    category: "Non-Destructive Integrity Testing",
+    location: "Mainland L.C.D.A., Lagos",
+    year: 2023,
+    client: "Total Value Integrated Services Limited",
+    duration: null,
+    scope: "Testing of an ongoing commercial centre of six units, two floors each.",
     narrative:
-      "A batching inconsistency during construction put a whole phase of completed units in question. Breaking out samples would have meant making good across sixty finished homes. Rebound hammer and ultrasonic pulse velocity readings, calibrated against cores taken from a single sacrificial unit, established strength across the phase instead.",
-    result: "Every unit verified without breaking a single wall.",
-    metric: { value: "60", label: "Units tested, zero opened" },
-    services: ["concrete-strength", "integrity-testing"],
-    image: "proj-4",
+      "An ongoing six-unit commercial centre, two floors to each unit. Felmos Engineering tested the compressive strength of the structural elements in situ while the building was still under construction, which is when a strength problem is cheapest to put right.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
   },
   {
-    slug: "epe-soil-investigation",
+    slug: "british-canadian-university",
     num: "05",
-    title: "Coastal Plot Soil Investigation",
-    category: "Sub-soil Investigation",
-    location: "Epe, Lagos",
-    year: "2023",
-    client: "Homeowner",
-    duration: "2 weeks",
-    scope: "Bearing capacity and composition testing ahead of design.",
+    title: "British-Canadian University",
+    category: "Non-Destructive Integrity Testing",
+    location: "Obudu, Cross River",
+    year: 2022,
+    client: "British-Canadian University",
+    duration: null,
+    scope: "Campus-wide testing across the administration block, faculty building, hostels, library and staff quarters.",
     narrative:
-      "A private client bought a coastal plot and wanted to know what they were building on before an architect drew anything. Boreholes to eight metres found a competent bearing stratum shallower than the area's reputation suggested, which let the design proceed on pads rather than the piled solution that had been assumed.",
-    result: "Foundation redesign avoided; approvals secured on first submission.",
-    metric: { value: "1", label: "Submission to approval" },
-    services: ["subsoil-investigation", "pile-testing"],
-    image: "proj-5",
+      "Felmos Engineering carried out non-destructive testing across the university's campus at Obudu: the administration block, the faculty building, hostels one and two, the library, and staff quarters one and two. A single mobilisation covered the whole campus rather than returning building by building.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
   },
   {
-    slug: "ikoyi-lender-verification",
+    slug: "wemabod-marina",
     num: "06",
-    title: "Mixed-Use Development Financing Report",
-    category: "Integrity Testing",
-    location: "Ikoyi, Lagos",
-    year: "2022",
-    client: "Bank",
-    duration: "5 weeks",
-    scope: "Independent adequacy verification for a construction loan facility.",
+    title: "Wemabod, Marina",
+    category: "Non-Destructive Integrity Testing",
+    location: "37 Marina Road, Lagos Island, Lagos",
+    year: 2022,
+    client: "Wemabod",
+    duration: null,
+    scope: "Integrity testing of all structural members in a twenty-floor building on the Marina.",
     narrative:
-      "The bank was lending against a part-built mixed-use scheme and needed structural adequacy confirmed before drawing down the next tranche. We verified the completed substructure and frame against the design, and reported in the format the credit committee already used, so the findings could be actioned without translation.",
-    result: "Became the bank's standard reference for the borrower's next three projects.",
-    metric: { value: "3", label: "Follow-on facilities" },
-    services: ["integrity-testing", "structural-drawings"],
-    image: "proj-6",
+      "A twenty-floor building on Marina Road. Felmos Engineering conducted non-destructive testing on all the structural members â€” slabs, beams, columns and walls â€” across the height of the tower.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "barracuda-beach-resort",
+    num: "07",
+    title: "Barracuda Beach Resort & Water Park",
+    category: "Non-Destructive Integrity Testing",
+    location: "Okun-Ajah Road, off Ogombo Road, Lekki Phase 2, Eti-Osa, Lagos",
+    year: 2023,
+    client: "Barracuda Beach Resort & Water Park Limited",
+    duration: null,
+    scope: "Testing of every structure across the resort â€” hotel, offices, lounge, pool house, laundry, bar, kitchen, games house and security post.",
+    narrative:
+      "Felmos Engineering conducted a non-destructive integrity test on all the structures within the resort: the hotel, the office complex, the lounge and hall, the pool house, the laundry, the bar, the kitchen and hall, the preview building, the MTN house, the security post and the games house. Eleven separate buildings, surveyed across one engagement.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "lagos-state-college-of-nursing",
+    num: "08",
+    title: "Lagos State College of Nursing Sewage Treatment Plant",
+    category: "Non-Destructive Integrity Testing",
+    location: "Igando, Lasu-Iba Road, Lagos",
+    year: 2023,
+    client: "Lagos State College of Nursing, Igando",
+    duration: null,
+    scope: "Non-destructive testing of an existing sewage treatment plant.",
+    narrative:
+      "Felmos Engineering conducted a non-destructive test on the college's existing sewage treatment plant, working across the aeration, clarifier and effluent sections. Testing a wet, buried structure means reaching the concrete through opened covers and narrow excavations rather than working from a clear face.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "teju-industrial-clinic",
+    num: "09",
+    title: "Teju Industrial Clinic",
+    category: "Non-Destructive Integrity Testing",
+    location: "Fola Osibo Street, Lekki Phase 1, Eti-Osa, Lagos",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Testing of an ongoing six-floor commercial building at Lekki Phase 1.",
+    narrative:
+      "An ongoing six-floor commercial building on Fola Osibo Street. Felmos Engineering tested the structural members in situ during construction.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "agl-property-marina",
+    num: "10",
+    title: "AGL Property",
+    category: "Non-Destructive Integrity Testing",
+    location: "Marina Road, Lagos Island, Lagos",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Testing of a multi-functional structure on Marina Road.",
+    narrative:
+      "A multi-functional structure on Marina Road, Lagos Island. Felmos Engineering tested the structural members in situ, working from bamboo scaffolding and beneath the slabs where no other access existed.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "high-point-properties",
+    num: "11",
+    title: "High Point Properties",
+    category: "Non-Destructive Integrity Testing",
+    location: "5 MacGregor Road, Ikoyi, Lagos",
+    year: 2023,
+    client: "High Point Properties Limited",
+    duration: null,
+    scope: "Integrity testing of all structural members in an ongoing three-floor building complex.",
+    narrative:
+      "An ongoing three-floor building complex at Ikoyi. Felmos Engineering conducted a non-destructive integrity test on all the structural members within the facility while the frame was still going up.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "bua-group-office-tower",
+    num: "12",
+    title: "Office Development for BUA Group",
+    category: "Non-Destructive Integrity Testing",
+    location: "10 Mulliner Road, Ikoyi, Eti-Osa, Lagos",
+    year: 2022,
+    client: "BUA Group",
+    duration: null,
+    scope: "Testing of all structural members in a seven-floor commercial building â€” the proposed office tower for Intercontinental Bank Plc.",
+    narrative:
+      "A building of seven floors built for commercial purposes, the proposed office tower for Intercontinental Bank Plc. Felmos Engineering tested all the structural members in situ, working from the scaffold and from the slabs above as the frame rose.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "gr-estate-development",
+    num: "13",
+    title: "G&R Estate Development",
+    category: "Sub-Structure Integrity Testing",
+    location: "19B Cooper Road, off Bourdillon Road, Ikoyi, Lagos",
+    year: 2023,
+    client: "G&R Estate Development Company Limited",
+    duration: null,
+    scope: "Integrity testing of all sub-structural members ahead of a proposed thirteen-floor building.",
+    narrative:
+      "A proposed thirteen-floor building at Ikoyi. Felmos Engineering conducted a non-destructive integrity test on all the sub-structural members â€” the part of a tower that becomes unreachable the moment the frame goes up, and the only sensible time to test it is before that happens.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "holy-rosary-auditorium",
+    num: "14",
+    title: "Holy Rosary Secondary School Auditorium",
+    category: "Failure Investigation",
+    location: "Umuahia, Abia",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Investigation into the cause of a collapsed auditorium at finishing stage.",
+    narrative:
+      "An ongoing auditorium at finishing stage collapsed at Holy Rosary Secondary School. Felmos Engineering was engaged to conduct a non-destructive test to investigate the cause or causes. Work ran from the failed roof structure down to foundations reached by hand excavation.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "citadel-hotel-uromi",
+    num: "15",
+    title: "Citadel Hotel",
+    category: "Non-Destructive Integrity Testing",
+    location: "New Agbor Road, Uromi, Esan North-East, Edo",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Testing of both sub-structure and super-structure on an ongoing five-floor commercial building.",
+    narrative:
+      "An ongoing five-floor building at finishing stage, built for commercial purposes. Both the sub-structure and the super-structure were tested by Felmos Engineering using up-to-date equipment, which meant excavating down to the foundations as well as working through the finished floors above.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "national-stadium-surulere",
+    num: "16",
+    title: "National Stadium, Surulere",
+    category: "Non-Destructive Integrity Testing",
+    location: "Surulere, Lagos",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Testing of the facility ahead of renovation.",
+    narrative:
+      "Built in 1972, the National Stadium is a major sports venue and a symbol of national pride. Felmos Engineering was commissioned to conduct a non-destructive test on the facility prior to renovation â€” establishing what the existing structure could still carry before anything was designed on top of it.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "dynamic-load-testing",
+    num: "17",
+    title: "Dynamic Load Testing",
+    category: "Pile Load Testing",
+    location: "Lagos and Akwa Ibom",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Dynamic load tests on working piles, carried out on sites in Lagos State and Akwa Ibom.",
+    narrative:
+      "Dynamic load testing establishes the capacity of a pile already in the ground by measuring its response to a controlled impact, rather than by stacking kentledge on top of it. Felmos Engineering has carried these out on sites in Lagos State and in Akwa Ibom, with the site team briefed at the pile before each test.",
+    result: null,
+    metric: null,
+    services: ["pile-testing", "piling-works"],
+    image: null,
   },
 ];
 
@@ -522,7 +737,9 @@ export const servicesFor = (a: Audience) =>
 /** The projects delivered for this audience. Not currently rendered on the
     homepage — Architects match zero projects, which would leave a row empty. */
 export const projectsFor = (a: Audience) =>
-  projects.filter((p) => a.matches.some((m) => norm(m) === norm(p.client)));
+  projects.filter(
+    (p) => p.client !== null && a.matches.some((m) => norm(m) === norm(p.client as string))
+  );
 
 /* There is no test runner in this project, and the join above reads strings
    that live in two other arrays as visible copy. Without this, renaming a
@@ -568,6 +785,99 @@ if (process.env.NODE_ENV !== "production") {
     );
   }
 }
+
+/* ────────────────────────────── instruments ────────────────────────────── */
+
+/**
+ * The testing equipment, named by Felmos's own project brief.
+ *
+ * Static rather than database-backed on purpose: a testing practice replaces an
+ * instrument every few years, not every few weeks, and putting six fixed rows
+ * behind a CMS screen buys nothing. Edit them here.
+ *
+ * The NAMES are the company's, taken verbatim from the equipment slide (spelling
+ * corrected). The one-line descriptions are what each class of instrument
+ * measures — standard, checkable properties of the tools themselves, not claims
+ * about Felmos. Nothing here asserts a calibration status, an accreditation or a
+ * turnaround; those live in `differentiators` and need sign-off.
+ *
+ * Deliberately NO manufacturer product shots. The brief illustrates this slide
+ * with vendor material — a Dalian Tailai datasheet, Proceq renders, and a Pundit
+ * image carrying an Australian reseller's "2 Year Warranty / Australian Service"
+ * advert. Beyond whose copyright they are, they are unusable: the rebar locator
+ * is 235×166 and the Pulsar figure is a blurry 397×316, against a site that
+ * serves images from 360px to 2000px.
+ *
+ * The section uses Felmos's own site photography instead — engineers holding
+ * these instruments against real structures, 1000px and up, and unarguably the
+ * company's own. See `instrumentPhotos` below.
+ */
+export type Instrument = {
+  name: string;
+  icon: LucideIcon;
+  /** What it measures. One sentence, no superlatives. */
+  measures: string;
+};
+
+export const instruments: readonly Instrument[] = [
+  {
+    name: "Digital Schmidt Hammer",
+    icon: Gauge,
+    measures:
+      "Rebound hardness at the surface — fast comparative strength readings across many elements at once.",
+  },
+  {
+    name: "Pundit",
+    icon: Waves,
+    measures:
+      "Ultrasonic pulse velocity through the full thickness of an element, which is what exposes voids, cracking and poor compaction.",
+  },
+  {
+    name: "Pulsar",
+    icon: Layers,
+    measures:
+      "Ultrasonic tomography from a single face, for elements where the opposite side cannot be reached.",
+  },
+  {
+    name: "Profoscope",
+    icon: Crosshair,
+    measures:
+      "Reinforcement position, cover depth and bar diameter, read through the concrete face.",
+  },
+  {
+    name: "Rebar Locator",
+    icon: Radar,
+    measures:
+      "Maps the reinforcement layout across a large area before detailed testing begins.",
+  },
+  {
+    name: "Rebar Corrosion Detector",
+    icon: Activity,
+    measures:
+      "Half-cell potential readings that show where reinforcement has begun to corrode inside concrete that still looks sound.",
+  },
+] as const;
+
+/**
+ * Which project photographs to feature beside the instrument list.
+ *
+ * Matched on the image's alt text rather than an id, because ids differ between
+ * every database the import has ever run against and would not survive a
+ * re-import. Alt text is editable in the dashboard, so a match can be lost — the
+ * section handles that by rendering the instrument list without the photo band
+ * rather than leaving empty frames.
+ *
+ * These three are deliberate: an instrument is clearly in frame and in use in
+ * each. Note what is NOT claimed — no photograph is captioned with a model name.
+ * A Bosch detector is identifiable from the housing; a grey handheld unit held
+ * against a soffit could be any of four instruments in the list above, and
+ * guessing which would put a wrong fact on the page to fill a caption.
+ */
+export const instrumentPhotos: readonly string[] = [
+  "A rebar detector held against an exposed concrete surface",
+  "Two engineers setting up an ultrasonic reading between them",
+  "A reading taken on a column with its finish removed",
+];
 
 /* ─────────────────────────────── why felmos ────────────────────────────── */
 
