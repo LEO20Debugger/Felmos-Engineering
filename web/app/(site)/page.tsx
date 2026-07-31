@@ -9,11 +9,27 @@ import TeamSlider from "@/components/home/TeamSlider";
 import ProcessShowcase from "@/components/process/ProcessShowcase";
 import Projects from "@/components/home/Projects";
 import CtaBand from "@/components/ui/CtaBand";
+import { getProjects } from "@/lib/cms";
+import { heroPhotos } from "@/lib/content";
+import type { Media } from "@/lib/media";
 
-export default function HomePage() {
+export default async function HomePage() {
+  /* The banner photographs come out of the project galleries. getProjects() is
+     cached and the teaser below already calls it, so this is the same request
+     rather than a second one — and the banner is still server-rendered, so the
+     first frame remains the LCP element rather than appearing after hydration. */
+  const gallery = (await getProjects()).flatMap((project) => [
+    ...(project.image ? [project.image] : []),
+    ...project.gallery,
+  ]);
+
+  const banner = heroPhotos
+    .map((alt) => gallery.find((image) => image.alt === alt))
+    .filter((image): image is Media => Boolean(image));
+
   return (
     <>
-      <Hero />
+      <Hero photos={banner} />
       <TrustBar />
       <ServiceShowcase />
       <Audience />
