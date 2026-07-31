@@ -27,20 +27,29 @@ export default async function DashboardLayout({
   const user = await currentUser();
   if (!user) redirect("/admin/login");
 
+  /* Split rather than truncated with CSS, so the surname is genuinely absent
+     on a narrow bar instead of being clipped mid-word. */
+  const [firstName = user.name, ...rest] = user.name.trim().split(/\s+/);
+  const restOfName = rest.length > 0 ? ` ${rest.join(" ")}` : "";
+
   return (
     <div className="adm">
       <header className="adm-top">
+        {/* "Engineering" and the surname are dropped below md. The bar has to
+            hold a brand, a name and a sign-out button on a 375px screen, and
+            the full strings wrapped it onto two lines. */}
         <a href="/admin" className="adm-brand">
-          Felmos Engineering Admin
+          Felmos<span className="adm-wide-only"> Engineering</span> Admin
         </a>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <span
             className="adm-muted"
-            style={{ color: "inherit", opacity: 0.8 }}
-            title={`${user.email} · ${user.role}`}
+            style={{ color: "inherit", opacity: 0.8, whiteSpace: "nowrap" }}
+            title={`${user.name} · ${user.email} · ${user.role}`}
           >
-            {user.name}
+            {firstName}
+            <span className="adm-wide-only">{restOfName}</span>
           </span>
           <form action={logout}>
             <button
