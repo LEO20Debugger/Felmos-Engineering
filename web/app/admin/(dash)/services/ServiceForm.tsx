@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import type { AdminService } from "@/lib/admin/api";
+import { ImagePicker, type PickerOption } from "../ImagePicker";
 import {
   createService,
   deleteService,
@@ -31,9 +32,11 @@ function SaveBar({ service }: { service?: AdminService }) {
 export function ServiceForm({
   service,
   icons,
+  images,
 }: {
   service?: AdminService;
   icons: string[];
+  images: PickerOption[];
 }) {
   const [state, action] = useActionState<FormState, FormData>(
     service ? updateService : createService,
@@ -185,6 +188,12 @@ export function ServiceForm({
       </div>
 
       <div className="adm-card" style={{ padding: "1rem" }}>
+        <ImagePicker
+          name="imageId"
+          current={service?.image ?? null}
+          options={images}
+        />
+
         <label className="adm-field" style={{ marginBottom: 0 }}>
           <span>Visibility</span>
           <select
@@ -196,10 +205,6 @@ export function ServiceForm({
             <option value="published">Live — visible to everyone</option>
           </select>
         </label>
-
-        {/* Carried through untouched until the media picker lands in the next
-            stage; without this the image would be cleared on every save. */}
-        <input type="hidden" name="imageId" value={service?.image?.id ?? ""} />
       </div>
 
       {state.message ? (

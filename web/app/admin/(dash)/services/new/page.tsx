@@ -2,11 +2,15 @@ import Link from "next/link";
 
 import { api } from "@/lib/admin/api";
 import { ServiceForm } from "../ServiceForm";
+import { pickerOptions } from "../images";
 
 export const metadata = { title: "New service" };
 
 export default async function NewServicePage() {
-  const { icons } = await api.get<{ icons: string[] }>("/meta/icons");
+  const [{ icons }, images] = await Promise.all([
+    api.get<{ icons: string[] }>("/meta/icons"),
+    pickerOptions(),
+  ]);
 
   return (
     <>
@@ -17,7 +21,7 @@ export default async function NewServicePage() {
         New service
       </h1>
 
-      <ServiceForm icons={icons} />
+      <ServiceForm icons={icons} images={images} />
     </>
   );
 }
