@@ -1,7 +1,7 @@
 import "server-only";
 
 import { api, mediaUrl, type AdminMedia } from "@/lib/admin/api";
-import type { PickerOption } from "../ImagePicker";
+import type { PickerOption } from "./ImagePicker";
 
 /**
  * The image library, shaped for the picker.
