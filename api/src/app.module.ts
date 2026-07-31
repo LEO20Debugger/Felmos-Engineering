@@ -10,6 +10,7 @@ import { HealthModule } from "./modules/health/health.module";
 import { LeadsModule } from "./modules/leads/leads.module";
 import { MediaModule } from "./modules/media/media.module";
 import { MetaModule } from "./modules/meta/meta.module";
+import { RevalidateModule } from "./modules/revalidate/revalidate.service";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MetaModule } from "./modules/meta/meta.module";
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
 
     DbModule,
+    RevalidateModule,
     AuthModule,
     ContentModule,
     HealthModule,

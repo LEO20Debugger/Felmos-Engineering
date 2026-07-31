@@ -1,4 +1,4 @@
-import {
+﻿import {
   Controller,
   Delete,
   Get,
@@ -16,6 +16,7 @@ import { Tenant } from "@/common/tenant.decorator";
 import type { TenantContext } from "@/common/tenant-context";
 import { ZodBody } from "@/common/zod.pipe";
 import { InternalKeyGuard, JwtAccessGuard } from "@/modules/auth/auth.guards";
+import { RevalidateService } from "@/modules/revalidate/revalidate.service";
 import { ServicesRepository, type ServiceRow } from "./services.repository";
 
 /* The slug rule is stricter than the database's: lowercase, digits and single
@@ -68,7 +69,21 @@ export class PublicServicesController {
 @Controller("admin/services")
 @UseGuards(JwtAccessGuard)
 export class AdminServicesController {
-  constructor(private readonly repo: ServicesRepository) {}
+  constructor(
+    private readonly repo: ServicesRepository,
+    private readonly revalidate: RevalidateService
+  ) {}
+
+  /* Services appear on the homepage, the services page and the contact form's
+     dropdown, and projects link through to them — so a change to one touches
+     more than its own tag. */
+  private refresh(companyId: number): void {
+    this.revalidate.emit(companyId, ["services", "projects"], [
+      "/",
+      "/services",
+      "/contact",
+    ]);
+  }
 
   @Get()
   async list(
@@ -95,7 +110,9 @@ export class AdminServicesController {
     @Tenant() tenant: TenantContext,
     @ZodBody(serviceSchema) body: z.infer<typeof serviceSchema>
   ): Promise<{ id: number }> {
-    return { id: await this.repo.create(tenant, body) };
+    const id = await this.repo.create(tenant, body);
+    this.refresh(tenant.companyId);
+    return { id };
   }
 
   @Patch("reorder")
@@ -106,6 +123,7 @@ export class AdminServicesController {
     /* Takes the whole ordered list rather than a moved pair, so two people
        dragging at once can't interleave into a half-applied order. */
     await this.repo.reorder(tenant, body.ids);
+    this.refresh(tenant.companyId);
     return { ok: true };
   }
 
@@ -116,6 +134,7 @@ export class AdminServicesController {
     @ZodBody(patchSchema) body: z.infer<typeof patchSchema>
   ): Promise<{ ok: true }> {
     await this.repo.update(tenant, id, body);
+    this.refresh(tenant.companyId);
     return { ok: true };
   }
 
@@ -126,6 +145,7 @@ export class AdminServicesController {
     @Param("id", ParseIntPipe) id: number
   ): Promise<{ ok: true }> {
     await this.repo.softDelete(tenant, id);
+    this.refresh(tenant.companyId);
     return { ok: true };
   }
 
@@ -135,6 +155,7 @@ export class AdminServicesController {
     @Param("id", ParseIntPipe) id: number
   ): Promise<{ ok: true }> {
     await this.repo.restore(tenant, id);
+    this.refresh(tenant.companyId);
     return { ok: true };
   }
 }

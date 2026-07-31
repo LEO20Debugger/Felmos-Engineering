@@ -2,22 +2,25 @@
 
 import { useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Loader2, Send } from "lucide-react";
-import { services } from "@/lib/content";
-
-const SERVICE_OPTIONS = [...services.map((s) => s.title), "Not sure — advise me"];
+/* The options arrive as a prop from the page rather than being imported here.
+   This is a client component, and the service list now comes from the database
+   — which only the server can read. Passing them down also keeps this list and
+   the one the API validates against derived from the same fetch, so a renamed
+   service can never leave the dropdown offering something the server rejects. */
+const FALLBACK_OPTION = "Not sure — advise me";
 
 type Errors = Record<string, string>;
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 
 /** Mirrors app/api/contact/route.ts so the visitor sees problems before the round trip. */
-function validate(data: Record<string, string>): Errors {
+function validate(data: Record<string, string>, options: string[]): Errors {
   const e: Errors = {};
   if (data.name.trim().length < 2) e.name = "Please enter your full name.";
   if (data.phone.replace(/\D/g, "").length < 7) e.phone = "Please enter a reachable phone number.";
   if (!isEmail(data.email.trim())) e.email = "Please enter a valid email address.";
   if (data.location.trim().length < 2) e.location = "Please tell us where the project is.";
-  if (!SERVICE_OPTIONS.includes(data.service)) e.service = "Please choose a service.";
+  if (!options.includes(data.service)) e.service = "Please choose a service.";
   return e;
 }
 
@@ -46,7 +49,13 @@ function Field({
   );
 }
 
-export default function ContactForm() {
+export default function ContactForm({
+  serviceTitles = [],
+}: {
+  /** Service names, from the database, supplied by the page. */
+  serviceTitles?: string[];
+}) {
+  const options = [...serviceTitles, FALLBACK_OPTION];
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
@@ -64,7 +73,7 @@ export default function ContactForm() {
     const fd = new FormData(e.currentTarget);
     const data = Object.fromEntries(fd.entries()) as Record<string, string>;
 
-    const found = validate(data);
+    const found = validate(data, options);
     setErrors(found);
     if (Object.keys(found).length > 0) {
       // Move the visitor to the first thing that needs fixing.
@@ -142,8 +151,8 @@ export default function ContactForm() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Service Required" name="service" error={errors.service}>
-          <select {...fieldProps("service")} defaultValue={SERVICE_OPTIONS[0]}>
-            {SERVICE_OPTIONS.map((o) => (
+          <select {...fieldProps("service")} defaultValue={options[0]}>
+            {options.map((o) => (
               <option key={o} value={o}>
                 {o}
               </option>
