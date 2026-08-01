@@ -11,6 +11,7 @@ import { LeadsModule } from "./modules/leads/leads.module";
 import { MediaModule } from "./modules/media/media.module";
 import { MetaModule } from "./modules/meta/meta.module";
 import { RevalidateModule } from "./modules/revalidate/revalidate.service";
+import { SettingsModule } from "./modules/settings/settings.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RevalidateModule } from "./modules/revalidate/revalidate.service";
     LeadsModule,
     MediaModule,
     MetaModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}
