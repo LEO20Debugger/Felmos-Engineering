@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
-import { images } from "@/lib/images";
 import { stats } from "@/lib/content";
 
 /**
@@ -12,18 +11,25 @@ import { stats } from "@/lib/content";
  * full-width grid in a row, and keeping the count-up exclusive to the homepage
  * leaves About with no client components at all.
  */
-export default function AboutHero() {
+export default function AboutHero({
+  photo,
+}: {
+  /** Resolved by the page — the company's own site photography, or the stock
+      fallback if it could not be matched. */
+  photo: { src: string; alt: string; position: string };
+}) {
   return (
     /* The stat strip wraps to 2x2 on a phone, which used to overflow a fixed
        52svh and be clipped. .banner treats the height as a floor, so the banner
        grows to hold it instead. */
     <section className="banner" style={{ "--banner-min": "48svh" } as React.CSSProperties}>
       <Image
-        src={images["about-hero"]}
-        alt="Felmos structural engineering construction project site under open sky"
+        src={photo.src}
+        alt={photo.alt}
         fill
         priority
         sizes="100vw"
+        style={{ objectPosition: photo.position }}
         className="-z-20 object-cover"
       />
       <div

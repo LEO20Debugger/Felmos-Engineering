@@ -8,7 +8,10 @@ import SectionHead from "@/components/ui/Section";
 import Photo from "@/components/ui/Photo";
 import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/ui/CtaBand";
-import { companyGoals, companyIntro, coreValues, missionVision, philosophy } from "@/lib/content";
+import { getProjects } from "@/lib/cms";
+import { aboutHeroPhoto, companyGoals, companyIntro, coreValues, missionVision, philosophy } from "@/lib/content";
+import { images } from "@/lib/images";
+import { focalPosition, mediaUrl } from "@/lib/media";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -33,10 +36,32 @@ const officeFacts = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  /* The banner photograph comes out of the project galleries, matched on its
+     alt text. Resolved here so AboutHero stays free of the CMS, and falling
+     back to the stock frame if the project is unpublished or its description
+     was edited in the dashboard. */
+  const gallery = (await getProjects()).flatMap((project) => [
+    ...(project.image ? [project.image] : []),
+    ...project.gallery,
+  ]);
+
+  const found = gallery.find((image) => image.alt === aboutHeroPhoto.alt);
+  const photo = found
+    ? {
+        src: mediaUrl(found, 1600),
+        alt: found.alt,
+        position: focalPosition(found),
+      }
+    : {
+        src: images[aboutHeroPhoto.fallback],
+        alt: "Felmos structural engineering construction project site under open sky",
+        position: "center",
+      };
+
   return (
     <>
-      <AboutHero />
+      <AboutHero photo={photo} />
 
       {/* Who we are, with mission and vision folded in underneath as statements
           rather than as a third card grid. The goals strip closes the same
