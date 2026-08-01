@@ -43,6 +43,9 @@ type Cols = Record<string, AnyMySqlColumn>;
 
 type BaseColumn = "id" | "companyId" | "isDeleted" | "slug" | "sortOrder";
 
+/** The four things a dashboard's multi-select bar can do to a set of rows. */
+export type BulkAction = "publish" | "draft" | "delete" | "restore";
+
 export abstract class TenantRepository<T extends MySqlTable> {
   protected constructor(
     protected readonly db: Db,
@@ -179,6 +182,49 @@ export abstract class TenantRepository<T extends MySqlTable> {
          genuine conflict the user has to resolve, not an internal error. */
       this.rethrowDuplicate(error, "slug");
     }
+  }
+
+  /**
+   * Apply one action to many rows.
+   *
+   * A loop rather than a single UPDATE ... WHERE id IN (…) because publishing
+   * is not a plain column write: each entity's own `update()` stamps
+   * publishedAt the first time a row goes live and never again, and soft delete
+   * and restore each have their own stamps and their own slug-collision failure
+   * mode. Seventeen round trips inside one request is a fair price for not
+   * reimplementing any of that — which is also why the publish/draft step is
+   * handed back to the caller rather than written here.
+   *
+   * Ids that are not this tenant's are skipped rather than fatal. The caller is
+   * a checkbox list that may have been rendered before someone else deleted a
+   * row, and failing the whole batch over one stale id would be worse than
+   * quietly applying the rest — the returned count is what the dashboard
+   * reports back.
+   */
+  protected async bulkApply(
+    ctx: TenantContext,
+    ids: number[],
+    action: BulkAction,
+    setStatus: (id: number, status: "draft" | "published") => Promise<void>
+  ): Promise<number> {
+    let affected = 0;
+
+    for (const id of ids) {
+      try {
+        if (action === "delete") await this.softDelete(ctx, id);
+        else if (action === "restore") await this.restore(ctx, id);
+        else await setStatus(id, action === "publish" ? "published" : "draft");
+        affected += 1;
+      } catch (error) {
+        /* A 404 means the row moved out from under the list. Anything else —
+           a slug collision on restore, say — is a real failure the editor
+           needs to see. */
+        if ((error as { status?: number })?.status === 404) continue;
+        throw error;
+      }
+    }
+
+    return affected;
   }
 
   /**

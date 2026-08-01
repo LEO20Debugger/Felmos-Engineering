@@ -964,6 +964,23 @@
   }
 }
 
+/* Save and delete share a row rather than stacking — the panel is 22rem wide
+   on a desktop and the pair fits with room to spare, so stacking them left the
+   delete button marooned a long way down an otherwise empty column.
+   Wrapping matters: ConfirmButton becomes two buttons once armed. */
+.adm-lb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* The destructive one sits at the far end of the row, not up against Save. */
+.adm-lb-actions > form {
+  margin-left: auto;
+}
+
 /* The focal-point marker, over the picture in the viewer. */
 .adm-lb-focal {
   position: absolute;
