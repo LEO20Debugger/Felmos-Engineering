@@ -1,29 +1,52 @@
 /* ==========================================================================
-   The Felmos mark, rebuilt as geometry.
+   The Felmos mark, vectorised from the supplied artwork.
 
-   The supplied artwork is a raster of a skyline: a navy tower, a tall green
-   pylon, a glazed tower and a navy plinth. Redrawing it as a polygon set buys
-   three things a PNG cannot:
+   The geometry below is a machine trace of logo.png at the repo root, not a
+   redrawing. Every vertex was measured off that file's pixels and the result
+   was rendered back and diffed against it: the silhouettes agree to within one
+   pixel everywhere (every disagreeing pixel sits on an antialiased edge). An
+   earlier version of this file was drawn by eye and had drifted badly — it
+   carried a splayed single plinth and a short flat-topped left tower, neither
+   of which is in the artwork, which actually has two mirrored navy wedges each
+   with its own splayed foot.
+
+   Kept as inline SVG rather than shipping the PNG for three reasons:
 
      - it is one colour system with the site. The masses are painted from
-       --color-signal / --color-accent-800 / --color-accent-900, so if the
-       brand ramp is ever retuned the logo moves with it instead of drifting
-       out of step with the buttons.
-     - it survives dark mode. The plinth and the left tower are near-black on
-       paper and would disappear against the charcoal page; `tone="onDark"`
-       lifts exactly those two masses and leaves the green and the glass alone.
+       --logo-mass / --color-signal / --color-accent-500, so if the brand ramp
+       is ever retuned the logo moves with it instead of drifting out of step
+       with the buttons. Those three tokens were sampled from this artwork to
+       begin with (#143855 / #00a859 / #2d9dd5 in the file).
+     - it survives dark mode. The navy wedges are near-black on paper and would
+       disappear against the charcoal page; --logo-mass is re-pointed by the
+       dark theme, and `tone="onDark"` lifts them explicitly.
      - it is sharp at 22px in the header and at 512px in a share card, and
        costs ~1kB inline rather than a network request in the LCP path.
 
-   Flat fills, no gradients. Partly because a logo should be flat, and partly
-   because gradients need document-unique ids — which on this site would mean a
-   hook, which would mean "use client" on a mark the server-rendered Footer
-   needs. Nothing about the drawing is worth that.
+   COORDINATES ARE THE ARTWORK'S OWN PIXELS. The viewBox is offset to the
+   drawing's bounding box (x 10..332, y 18..444 of the 340x450 source) rather
+   than normalised to zero, precisely so that anyone who re-measures logo.png
+   gets numbers that can be compared against these directly.
 
-   The geometry is a 64x64 grid with the baseline at y=54 and the plinth
-   beneath it. Every vertex is on a whole or half unit — that is what keeps the
-   verticals from going soft when the mark renders at 22px.
+   The mark is portrait — 322x426, about 3:4. `size` is therefore its HEIGHT
+   and the width follows; the two are not interchangeable as they were when
+   this was a square 64-grid.
    ========================================================================== */
+
+const VB_W = 322;
+const VB_H = 426;
+
+/* The glazed tower's mullions: a vertical seam plus six floor lines that rake
+   up to the right. Endpoints are the traced intersections with the tower's own
+   outline — the top line stops early against the chamfer, the rest run to the
+   right edge — which is why they are listed rather than generated from a
+   slope. Held at the artwork's own hairline weight: they are meant to vanish
+   into solid blue below roughly 40px, which is the correct degradation for a
+   detail this fine rather than a loss. */
+const MULLIONS =
+  "M193.5 175.5V340M193.5 220.7 229.4 197.4M193.5 240.4 238.5 211.1" +
+  "M193.5 260 238.5 230.8M193.5 279.7 238.5 250.5M193.5 299.4 238.5 270.1" +
+  "M193.5 319 238.5 289.8";
 
 type Tone = "brand" | "onDark" | "mono";
 
@@ -56,57 +79,46 @@ export function LogoMark({
 
   return (
     <svg
-      width={size}
+      width={(size * VB_W) / VB_H}
       height={size}
-      viewBox="0 0 64 64"
+      viewBox={`10 18 ${VB_W} ${VB_H}`}
       fill="none"
       role="presentation"
       aria-hidden
       focusable="false"
       className={className}
     >
-      {/* Navy tower, left. Flat-topped and short — it occupies only the bottom
-          quarter, which is what lets the pylon read as towering over it. */}
-      <path d="M14 54 V40 H23 V54 Z" fill={dark} />
+      {/* The pylon. Full height of the mark, chamfered off its top left, and
+          stepping in halfway down to a narrow shaft that carries on to the
+          baseline. It is what the mark is *of*, and it is the only mass that
+          touches both the top and the bottom of the box. */}
+      <path d="M169.5 18 106.5 60V157L150 195V443.5H169.5Z" fill={green} />
 
-      {/* The pylon. Narrow, reaching the very top, with a long diagonal down
-          its upper left so it widens as it descends. It is what the mark is
-          *of*, and it has to dominate — roughly four times the height of the
-          navy tower it stands behind. */}
-      <path d="M22 54 V13 L26 3 H33.5 V54 Z" fill={green} />
+      {/* Glazed tower. Chamfered top left, and cut away bottom right on the
+          same rake as its mullions, leaving a narrow shaft that drops to the
+          baseline alongside the pylon's. The transparent hairlines either side
+          of that shaft are structural, not spacing — close them and the three
+          masses merge into one silhouette. */}
+      <path d="M173.5 163 238.5 203V309L193.5 340V443.5H173.5Z" fill={glass} />
 
-      {/* The reveal: a thin green column standing off the pylon, rising to the
-          same line as the glazed tower. The white gaps either side of it are
-          structural, not spacing — close them and the three masses merge into
-          one silhouette. */}
-      <path d="M35 54 V23 H37 V54 Z" fill={green} />
-
-      {/* The glazed tower's return, drawn before the lit face so the face laps
-          over it and the corner stays a hard edge. Deliberately stops short of
-          the glass beside it: the stepped skyline is the point. */}
-      <path d="M45.5 54 V30 H50 V54 Z" fill={dark} />
-
-      {/* Glazed tower, lit face, chamfered top left. */}
-      <path d="M38.5 54 V27 L41 24 H45.5 V54 Z" fill={glass} />
-
-      {/* Glazing bars. Paper-toned so they read as gaps between panes in both
-          themes. Dropped in mono — at mask-icon sizes they fill the tower in —
-          and they vanish into solid blue below ~40px anyway, which is the
-          correct degradation rather than a loss. */}
+      {/* Dropped in mono: at mask-icon sizes these fill the tower in rather
+          than reading as glazing. */}
       {!isMono && (
-        <g stroke="var(--color-on-dark)" strokeWidth="0.7" opacity="0.95">
-          {[29, 32, 35, 38, 41, 44, 47, 50].map((y) => (
-            <line key={y} x1="39" y1={y} x2="45" y2={y} />
-          ))}
-          <line x1="41" y1="26" x2="41" y2="53" />
-          <line x1="43.2" y1="24" x2="43.2" y2="53" />
-        </g>
+        <path
+          d={MULLIONS}
+          stroke="var(--color-on-dark)"
+          strokeWidth="1.2"
+          opacity="0.95"
+        />
       )}
 
-      {/* The plinth. Thin, splayed, and wider than everything above it, so the
-          skyline reads as founded on something — which is the business. Drawn
-          last: it passes in front of the towers' feet. */}
-      <path d="M6 58 L12 54 H52 L58 58 Z" fill={dark} />
+      {/* The two navy wedges, left then right. Mirrored but not identical —
+          the right one is both taller and steeper. Each is a raked mass on a
+          splayed foot, and the two feet together read as the baseline the
+          skyline is founded on, which is the business. They are drawn last so
+          they pass in front of the towers' feet. */}
+      <path d="M93.5 252 145.5 293V443.5H10L23 425.5H93.5Z" fill={dark} />
+      <path d="M255.5 304 196.5 344V443.5H331.5L318 425.5H255.5Z" fill={dark} />
     </svg>
   );
 }
