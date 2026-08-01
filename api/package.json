@@ -16,6 +16,7 @@
     "db:migrate": "tsx src/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
     "seed": "tsx src/db/seed.ts",
+    "seed:superadmin": "tsx src/db/seed-superadmin.ts",
     "import:deck": "tsx src/db/import-deck.ts",
     "import:deck:remote": "tsx src/db/import-deck-remote.ts",
     "verify": "tsx src/db/verify.ts",
