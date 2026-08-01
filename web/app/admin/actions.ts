@@ -296,6 +296,50 @@ export async function restoreProject(formData: FormData): Promise<void> {
   revalidatePath("/admin/projects");
 }
 
+/**
+ * Publish, unpublish, delete or restore several projects at once.
+ *
+ * One request rather than one per row: the API applies the whole batch and
+ * revalidates the site once, so seventeen projects going live rebuilds the
+ * projects pages a single time.
+ */
+export async function bulkProjects(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const ids = formData
+    .getAll("ids")
+    .map((value) => Number(value))
+    .filter((n) => Number.isInteger(n) && n > 0);
+
+  const action = String(formData.get("action") ?? "");
+
+  if (ids.length === 0) return { ok: false, message: "Nothing selected." };
+
+  let affected: number;
+  try {
+    const result = await api.post<{ affected: number }>(
+      "/admin/projects/bulk",
+      { ids, action }
+    );
+    affected = result.affected;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/projects");
+
+  const noun = affected === 1 ? "project" : "projects";
+  const verb = {
+    publish: "published",
+    draft: "moved to draft",
+    delete: "deleted",
+    restore: "restored",
+  }[action] ?? "updated";
+
+  return { ok: true, message: `${affected} ${noun} ${verb}.` };
+}
+
 export async function reorderProjects(ids: number[]): Promise<void> {
   await api.patch("/admin/projects/reorder", { ids });
   revalidatePath("/admin/projects");
