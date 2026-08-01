@@ -562,7 +562,6 @@
 }
 
 @keyframes adm-draw-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes adm-draw-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 
 /* Travels right-to-left across a button that is waiting on the server. */
 @keyframes adm-sheen {
@@ -702,7 +701,9 @@
 }
 
 /* The current-page marker draws itself in on arrival: a rule across the top of
-   the tab on a phone, down the left edge of the sidebar row from md up. */
+   the phone tab bar. The sidebar drops it below — see the md block, where the
+   tinted row is marker enough and the bar down the edge only added a second
+   thing to read. */
 .adm-nav a[aria-current="page"]::before {
   content: "";
   position: absolute;
@@ -720,13 +721,7 @@
 
 @media (min-width: 48rem) {
   .adm-nav a[aria-current="page"]::before {
-    top: 0.3rem;
-    bottom: 0.3rem;
-    right: auto;
-    width: 3px;
-    height: auto;
-    border-radius: 0 2px 2px 0;
-    animation-name: adm-draw-y;
+    content: none;
   }
 }
 
@@ -972,13 +967,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 0.75rem;
+  /* Wider than the usual button gap so the destructive one is not quite
+     shoulder to shoulder with Save, but still reading as the same row. */
+  gap: 1rem;
   margin-top: 1rem;
-}
-
-/* The destructive one sits at the far end of the row, not up against Save. */
-.adm-lb-actions > form {
-  margin-left: auto;
 }
 
 /* The focal-point marker, over the picture in the viewer. */
