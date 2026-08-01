@@ -23,6 +23,10 @@
   --adm-card: #fff;
   --adm-field: #fff;
 
+  /* The site's own easing, with the curve repeated as a fallback so the admin
+     still moves correctly if it is ever rendered without globals.css. */
+  --adm-ease: var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1));
+
   min-height: 100dvh;
   background: var(--color-neutral-100);
   color: var(--color-ink);
@@ -109,9 +113,15 @@
   color: var(--color-neutral-700);
 }
 
+/* position:relative so the current-page indicator in the motion section below
+   can be an absolutely positioned ::before rather than an inset shadow — a
+   shadow cannot be animated from nothing, a pseudo-element can. */
+.adm-nav a {
+  position: relative;
+}
+
 .adm-nav a[aria-current="page"] {
   color: var(--color-accent-700);
-  box-shadow: inset 0 2px 0 var(--color-accent-600);
   background: var(--color-accent-100);
 }
 
@@ -151,7 +161,6 @@
     font-size: 0.9rem;
   }
 
-  .adm-nav a[aria-current="page"] { box-shadow: none; }
   .adm-nav a.adm-nav-overflow { display: flex; }
   .adm-main { padding: 1.5rem 2rem 4rem; }
 }
@@ -466,14 +475,24 @@
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, 0.75rem);
-  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  transform: translate(-50%, 0.75rem) scale(0.96);
+  transition:
+    opacity 0.26s var(--adm-ease),
+    transform 0.26s var(--adm-ease),
+    visibility 0.26s;
 }
 
 .adm-toast.is-visible {
   visibility: visible;
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, 0) scale(1);
+}
+
+/* The tick/cross lands a beat after the panel, which is what makes the toast
+   read as a confirmation rather than a rectangle that appeared. Keyed off
+   .is-visible, so it replays every time the toast comes back. */
+.adm-toast.is-visible > svg {
+  animation: adm-pop 0.4s var(--adm-ease) 0.1s both;
 }
 
 .adm-toast.is-ok {
@@ -493,6 +512,7 @@
 /* Respect a reduced-motion preference: appear and disappear, don't slide. */
 @media (prefers-reduced-motion: reduce) {
   .adm-toast { transition: opacity 0.01s, visibility 0.01s; transform: translate(-50%, 0); }
+  .adm-toast.is-visible { transform: translate(-50%, 0); }
 }
 
 /* ── stats ───────────────────────────────────────────────────────────── */
@@ -503,4 +523,274 @@
   font-family: var(--font-heading);
   font-size: 2rem;
   line-height: 1.1;
+}
+
+/* ── motion ──────────────────────────────────────────────────────────── */
+/*
+ * Entirely CSS, with no observers and no client components, which is what the
+ * public site does too (see the note on Reveal). Two things make that work
+ * here:
+ *
+ *  - Entrances are plain `animation`, not transitions from a JS-toggled class.
+ *    An app-router navigation swaps the contents of <main> for new DOM nodes,
+ *    so the animation runs again on every page — the pages themselves stay
+ *    server components.
+ *  - Reduced motion is already handled globally: globals.css collapses every
+ *    animation and transition to 0.001ms under `prefers-reduced-motion:
+ *    reduce`. Everything below therefore uses `both` fill, so the collapsed
+ *    version lands on the finished state instead of leaving anything at
+ *    opacity 0.
+ *
+ * Durations are short on purpose. This is a tool that gets used many times a
+ * day from a phone on site, so movement is there to show what changed and
+ * where things came from, not to be admired.
+ */
+
+@keyframes adm-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes adm-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes adm-pop {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes adm-draw-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes adm-draw-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* Travels right-to-left across a button that is waiting on the server. */
+@keyframes adm-sheen {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+
+/* ---- page entrance ---- */
+
+/* Top-level blocks of a page cascade in. Capped at the fourth: past that the
+   delay is longer than the eye spends looking, and a long list would end up
+   waiting on an animation before it could be read. */
+.adm-main > * {
+  animation: adm-rise 0.5s var(--adm-ease) both;
+}
+.adm-main > *:nth-child(2) { animation-delay: 60ms; }
+.adm-main > *:nth-child(3) { animation-delay: 120ms; }
+.adm-main > *:nth-child(n + 4) { animation-delay: 170ms; }
+
+/* A grid that is itself a page block only fades — its children do the moving.
+   Same reasoning as the `.stagger` note in globals.css: leave the rise on both
+   and the cards travel twice the distance. */
+.adm-main > .adm-grid { animation-name: adm-fade; }
+
+.adm-grid > * {
+  animation: adm-rise 0.45s var(--adm-ease) both;
+}
+.adm-grid > *:nth-child(2) { animation-delay: 70ms; }
+.adm-grid > *:nth-child(3) { animation-delay: 140ms; }
+.adm-grid > *:nth-child(n + 4) { animation-delay: 210ms; }
+
+/* List rows deal themselves out. The tail is pinned rather than continuing to
+   step, so a hundred-row media or project list still finishes in a third of a
+   second instead of over ten. */
+.adm-card > .adm-row {
+  animation: adm-rise 0.42s var(--adm-ease) both;
+}
+.adm-card > .adm-row:nth-child(2) { animation-delay: 40ms; }
+.adm-card > .adm-row:nth-child(3) { animation-delay: 80ms; }
+.adm-card > .adm-row:nth-child(4) { animation-delay: 120ms; }
+.adm-card > .adm-row:nth-child(5) { animation-delay: 160ms; }
+.adm-card > .adm-row:nth-child(6) { animation-delay: 200ms; }
+.adm-card > .adm-row:nth-child(7) { animation-delay: 240ms; }
+.adm-card > .adm-row:nth-child(n + 8) { animation-delay: 280ms; }
+
+/* The save/selection bar slides up from where it lives rather than fading in
+   on top of the list. It is sticky, and the animation finishes on
+   `transform: none`, so stickiness is unaffected once it settles. */
+.adm-savebar {
+  animation: adm-rise 0.34s var(--adm-ease) both;
+}
+
+/* ---- surfaces ---- */
+
+.adm-card {
+  transition:
+    transform 0.3s var(--adm-ease),
+    box-shadow 0.3s var(--adm-ease),
+    border-color 0.3s var(--adm-ease);
+}
+
+/* Only the stat tiles lift. A card that is a container for a list has no
+   single meaning to hover, and lifting it drags the whole list with it. */
+.adm-card.adm-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--color-accent-500) 35%, var(--color-divider));
+}
+
+.adm-row {
+  transition: background 0.2s var(--adm-ease);
+}
+
+.adm-thumb {
+  transition: transform 0.35s var(--adm-ease);
+}
+
+.adm-row:hover .adm-thumb {
+  transform: scale(1.06);
+}
+
+/* ---- buttons ---- */
+
+.adm-btn {
+  transition:
+    background 0.2s var(--adm-ease),
+    color 0.2s var(--adm-ease),
+    border-color 0.2s var(--adm-ease),
+    box-shadow 0.2s var(--adm-ease),
+    transform 0.12s var(--adm-ease);
+}
+
+.adm-btn:hover:not([disabled]) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* The press has to beat the pointer back to the button, hence the much shorter
+   duration — at 0.12s the button is still travelling when the finger lifts. */
+.adm-btn:active:not([disabled]) {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.06s;
+}
+
+/* A disabled button here always means "waiting on the server" — every form in
+   the dashboard disables on submit — so it gets a sheen rather than just going
+   pale. Painted as a background-image over whatever background the variant
+   already set, so it works on the accent, ghost and danger buttons alike. */
+.adm-btn[disabled] {
+  background-image: linear-gradient(
+    100deg,
+    transparent 25%,
+    color-mix(in srgb, #fff 26%, transparent) 45%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  animation: adm-sheen 1.2s linear infinite;
+}
+
+/* ---- nav ---- */
+
+.adm-nav a {
+  transition:
+    background 0.2s var(--adm-ease),
+    color 0.2s var(--adm-ease);
+}
+
+.adm-nav a:hover {
+  color: var(--color-ink);
+  background: var(--color-neutral-200);
+}
+
+.adm-nav a[aria-current="page"]:hover {
+  color: var(--color-accent-700);
+  background: var(--color-accent-100);
+}
+
+/* The current-page marker draws itself in on arrival: a rule across the top of
+   the tab on a phone, down the left edge of the sidebar row from md up. */
+.adm-nav a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-accent-600);
+  animation: adm-draw-x 0.4s var(--adm-ease) both;
+}
+
+.adm-nav a[aria-current="page"] svg {
+  animation: adm-pop 0.4s var(--adm-ease) both;
+}
+
+@media (min-width: 48rem) {
+  .adm-nav a[aria-current="page"]::before {
+    top: 0.3rem;
+    bottom: 0.3rem;
+    right: auto;
+    width: 3px;
+    height: auto;
+    border-radius: 0 2px 2px 0;
+    animation-name: adm-draw-y;
+  }
+}
+
+/* ---- fields ---- */
+
+.adm-input,
+.adm-select,
+.adm-textarea {
+  transition:
+    border-color 0.18s var(--adm-ease),
+    box-shadow 0.18s var(--adm-ease);
+}
+
+/* A soft ring under the existing outline. The outline is the accessible focus
+   indicator and is not animated — this only softens the edge of it. */
+.adm-input:focus-visible,
+.adm-select:focus-visible,
+.adm-textarea:focus-visible {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-500) 16%, transparent);
+}
+
+.adm-reveal {
+  transition: color 0.2s var(--adm-ease), background 0.2s var(--adm-ease);
+}
+
+/* ---- media library tiles ---- */
+
+.adm-tile {
+  transition:
+    transform 0.25s var(--adm-ease),
+    box-shadow 0.25s var(--adm-ease);
+  animation: adm-pop 0.4s var(--adm-ease) both;
+}
+
+/* Six across at most, so the cascade runs by row rather than one long queue. */
+.adm-tile:nth-child(2) { animation-delay: 30ms; }
+.adm-tile:nth-child(3) { animation-delay: 60ms; }
+.adm-tile:nth-child(4) { animation-delay: 90ms; }
+.adm-tile:nth-child(5) { animation-delay: 120ms; }
+.adm-tile:nth-child(6) { animation-delay: 150ms; }
+.adm-tile:nth-child(n + 7) { animation-delay: 180ms; }
+
+.adm-tile:hover {
+  /* Lifts above its neighbours, which it now overlaps slightly. */
+  z-index: 1;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.adm-tile img {
+  transition: transform 0.45s var(--adm-ease);
+}
+
+.adm-tile:hover img { transform: scale(1.05); }
+
+.adm-tile[aria-pressed="true"] {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-500) 30%, transparent);
+}
+
+/* ---- the armed state of a two-step delete ---- */
+
+/* Both buttons swap in at once when the first press arms the control, so the
+   pair appears together rather than the Cancel button popping in beside a
+   button that was already there. */
+.adm-armed {
+  animation: adm-pop 0.22s var(--adm-ease) both;
 }

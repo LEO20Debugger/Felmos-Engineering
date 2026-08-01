@@ -3,8 +3,9 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import SectionHead from "@/components/ui/Section";
 import Reveal from "@/components/ui/Reveal";
-import { imageAt } from "@/lib/images";
-import { services } from "@/lib/content";
+import { getServices } from "@/lib/cms";
+import { Icon } from "@/lib/icons";
+import { focalPosition, mediaUrl } from "@/lib/media";
 
 /* The homepage shows the first five only; /services carries all of them.
    Five is also the width this layout is built for — the panels share one row,
@@ -13,8 +14,6 @@ import { services } from "@/lib/content";
    ends. The count is stated in the lead and the CTA below is the way through,
    so nothing is hidden — it is just not all on the front page. */
 const SHOWN = 5;
-const shown = services.slice(0, SHOWN);
-const remaining = services.length - shown.length;
 
 /**
  * The first five services, in two presentations of the same data.
@@ -26,8 +25,17 @@ const remaining = services.length - shown.length;
  *
  * Below lg it becomes a grid of image tiles, where the last tile is itself the
  * "see everything" route through to /services.
+ *
+ * Reads the same getServices() the /services page does, so a photograph swapped
+ * in the dashboard changes both. It used to import the hardcoded array, which is
+ * why the homepage kept showing stock photography after the real work was
+ * uploaded — two sources of truth for one set of services.
  */
-export default function ServiceShowcase() {
+export default async function ServiceShowcase() {
+  const services = await getServices();
+  const shown = services.slice(0, SHOWN);
+  const remaining = services.length - shown.length;
+
   return (
     <section className="wrap py-14 md:py-20" aria-label="Engineering services">
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
@@ -53,7 +61,6 @@ export default function ServiceShowcase() {
       <div className="hidden lg:block">
         <Reveal className="flex gap-2.5 lg:h-[480px]">
           {shown.map((s) => {
-            const Icon = s.icon;
             return (
                 <Link
                   key={s.slug}
@@ -62,14 +69,19 @@ export default function ServiceShowcase() {
                   className="svc-panel"
                 >
                   {/* Portrait crop of the same photograph, so a tall narrow
-                      panel frames the subject instead of slicing it out. */}
-                  <Image
-                    src={imageAt(s.image, 900, 1200)}
-                    alt=""
-                    fill
-                    sizes="(max-width: 1024px) 0px, 30vw"
-                    className="svc-photo object-cover"
-                  />
+                      panel frames the subject instead of slicing it out. The
+                      panel keeps its gradient and label if a service has no
+                      image yet, rather than collapsing to an empty box. */}
+                  {s.image ? (
+                    <Image
+                      src={mediaUrl(s.image, 900, 1200)}
+                      alt=""
+                      fill
+                      sizes="(max-width: 1024px) 0px, 30vw"
+                      style={{ objectPosition: focalPosition(s.image) }}
+                      className="svc-photo object-cover"
+                    />
+                  ) : null}
                   <span
                     aria-hidden
                     className="absolute inset-0 bg-gradient-to-t from-accent-900 via-accent-900/55 to-accent-900/15"
@@ -86,7 +98,13 @@ export default function ServiceShowcase() {
 
                   {/* Expanded: the detail fades up once the panel has room. */}
                   <span className="svc-detail absolute inset-x-0 bottom-0 flex flex-col gap-2.5 p-6">
-                    <Icon size={26} strokeWidth={1.5} className="text-accent-300" />
+                    <Icon
+                      name={s.icon}
+                      size={26}
+                      strokeWidth={1.5}
+                      aria-hidden
+                      className="text-accent-300"
+                    />
                     <span className="font-heading text-[20px] uppercase leading-tight text-on-dark">
                       {s.title}
                     </span>
@@ -114,13 +132,16 @@ export default function ServiceShowcase() {
               href={`/services#${s.slug}`}
               className="group relative block aspect-square overflow-hidden rounded-[var(--radius-control)] no-underline"
             >
-              <Image
-                src={imageAt(s.image, 800, 800)}
-                alt=""
-                fill
-                sizes="(max-width: 1024px) 50vw, 0px"
-                className="object-cover transition-transform duration-700 group-active:scale-105"
-              />
+              {s.image ? (
+                <Image
+                  src={mediaUrl(s.image, 800, 800)}
+                  alt=""
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 0px"
+                  style={{ objectPosition: focalPosition(s.image) }}
+                  className="object-cover transition-transform duration-700 group-active:scale-105"
+                />
+              ) : null}
               <span
                 aria-hidden
                 className="absolute inset-0 bg-gradient-to-t from-accent-900 via-accent-900/45 to-accent-900/5"

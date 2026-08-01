@@ -459,6 +459,57 @@ export async function updateMedia(
   return { ok: true, message: "Saved." };
 }
 
+/**
+ * Delete several images, skipping any still in use.
+ *
+ * Reports the partial result rather than treating a blocked image as failure —
+ * "18 deleted, 2 still in use" is the answer, and the reasons name exactly what
+ * is holding them.
+ */
+export async function bulkDeleteMedia(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const ids = formData
+    .getAll("ids")
+    .map((value) => Number(value))
+    .filter((n) => Number.isInteger(n) && n > 0);
+
+  if (ids.length === 0) return { ok: false, message: "Nothing selected." };
+
+  let result: { deleted: number; blocked: { id: number; reason: string }[] };
+  try {
+    result = await api.post<{
+      deleted: number;
+      blocked: { id: number; reason: string }[];
+    }>("/admin/media/bulk-delete", { ids });
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/media");
+
+  const { deleted, blocked } = result;
+  const noun = (n: number) => (n === 1 ? "image" : "images");
+
+  if (blocked.length === 0) {
+    return { ok: true, message: `${deleted} ${noun(deleted)} deleted.` };
+  }
+
+  /* Deduplicated: twenty images blocked by the same project should say so
+     once, not twenty times. */
+  const reasons = [...new Set(blocked.map((b) => b.reason))];
+
+  return {
+    /* Not ok — something the editor asked for did not happen, and the toast
+       needs to stay up long enough to read the reason. */
+    ok: false,
+    message:
+      `${deleted} ${noun(deleted)} deleted. ` +
+      `${blocked.length} still in use — ${reasons.join(" ")}`,
+  };
+}
+
 export async function deleteMedia(
   _previous: FormState,
   formData: FormData
