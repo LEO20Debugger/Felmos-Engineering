@@ -1140,6 +1140,99 @@
     }
   }
 
+  /* ------------------------------ toast -------------------------------- */
+  /* Transient confirmation for the booking form. Sits above the sticky mobile
+     "Book inspection" bar (z-40) rather than behind it, and above the safe-area
+     inset so it clears the home indicator on a phone. */
+  .site-toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    z-index: 50;
+
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    /* max-content, not the shrink-to-fit default: a fixed flex box sizes to
+       its flex base and wrapped "Please check the highlighted fields." onto
+       three lines inside 184px while 350px sat unused beside it. */
+    width: max-content;
+    max-width: min(26rem, calc(100vw - 2rem));
+    padding: 12px 16px;
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-control);
+    box-shadow: 0 8px 28px color-mix(in srgb, #000 22%, transparent);
+
+    /* Hidden by default. `visibility` rather than `display` so the transition
+       can run, and pointer-events so a dismissed toast can never intercept a
+       click on the form underneath it. */
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 0.6rem);
+    transition:
+      opacity 0.28s var(--ease-out-quint),
+      transform 0.28s var(--ease-out-quint),
+      visibility 0.28s;
+  }
+
+  .site-toast.is-visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .site-toast.is-ok {
+    border-color: color-mix(in srgb, var(--color-signal) 55%, transparent);
+  }
+  .site-toast.is-ok > svg {
+    color: var(--color-signal);
+    flex: none;
+  }
+
+  .site-toast.is-bad {
+    border-color: color-mix(in srgb, var(--color-danger) 55%, transparent);
+  }
+  .site-toast.is-bad > svg {
+    color: var(--color-danger);
+    flex: none;
+  }
+
+  /* The bar is desktop-hidden, so the toast can sit lower and to the right —
+     out of the way of the form it is confirming. */
+  @media (min-width: 48rem) {
+    .site-toast {
+      left: auto;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      transform: translate(0, 0.6rem);
+    }
+    .site-toast.is-visible {
+      transform: translate(0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-toast {
+      transition: opacity 0.01s, visibility 0.01s;
+      transform: translate(-50%, 0);
+    }
+    .site-toast.is-visible {
+      transform: translate(-50%, 0);
+    }
+    @media (min-width: 48rem) {
+      .site-toast,
+      .site-toast.is-visible {
+        transform: translate(0, 0);
+      }
+    }
+  }
+
   @supports (animation-timeline: scroll()) {
     @media (prefers-reduced-motion: no-preference) {
 

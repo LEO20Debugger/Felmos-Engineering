@@ -10,6 +10,8 @@ import { DB } from "@/db/db.module";
 import type { Db } from "@/db/client";
 import { siteSettings, mailRecipients } from "@/db/schema";
 import { TenantContext } from "@/common/tenant-context";
+import { BrandService } from "@/modules/mail/brand";
+import { MailService } from "@/modules/mail/mail.service";
 
 export type UpdateSettingsInput = {
   name?: string;
@@ -47,7 +49,15 @@ export type MailRecipientInput = {
 
 @Injectable()
 export class SettingsService {
-  constructor(@Inject(DB) private readonly db: Db) {}
+  constructor(
+    @Inject(DB) private readonly db: Db,
+    /* Provided globally by LeadsModule. Injected here so a recipient change
+       takes effect on the next submission rather than up to a minute later —
+       whoever just added an address is usually about to test it. */
+    private readonly mail: MailService,
+    /* Same reasoning for the details emails are signed with. */
+    private readonly brand: BrandService
+  ) {}
 
   async getSettings(tenant: TenantContext) {
     const [settings] = await this.db
@@ -129,6 +139,7 @@ export class SettingsService {
       } as never);
     }
 
+    this.brand.invalidate(tenant.companyId);
     return this.getSettings(tenant);
   }
 
@@ -161,6 +172,7 @@ export class SettingsService {
       createdBy: tenant.actorUserId,
     } as never);
 
+    this.mail.invalidate(tenant.companyId);
     return this.getSettings(tenant);
   }
 
@@ -225,6 +237,7 @@ export class SettingsService {
       .set(data as never)
       .where(eq(mailRecipients.id, recipient.id));
 
+    this.mail.invalidate(tenant.companyId);
     return this.getSettings(tenant);
   }
 
@@ -274,6 +287,7 @@ export class SettingsService {
       } as never)
       .where(eq(mailRecipients.id, recipient.id));
 
+    this.mail.invalidate(tenant.companyId);
     return this.getSettings(tenant);
   }
 }

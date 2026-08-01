@@ -675,17 +675,71 @@ export async function updateLead(
 ): Promise<FormState> {
   const id = Number(formData.get("id"));
 
+  /* Only what the form actually submitted. Sending both fields unconditionally
+     meant any form without a notes field blanked the notes it couldn't see —
+     the API treats a present-but-empty string as "clear it". */
+  const body: Record<string, string> = {};
+  if (formData.has("status")) body.status = String(formData.get("status"));
+  if (formData.has("internalNotes")) {
+    body.internalNotes = String(formData.get("internalNotes"));
+  }
+
+  if (Object.keys(body).length === 0) {
+    return { ok: false, message: "Nothing to save." };
+  }
+
   try {
-    await api.patch(`/admin/leads/${id}`, {
-      status: String(formData.get("status") ?? "new"),
-      internalNotes: String(formData.get("internalNotes") ?? ""),
-    });
+    await api.patch(`/admin/leads/${id}`, body);
   } catch (error) {
     return toFormState(error);
   }
 
   revalidatePath("/admin/leads");
   return { ok: true, message: "Saved." };
+}
+
+export async function deleteLead(formData: FormData): Promise<void> {
+  await api.del(`/admin/leads/${Number(formData.get("id"))}`);
+  revalidatePath("/admin/leads");
+}
+
+export async function restoreLead(formData: FormData): Promise<void> {
+  await api.post(`/admin/leads/${Number(formData.get("id"))}/restore`);
+  revalidatePath("/admin/leads");
+}
+
+/** The inbox's multi-select bar. Mirrors bulkPosts. */
+export async function bulkLeads(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const ids = formData
+    .getAll("ids")
+    .map((value) => Number(value))
+    .filter((n) => Number.isInteger(n) && n > 0);
+
+  const action = String(formData.get("action") ?? "");
+
+  if (ids.length === 0) return { ok: false, message: "Nothing selected." };
+
+  let affected: number;
+  try {
+    const result = await api.post<{ affected: number }>("/admin/leads/bulk", {
+      ids,
+      action,
+    });
+    affected = result.affected;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/leads");
+
+  const noun = affected === 1 ? "request" : "requests";
+  const verb =
+    { delete: "deleted", restore: "restored" }[action] ?? `marked ${action}`;
+
+  return { ok: true, message: `${affected} ${noun} ${verb}.` };
 }
 
 /** Manual retry for a notification that failed or was never configured. */

@@ -1,3 +1,4 @@
+import AttributionCapture from "@/components/layout/AttributionCapture";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MobileCta from "@/components/layout/MobileCta";
@@ -54,6 +55,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       >
         Skip to content
       </a>
+      <AttributionCapture />
       <Header />
       <main id="main">{children}</main>
       <Footer />

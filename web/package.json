@@ -6,6 +6,7 @@
     "predev": "node scripts/predev.js",
     "dev": "next dev --turbopack",
     "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && npm run dev",
+    "dev:alt": "node -e \"process.env.NEXT_DIST_DIR='.next-alt';process.env.PORT=process.env.PORT||'3010';require('child_process').spawn('npx',['next','dev','--turbopack','-p',process.env.PORT],{stdio:'inherit',shell:true})\"",
     "build": "next build",
     "build:fast": "next build --turbopack",
     "start": "next start",

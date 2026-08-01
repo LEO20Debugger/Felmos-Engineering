@@ -1,11 +1,22 @@
 /**
- * The notification an inspection request produces.
+ * The notification an inspection request produces, sent to staff.
  *
  * Written as plain text first and HTML second, because these are read on a
- * phone by someone who needs the number and the location, not a designed
- * newsletter. Both parts carry the same content — some clients show the text
- * version, and a notification that is empty in one of them is a lost lead.
+ * phone by someone who needs the number and the location. The HTML is branded
+ * now — this lands beside client correspondence and should not look like a
+ * cron job — but the ordering is unchanged: the facts you act on are above the
+ * fold, and the message is below them.
  */
+
+import type { Brand } from "@/modules/mail/brand";
+import {
+  button,
+  detailTable,
+  escape,
+  layout,
+  quote,
+  textFooter,
+} from "@/modules/mail/email.layout";
 
 export type LeadEmailInput = {
   name: string;
@@ -17,18 +28,12 @@ export type LeadEmailInput = {
   message: string | null;
   referrerHost: string | null;
   landingPath: string | null;
-  adminUrl: string;
+  utmSource?: string | null;
+  utmCampaign?: string | null;
   leadId: number;
 };
 
-const escape = (value: string): string =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-
-export function buildLeadEmail(lead: LeadEmailInput) {
+export function buildLeadEmail(lead: LeadEmailInput, brand: Brand) {
   /* The subject carries the service and the location because that is what
      makes a notification triageable from a lock screen without opening it. */
   const subject = `Inspection request — ${lead.serviceText} — ${lead.location}`;
@@ -43,7 +48,12 @@ export function buildLeadEmail(lead: LeadEmailInput) {
   ];
 
   if (lead.referrerHost) rows.push(["Came from", lead.referrerHost]);
-  if (lead.landingPath) rows.push(["Page", lead.landingPath]);
+  if (lead.landingPath) rows.push(["Landed on", lead.landingPath]);
+  if (lead.utmSource) rows.push(["Campaign source", lead.utmSource]);
+  if (lead.utmCampaign) rows.push(["Campaign", lead.utmCampaign]);
+
+  const dashboardLink = `${brand.adminUrl}/admin/leads?lead=${lead.leadId}`;
+  const telHref = `tel:${lead.phone.replace(/\s/g, "")}`;
 
   const text = [
     `New inspection request from ${lead.name}.`,
@@ -53,42 +63,34 @@ export function buildLeadEmail(lead: LeadEmailInput) {
     lead.message ? `Message:\n${lead.message}` : "No message.",
     "",
     `Reply to this email to answer ${lead.name} directly.`,
-    `Open in the dashboard: ${lead.adminUrl}/admin/leads/${lead.leadId}`,
+    `Call: ${lead.phone}`,
+    `Open in the dashboard: ${dashboardLink}`,
+    "",
+    ...textFooter(brand),
   ].join("\n");
 
-  const html = `
-<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:560px;color:#171e24">
-  <h2 style="margin:0 0 4px;font-size:18px">New inspection request</h2>
-  <p style="margin:0 0 16px;color:#59626a;font-size:14px">
-    From ${escape(lead.name)} · reply to this email to answer them directly.
-  </p>
+  const html = layout({
+    brand,
+    heading: "New inspection request",
+    preheader: `From ${lead.name} · ${lead.serviceText} · ${lead.location}`,
+    body: `
+    ${detailTable(rows)}
 
-  <table style="border-collapse:collapse;width:100%;font-size:14px">
-    ${rows
-      .map(
-        ([label, value]) => `
-      <tr>
-        <td style="padding:6px 12px 6px 0;color:#59626a;white-space:nowrap;vertical-align:top">${escape(label)}</td>
-        <td style="padding:6px 0"><strong>${escape(value)}</strong></td>
-      </tr>`
-      )
-      .join("")}
-  </table>
+    ${
+      lead.message
+        ? quote(lead.message)
+        : `<p style="margin:20px 0;color:#767f86;font-size:14px">No message left.</p>`
+    }
 
-  ${
-    lead.message
-      ? `<div style="margin:16px 0;padding:12px;background:#f4f6f7;border-left:3px solid #1b6f97;font-size:14px;white-space:pre-wrap">${escape(
-          lead.message
-        )}</div>`
-      : `<p style="margin:16px 0;color:#767f86;font-size:14px">No message left.</p>`
-  }
+    <div style="margin-top:8px">
+      ${button(telHref, `Call ${lead.phone}`)}
+      ${button(dashboardLink, "Open in dashboard", true)}
+    </div>
 
-  <p style="margin:20px 0 0;font-size:13px">
-    <a href="${escape(lead.adminUrl)}/admin/leads/${lead.leadId}" style="color:#1b5f85">
-      Open in the dashboard
-    </a>
-  </p>
-</div>`.trim();
+    <p style="margin:14px 0 0;font-size:13px;line-height:1.5;color:#59626a">
+      Replying to this email answers ${escape(lead.name)} directly.
+    </p>`,
+  });
 
   return { subject, text, html, replyTo: lead.email };
 }

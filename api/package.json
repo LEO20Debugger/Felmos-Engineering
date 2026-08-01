@@ -42,8 +42,8 @@
     "mysql2": "^3.11.0",
     "nanoid": "^5.0.9",
     "nestjs-zod": "^4.0.0",
-    "nodemailer": "^9.0.3",
     "reflect-metadata": "^0.2.2",
+    "resend": "^4.8.0",
     "rxjs": "^7.8.1",
     "sharp": "^0.33.5",
     "zod": "^3.24.0"
@@ -54,7 +54,6 @@
     "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.0",
-    "@types/nodemailer": "^8.0.1",
     "drizzle-kit": "^0.30.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"

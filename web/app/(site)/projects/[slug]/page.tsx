@@ -79,22 +79,29 @@ export default async function ProjectPage({
 
   return (
     <>
-      <nav className="wrap pt-8" aria-label="Breadcrumb">
-        <Link
-          href="/projects"
-          className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.08em] no-underline opacity-65 hover:opacity-100"
-        >
-          <ArrowLeft size={15} strokeWidth={1.5} />
-          All projects
-        </Link>
-      </nav>
+      {/* Up to the index on the left, along the set on the right. One row, so
+          both ways out of this page are found in the same glance. */}
+      <div className="wrap flex items-center justify-between gap-4 pt-8">
+        <nav aria-label="Breadcrumb">
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.08em] no-underline opacity-65 hover:opacity-100"
+          >
+            <ArrowLeft size={15} strokeWidth={1.5} />
+            <span className="max-sm:hidden">All projects</span>
+            <span className="sm:hidden">All</span>
+          </Link>
+        </nav>
+
+        {projects.length > 1 && (
+          <nav aria-label="More projects">
+            <ProjectPager previous={previous} next={next} />
+          </nav>
+        )}
+      </div>
 
       <ProjectDossier project={project} services={services} />
       <ProjectGallery images={project.gallery} />
-
-      {projects.length > 1 && (
-        <ProjectPager previous={previous} next={next} />
-      )}
 
       <CtaBand
         title="Need this done on your building?"
