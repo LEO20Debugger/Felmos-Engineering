@@ -195,6 +195,50 @@ export async function restoreService(formData: FormData): Promise<void> {
   revalidatePath("/admin/services");
 }
 
+/**
+ * Publish, unpublish, delete or restore several services at once.
+ *
+ * One request rather than one per row: the API applies the whole batch and
+ * revalidates the site once, so seventeen services going live rebuilds the
+ * homepage, the services page and the contact form a single time.
+ */
+export async function bulkServices(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const ids = formData
+    .getAll("ids")
+    .map((value) => Number(value))
+    .filter((n) => Number.isInteger(n) && n > 0);
+
+  const action = String(formData.get("action") ?? "");
+
+  if (ids.length === 0) return { ok: false, message: "Nothing selected." };
+
+  let affected: number;
+  try {
+    const result = await api.post<{ affected: number }>(
+      "/admin/services/bulk",
+      { ids, action }
+    );
+    affected = result.affected;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/services");
+
+  const noun = affected === 1 ? "service" : "services";
+  const verb = {
+    publish: "published",
+    draft: "moved to draft",
+    delete: "deleted",
+    restore: "restored",
+  }[action] ?? "updated";
+
+  return { ok: true, message: `${affected} ${noun} ${verb}.` };
+}
+
 export async function reorderServices(ids: number[]): Promise<void> {
   await api.patch("/admin/services/reorder", { ids });
   revalidatePath("/admin/services");
