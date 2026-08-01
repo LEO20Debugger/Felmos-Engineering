@@ -389,6 +389,132 @@ export async function reorderProjects(ids: number[]): Promise<void> {
   revalidatePath("/admin/projects");
 }
 
+/* ───────────────────────────────── team ──────────────────────────────── */
+
+/**
+ * Shared shape-building for create and update.
+ *
+ * Optional text fields go up as null when blank rather than "" — the About
+ * grid omits a missing role or qualifier instead of rendering an empty line,
+ * and that distinction has to survive the round trip.
+ */
+function memberFrom(formData: FormData) {
+  const text = (field: string): string | null => {
+    const value = String(formData.get(field) ?? "").trim();
+    return value === "" ? null : value;
+  };
+
+  const imageId = String(formData.get("imageId") ?? "").trim();
+
+  return {
+    slug: String(formData.get("slug") ?? "").trim(),
+    name: String(formData.get("name") ?? "").trim(),
+    role: text("role"),
+    tag: text("tag"),
+    bio: text("bio"),
+    imageId: imageId ? Number(imageId) : null,
+    status: formData.get("status") === "published" ? "published" : "draft",
+  };
+}
+
+export async function createTeamMember(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  let id: number;
+  try {
+    const result = await api.post<{ id: number }>(
+      "/admin/team",
+      memberFrom(formData)
+    );
+    id = result.id;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/team");
+  redirect(`/admin/team/${id}`);
+}
+
+export async function updateTeamMember(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+
+  try {
+    await api.patch(`/admin/team/${id}`, memberFrom(formData));
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/team");
+  revalidatePath(`/admin/team/${id}`);
+  return { ok: true, message: "Saved." };
+}
+
+export async function deleteTeamMember(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.del(`/admin/team/${id}`);
+  revalidatePath("/admin/team");
+  redirect("/admin/team?deleted=1");
+}
+
+export async function restoreTeamMember(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.post(`/admin/team/${id}/restore`);
+  revalidatePath("/admin/team");
+}
+
+/**
+ * Publish, unpublish, delete or restore several people at once.
+ *
+ * One request rather than one per row: the API applies the whole batch and
+ * revalidates the site once, so four people going live rebuilds the About page
+ * a single time.
+ */
+export async function bulkTeam(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const ids = formData
+    .getAll("ids")
+    .map((value) => Number(value))
+    .filter((n) => Number.isInteger(n) && n > 0);
+
+  const action = String(formData.get("action") ?? "");
+
+  if (ids.length === 0) return { ok: false, message: "Nothing selected." };
+
+  let affected: number;
+  try {
+    const result = await api.post<{ affected: number }>("/admin/team/bulk", {
+      ids,
+      action,
+    });
+    affected = result.affected;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/team");
+
+  const noun = affected === 1 ? "person" : "people";
+  const verb = {
+    publish: "published",
+    draft: "moved to draft",
+    delete: "deleted",
+    restore: "restored",
+  }[action] ?? "updated";
+
+  return { ok: true, message: `${affected} ${noun} ${verb}.` };
+}
+
+export async function reorderTeam(ids: number[]): Promise<void> {
+  await api.patch("/admin/team/reorder", { ids });
+  revalidatePath("/admin/team");
+}
+
 /* ──────────────────────────────── leads ──────────────────────────────── */
 
 export async function updateLead(

@@ -3,7 +3,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 
 import { DB } from "@/db/db.module";
 import type { Db } from "@/db/client";
-import { media, posts, team, testimonials } from "@/db/schema";
+import { media, posts, testimonials } from "@/db/schema";
 import { Tenant } from "@/common/tenant.decorator";
 import type { TenantContext } from "@/common/tenant-context";
 import { InternalKeyGuard } from "@/modules/auth/auth.guards";
@@ -82,31 +82,10 @@ export class PublicContentController {
     return { posts: rows.map((r) => withImage(r as Row)) };
   }
 
-  @Get("team")
-  async team(@Tenant() tenant: TenantContext) {
-    const rows = await this.db
-      .select({
-        id: team.id,
-        slug: team.slug,
-        name: team.name,
-        role: team.role,
-        tag: team.tag,
-        bio: team.bio,
-        image: imageShape,
-      })
-      .from(team)
-      .leftJoin(media, eq(media.id, team.imageId))
-      .where(
-        and(
-          eq(team.companyId, tenant.companyId),
-          eq(team.isDeleted, 0),
-          eq(team.status, "published")
-        )
-      )
-      .orderBy(asc(team.sortOrder));
-
-    return { team: rows.map((r) => withImage(r as Row)) };
-  }
+  /* Team moved to PublicTeamController for the same reason projects did: the
+     dashboard now writes these rows, and a hand-written copy of the shape here
+     would only stay in step with the repository's until the first one was
+     edited alone. */
 
   @Get("testimonials")
   async testimonials(@Tenant() tenant: TenantContext) {

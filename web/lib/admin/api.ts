@@ -161,6 +161,27 @@ export type AdminProject = {
   gallery: (AdminImage & { caption: string | null })[];
 };
 
+/**
+ * A team member as the dashboard sees it.
+ *
+ * Everything but the name is nullable: the About grid omits a missing role or
+ * qualifier rather than rendering an empty line, so "not recorded" has to
+ * survive the round trip as null instead of collapsing to "".
+ */
+export type AdminTeamMember = {
+  id: number;
+  slug: string;
+  name: string;
+  role: string | null;
+  tag: string | null;
+  bio: string | null;
+  status: "draft" | "published";
+  sortOrder: number;
+  isDeleted: number;
+  updatedAt: string;
+  image: AdminImage | null;
+};
+
 export type AdminMedia = AdminImage & {
   title: string | null;
   bytes: number | null;
