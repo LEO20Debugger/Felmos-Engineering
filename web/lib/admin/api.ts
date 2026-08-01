@@ -182,6 +182,43 @@ export type AdminTeamMember = {
   image: AdminImage | null;
 };
 
+/**
+ * One block of article body, as the dashboard edits it.
+ *
+ * Deliberately the same union as the API's zod schema and the site's renderer:
+ * the three have to agree, and a block kind that exists in only two of them is
+ * either a save the API rejects or a section the site drops silently.
+ */
+export type AdminPostBlock =
+  | { kind: "p"; text: string }
+  | { kind: "h2"; text: string }
+  | { kind: "quote"; text: string; attribution?: string | null }
+  | { kind: "list"; items: string[] };
+
+/**
+ * An article as the dashboard sees it.
+ *
+ * `readMinutes` is read-only here — the API derives it from the body on save,
+ * so there is no field for it on the form.
+ */
+export type AdminPost = {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  /** ISO yyyy-mm-dd, the editorial date printed on the article. */
+  date: string;
+  authorTeamId: number | null;
+  authorName: string;
+  category: string | null;
+  body: AdminPostBlock[];
+  readMinutes: number | null;
+  status: "draft" | "published";
+  isDeleted: number;
+  updatedAt: string;
+  image: AdminImage | null;
+};
+
 export type AdminMedia = AdminImage & {
   title: string | null;
   bytes: number | null;

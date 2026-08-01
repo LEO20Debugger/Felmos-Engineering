@@ -3,7 +3,7 @@ import PageHead from "@/components/ui/PageHead";
 import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/ui/CtaBand";
 import PostCard from "@/components/blog/PostCard";
-import { postsByDate } from "@/lib/blog";
+import { getPosts } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Insights",
@@ -12,8 +12,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
 };
 
-export default function BlogIndexPage() {
-  const [lead, ...rest] = postsByDate;
+export default async function BlogIndexPage() {
+  /* Already newest-first — the API orders by the editorial date, which is what
+     the index is sorted on. */
+  const [lead, ...rest] = await getPosts();
 
   return (
     <>
@@ -24,10 +26,10 @@ export default function BlogIndexPage() {
       />
 
       <section className="wrap pb-14 md:pb-20" aria-label="Articles">
-        {/* The empty state is not defensive padding — lib/blog.ts explicitly
-            sanctions shipping with `posts` emptied rather than shipping
-            placeholder copy, so this is the state the route is expected to be
-            in if sign-off never arrives. */}
+        {/* The empty state is not defensive padding. Articles are written in
+            the dashboard now, so a company that has published none yet — or
+            has moved every draft back — lands here, and the route stays valid
+            rather than rendering a headed page with nothing under it. */}
         {!lead ? (
           <Reveal as="p" className="m-0 max-w-[52ch] text-[15.5px] leading-[1.6] opacity-70">
             There is nothing published yet. Field notes from our engineers will

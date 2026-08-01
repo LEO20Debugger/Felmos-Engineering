@@ -515,6 +515,158 @@ export async function reorderTeam(ids: number[]): Promise<void> {
   revalidatePath("/admin/team");
 }
 
+/* ─────────────────────────────── insights ─────────────────────────────── */
+
+/**
+ * Shared shape-building for create and update.
+ *
+ * The body arrives as one hidden JSON field rather than as a set of named
+ * inputs. Blocks are added, removed and reordered in the browser, so the form
+ * has no fixed field list to name — and encoding the structure into input names
+ * (`body.3.items.1`) would mean reassembling an array from a flat FormData on
+ * every save, which is the same JSON round trip with more ways to go wrong.
+ */
+function postFrom(formData: FormData) {
+  const text = (field: string): string | null => {
+    const value = String(formData.get(field) ?? "").trim();
+    return value === "" ? null : value;
+  };
+
+  const imageId = String(formData.get("imageId") ?? "").trim();
+  const authorTeamId = String(formData.get("authorTeamId") ?? "").trim();
+
+  /* A body that will not parse means the editor's blocks never reached the
+     server intact. Saving an empty article over a written one would be worse
+     than failing, so this returns null and the caller reports it — an empty
+     array is only ever sent when the field genuinely was empty. */
+  const raw = String(formData.get("body") ?? "").trim();
+  let body: unknown[] | null = [];
+  if (raw !== "") {
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      body = Array.isArray(parsed) ? parsed : null;
+    } catch {
+      body = null;
+    }
+  }
+
+  return {
+    slug: String(formData.get("slug") ?? "").trim(),
+    title: String(formData.get("title") ?? "").trim(),
+    excerpt: text("excerpt"),
+    date: String(formData.get("date") ?? "").trim(),
+    authorTeamId: authorTeamId ? Number(authorTeamId) : null,
+    authorName: String(formData.get("authorName") ?? "").trim(),
+    category: text("category"),
+    imageId: imageId ? Number(imageId) : null,
+    body,
+    status: formData.get("status") === "published" ? "published" : "draft",
+  };
+}
+
+/** The one failure that is this file's own rather than the API's. */
+const BODY_UNREADABLE: FormState = {
+  ok: false,
+  message:
+    "The article body could not be read, so nothing was saved. Reload the page and try again — your text is still on screen until you do.",
+};
+
+export async function createPost(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const payload = postFrom(formData);
+  if (!payload.body) return BODY_UNREADABLE;
+
+  let id: number;
+  try {
+    const result = await api.post<{ id: number }>("/admin/posts", payload);
+    id = result.id;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/insights");
+  redirect(`/admin/insights/${id}`);
+}
+
+export async function updatePost(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+
+  const payload = postFrom(formData);
+  if (!payload.body) return BODY_UNREADABLE;
+
+  try {
+    await api.patch(`/admin/posts/${id}`, payload);
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/insights");
+  revalidatePath(`/admin/insights/${id}`);
+  return { ok: true, message: "Saved." };
+}
+
+export async function deletePost(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.del(`/admin/posts/${id}`);
+  revalidatePath("/admin/insights");
+  redirect("/admin/insights?deleted=1");
+}
+
+export async function restorePost(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.post(`/admin/posts/${id}/restore`);
+  revalidatePath("/admin/insights");
+}
+
+/**
+ * Publish, unpublish, delete or restore several articles at once.
+ *
+ * One request rather than one per row: the API applies the whole batch and
+ * revalidates the site once, so five articles going live rebuilds the blog
+ * index a single time.
+ */
+export async function bulkPosts(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const ids = formData
+    .getAll("ids")
+    .map((value) => Number(value))
+    .filter((n) => Number.isInteger(n) && n > 0);
+
+  const action = String(formData.get("action") ?? "");
+
+  if (ids.length === 0) return { ok: false, message: "Nothing selected." };
+
+  let affected: number;
+  try {
+    const result = await api.post<{ affected: number }>("/admin/posts/bulk", {
+      ids,
+      action,
+    });
+    affected = result.affected;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/insights");
+
+  const noun = affected === 1 ? "article" : "articles";
+  const verb = {
+    publish: "published",
+    draft: "moved to draft",
+    delete: "deleted",
+    restore: "restored",
+  }[action] ?? "updated";
+
+  return { ok: true, message: `${affected} ${noun} ${verb}.` };
+}
+
 /* ──────────────────────────────── leads ──────────────────────────────── */
 
 export async function updateLead(

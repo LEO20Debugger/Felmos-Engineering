@@ -1,11 +1,10 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
-import { postsByDate } from "@/lib/blog";
-import { getProjects } from "@/lib/cms";
+import { getPosts, getProjects } from "@/lib/cms";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const projects = await getProjects();
+  const [projects, posts] = await Promise.all([getProjects(), getPosts()]);
 
   return [
     { url: site.url, lastModified: now, changeFrequency: "monthly", priority: 1 },
@@ -27,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
        so each carries its own publication date as lastModified rather than the
        build time. A crawler told every URL changed today learns nothing. */
     { url: `${site.url}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...postsByDate.map((p) => ({
+    ...posts.map((p) => ({
       url: `${site.url}/blog/${p.slug}`,
       lastModified: new Date(`${p.date}T00:00:00Z`),
       changeFrequency: "yearly" as const,

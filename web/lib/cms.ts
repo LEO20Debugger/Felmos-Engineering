@@ -117,7 +117,7 @@ export type CmsTestimonial = {
 export type CmsPostBlock =
   | { kind: "p"; text: string }
   | { kind: "h2"; text: string }
-  | { kind: "quote"; text: string }
+  | { kind: "quote"; text: string; attribution?: string | null }
   | { kind: "list"; items: string[] };
 
 export type CmsPost = {
@@ -209,6 +209,39 @@ export async function getPostBySlug(slug: string): Promise<CmsPost | undefined> 
   const all = await getPosts();
   return all.find((post) => post.slug === slug);
 }
+
+/**
+ * Reading time for a post.
+ *
+ * The API computes this on save and stores it, so the figure normally arrives
+ * with the row. The fallback is for the bundled snapshot, which predates the
+ * column — 200 wpm and a floor of one minute, the same rule the API applies.
+ */
+export function postReadMinutes(post: CmsPost): number {
+  if (post.readMinutes) return post.readMinutes;
+
+  const words = (post.body ?? []).reduce((count, block) => {
+    const text = block.kind === "list" ? block.items.join(" ") : block.text;
+    return count + text.trim().split(/\s+/).filter(Boolean).length;
+  }, 0);
+
+  return Math.max(1, Math.round(words / 200));
+}
+
+/**
+ * A post's date, formatted.
+ *
+ * Stable across server and client: toLocaleDateString with no explicit locale
+ * resolves to the runtime's, which differs between the two and produces a
+ * hydration mismatch on any date rendered in markup.
+ */
+export const formatDate = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 
 /** Up to `count` other posts, newest first — replaces relatedPosts(). */
 export async function getRelatedPosts(
