@@ -857,8 +857,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Room either side for the arrows, so they never sit on top of the photo. */
-  padding: 0 3.5rem 1rem;
+  /* Narrow screens give the width to the picture and let the arrows sit over
+     its edges — 7rem of gutters on a 375px phone costs about a third of the
+     frame, which matters more than the overlap does. Wider screens have the
+     room, so the arrows move outside. */
+  padding: 0 0.5rem 0.75rem;
+}
+
+@media (min-width: 40rem) {
+  .adm-lb-stage { padding: 0 3.5rem 1rem; }
 }
 
 /* Shrink-wraps the picture — inline-block with no line box of its own — so
