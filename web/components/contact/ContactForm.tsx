@@ -2,6 +2,9 @@
 
 import { useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Loader2, Send } from "lucide-react";
+
+import Toast, { type ToastMessage } from "@/components/ui/Toast";
+import { readAttribution } from "@/lib/attribution";
 /* The options arrive as a prop from the page rather than being imported here.
    This is a client component, and the service list now comes from the database
    — which only the server can read. Passing them down also keeps this list and
@@ -59,6 +62,12 @@ export default function ContactForm({
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+
+  /* The key is what makes a second, identical message reappear — two failed
+     attempts in a row must both be announced. */
+  const notify = (text: string, ok: boolean) =>
+    setToast({ text, ok, key: Date.now() });
 
   const fieldProps = (name: string) => ({
     id: name,
@@ -79,26 +88,38 @@ export default function ContactForm({
       // Move the visitor to the first thing that needs fixing.
       const first = Object.keys(found)[0];
       formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
+      notify("Please check the highlighted fields.", false);
       return;
     }
 
     setStatus("sending");
     try {
+      /* Which page and which campaign brought them here, recorded on landing
+         rather than read off this page — see lib/attribution.ts. */
+      const attribution = readAttribution();
+
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          landingPath: attribution?.landingPath,
+          utm: attribution?.utm,
+        }),
       });
       const json = await res.json();
       if (!res.ok) {
         setErrors(json.errors ?? {});
         setStatus("failed");
+        notify("Please check the highlighted fields.", false);
         return;
       }
       setStatus("sent");
+      notify("Request sent — we'll be in touch within one business day.", true);
       formRef.current?.reset();
     } catch {
       setStatus("failed");
+      notify("Couldn't send your request. Please call us instead.", false);
     }
   }
 
@@ -113,6 +134,7 @@ export default function ContactForm({
         <button type="button" onClick={() => setStatus("idle")} className="btn btn-secondary mt-1">
           Send another request
         </button>
+        <Toast message={toast} />
       </div>
     );
   }
@@ -198,6 +220,8 @@ export default function ContactForm({
       <p className="m-0 text-center text-[12.5px] opacity-60">
         We reply within one business day. No obligation.
       </p>
+
+      <Toast message={toast} />
     </form>
   );
 }

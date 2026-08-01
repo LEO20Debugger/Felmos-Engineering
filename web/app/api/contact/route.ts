@@ -29,7 +29,35 @@ type Payload = {
   message: string;
   /** Honeypot — real people never fill this in. */
   company?: string;
+  /* Attribution, captured in the browser on the session's first page. Not
+     validated the way the visible fields are: it is never shown back to
+     anyone, the API caps every column's length, and a missing or malformed
+     value must never cost us the enquiry. */
+  landingPath?: string;
+  utm?: Record<string, unknown>;
 };
+
+const UTM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+] as const;
+
+/** Keep only the five keys the API stores, and only if they are strings. */
+function cleanUtm(input: unknown): Record<string, string> | undefined {
+  if (!input || typeof input !== "object") return undefined;
+
+  const source = input as Record<string, unknown>;
+  const out: Record<string, string> = {};
+  for (const key of UTM_KEYS) {
+    const value = source[key];
+    if (typeof value === "string" && value.trim()) out[key] = value.trim().slice(0, 120);
+  }
+
+  return Object.keys(out).length > 0 ? out : undefined;
+}
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 
@@ -117,6 +145,11 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         ...clean,
         referrer: request.headers.get("referer") ?? undefined,
+        landingPath:
+          typeof body.landingPath === "string" && body.landingPath.trim()
+            ? body.landingPath.trim().slice(0, 300)
+            : undefined,
+        utm: cleanUtm(body.utm),
       }),
       cache: "no-store",
     });
