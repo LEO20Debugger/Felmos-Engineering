@@ -1,4 +1,4 @@
-import type { Block } from "@/lib/blog";
+import type { CmsPostBlock } from "@/lib/cms";
 
 /**
  * Renders a post body from its block array.
@@ -8,11 +8,11 @@ import type { Block } from "@/lib/blog";
  * body copy that will be read for four minutes is a different job from copy
  * that will be scanned in four seconds.
  *
- * Add a block kind here and in lib/blog.ts's `Block` union together — the
- * exhaustiveness check at the foot makes forgetting one a compile error rather
- * than a silently missing section.
+ * Add a block kind here, in `CmsPostBlock` (lib/cms.ts) and in the API's zod
+ * union together — the exhaustiveness check at the foot makes forgetting one a
+ * compile error rather than a silently missing section.
  */
-export default function PostBody({ body }: { body: Block[] }) {
+export default function PostBody({ body }: { body: CmsPostBlock[] }) {
   return (
     <div className="prose">
       {body.map((block, i) => {
@@ -33,6 +33,9 @@ export default function PostBody({ body }: { body: Block[] }) {
             return (
               <blockquote key={i}>
                 <p>{block.text}</p>
+                {/* Optional, and only rendered when it is there — an empty
+                    <cite> would still draw the dash and the indent. */}
+                {block.attribution ? <cite>{block.attribution}</cite> : null}
               </blockquote>
             );
           default: {

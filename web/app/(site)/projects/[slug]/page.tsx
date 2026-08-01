@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 import ProjectDossier from "@/components/projects/ProjectDossier";
 import ProjectGallery from "@/components/projects/ProjectGallery";
+import ProjectPager from "@/components/projects/ProjectPager";
 import CtaBand from "@/components/ui/CtaBand";
 import { getProjectBySlug, getProjects, getServices } from "@/lib/cms";
 import { mediaUrl } from "@/lib/media";
@@ -60,15 +61,21 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [project, services] = await Promise.all([
-    getProjectBySlug(slug),
-    getServices(),
-  ]);
+  const [projects, services] = await Promise.all([getProjects(), getServices()]);
+
+  const index = projects.findIndex((entry) => entry.slug === slug);
+  const project = index === -1 ? undefined : projects[index];
 
   /* A slug that no longer exists is a 404, not an empty page. Projects can be
      unpublished from the dashboard, and generateStaticParams only froze the set
      that was live at build. */
   if (!project) notFound();
+
+  /* Neighbours in the order /projects lists, wrapping at both ends. Suppressed
+     when this is the only project — a pager whose two halves both point back at
+     the page you are on is noise. */
+  const previous = projects[(index - 1 + projects.length) % projects.length];
+  const next = projects[(index + 1) % projects.length];
 
   return (
     <>
@@ -84,6 +91,10 @@ export default async function ProjectPage({
 
       <ProjectDossier project={project} services={services} />
       <ProjectGallery images={project.gallery} />
+
+      {projects.length > 1 && (
+        <ProjectPager previous={previous} next={next} />
+      )}
 
       <CtaBand
         title="Need this done on your building?"

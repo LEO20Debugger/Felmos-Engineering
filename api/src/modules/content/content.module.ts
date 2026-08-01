@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 
+import { AdminPostsController } from "./posts.controller";
+import { PostsRepository } from "./posts.repository";
 import { PublicContentController } from "./public.controller";
 import {
   AdminProjectsController,
@@ -23,8 +25,19 @@ import { TeamRepository } from "./team.repository";
     AdminServicesController,
     AdminProjectsController,
     AdminTeamController,
+    AdminPostsController,
   ],
-  providers: [ServicesRepository, ProjectsRepository, TeamRepository],
-  exports: [ServicesRepository, ProjectsRepository, TeamRepository],
+  providers: [
+    ServicesRepository,
+    ProjectsRepository,
+    TeamRepository,
+    PostsRepository,
+  ],
+  exports: [
+    ServicesRepository,
+    ProjectsRepository,
+    TeamRepository,
+    PostsRepository,
+  ],
 })
 export class ContentModule {}
