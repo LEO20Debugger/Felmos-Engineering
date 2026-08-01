@@ -7,17 +7,32 @@ import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/ui/CtaBand";
 import PostBody from "@/components/blog/PostBody";
 import PostCard from "@/components/blog/PostCard";
-import { formatDate, postBySlug, posts, readMinutes, relatedPosts } from "@/lib/blog";
-import { team } from "@/lib/content";
-import { images } from "@/lib/images";
+import {
+  formatDate,
+  getPostBySlug,
+  getPosts,
+  getRelatedPosts,
+  getTeam,
+  postReadMinutes,
+} from "@/lib/cms";
+import { isMedia, mediaUrl } from "@/lib/media";
 import { site } from "@/lib/site";
 
-/* Every post is known at build time, so all of them prerender as static HTML.
-   Combined with the default dynamicParams behaviour, a slug that is not in the
-   list 404s rather than being rendered on demand. */
-export function generateStaticParams() {
+/* Every published post is prerendered at build time. dynamicParams is left at
+   its default — true — deliberately now that articles are written in the
+   dashboard: one published after the last deploy renders on demand and is then
+   cached, instead of 404ing until someone redeploys the site. */
+export async function generateStaticParams() {
+  const posts = await getPosts();
   return posts.map((p) => ({ slug: p.slug }));
 }
+
+/** The open-graph image at the size the crawlers want, or nothing.
+    `isMedia` rather than a null check: the bundled snapshot carries an image
+    key rather than a media row, and passing one of those to mediaUrl would
+    produce a URL that resolves to nothing. */
+const ogImage = (image: unknown): string[] =>
+  isMedia(image) ? [mediaUrl(image, 1200, 630)] : [];
 
 /* Next 15: params is a Promise in both of these and in the page itself. */
 export async function generateMetadata({
@@ -26,8 +41,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = postBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return { title: "Not found" };
+
+  const images = ogImage(post.image);
 
   return {
     title: post.title,
@@ -40,27 +57,31 @@ export async function generateMetadata({
       url: `${site.url}/blog/${post.slug}`,
       publishedTime: post.date,
       authors: [post.author],
-      images: [images[post.image]],
+      images,
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
-      images: [images[post.image]],
+      images,
     },
   };
 }
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = postBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  /* Bylines are matched by name against `team`; lib/blog.ts warns in dev if one
-     does not resolve. Rendering degrades to the name alone rather than throwing,
-     because a missing role is not worth a 500. */
+  /* The byline is stored on the article itself, so it survives the author
+     leaving the team page. The team is consulted only for their role, and
+     rendering degrades to the name alone when there is no match — a missing
+     role is not worth a 500. */
+  const [team, related] = await Promise.all([
+    getTeam(),
+    getRelatedPosts(post),
+  ]);
   const author = team.find((m) => m.name === post.author);
-  const related = relatedPosts(post);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -69,7 +90,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     description: post.excerpt,
     datePublished: post.date,
     dateModified: post.date,
-    image: images[post.image],
+    image: ogImage(post.image),
     author: { "@type": "Person", name: post.author },
     publisher: { "@type": "Organization", name: site.name, url: site.url },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${site.url}/blog/${post.slug}` },
@@ -125,7 +146,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             <span aria-hidden className="opacity-40">
               ·
             </span>
-            <span className="opacity-65">{readMinutes(post)} min read</span>
+            <span className="opacity-65">{postReadMinutes(post)} min read</span>
           </Reveal>
         </header>
 

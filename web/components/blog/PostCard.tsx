@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Photo from "@/components/ui/Photo";
-import { formatDate, readMinutes, type Post } from "@/lib/blog";
+import { formatDate, postReadMinutes, type CmsPost } from "@/lib/cms";
 
 /**
  * One post, as a card.
@@ -20,10 +20,11 @@ export default function PostCard({
   feature = false,
   sizes,
 }: {
-  post: Post;
+  post: CmsPost;
   feature?: boolean;
   sizes?: string;
 }) {
+  const minutes = postReadMinutes(post);
   /* Two shapes for the same three facts.
      The feature panel is wide enough to run them on one line. A grid card is
      not: "Testing Methods · 27 May 2026 · 2 min read" needs ~330px inside a
@@ -39,7 +40,7 @@ export default function PostCard({
       <span aria-hidden>·</span>
       <time dateTime={post.date}>{formatDate(post.date)}</time>
       <span aria-hidden>·</span>
-      <span>{readMinutes(post)} min read</span>
+      <span>{minutes} min read</span>
     </div>
   ) : (
     <div className="text-[12px] uppercase tracking-[0.08em]">
@@ -47,7 +48,7 @@ export default function PostCard({
       <span className="mt-1 block opacity-65">
         <time dateTime={post.date}>{formatDate(post.date)}</time>
         <span aria-hidden> · </span>
-        {readMinutes(post)} min read
+        {minutes} min read
       </span>
     </div>
   );
