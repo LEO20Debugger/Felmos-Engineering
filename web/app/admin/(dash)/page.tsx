@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { Settings } from "lucide-react";
 
-import { api, type AdminService } from "@/lib/admin/api";
+import { api, currentUser, type AdminService } from "@/lib/admin/api";
 
 /**
  * Overview.
@@ -10,6 +11,9 @@ import { api, type AdminService } from "@/lib/admin/api";
  * showing empty charts before then would suggest something is broken.
  */
 export default async function OverviewPage() {
+  const user = await currentUser();
+  const isOwner = user?.role === "owner";
+
   const { services } = await api.get<{ services: AdminService[] }>(
     "/admin/services"
   );
@@ -22,10 +26,34 @@ export default async function OverviewPage() {
 
   return (
     <>
-      <h1 className="adm-h1">Overview</h1>
-      <p className="adm-muted" style={{ marginBottom: "1.25rem" }}>
-        What&rsquo;s on the website right now.
-      </p>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: "1rem",
+          marginBottom: "1.25rem",
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <h1 className="adm-h1">Overview</h1>
+          <p className="adm-muted" style={{ margin: "0.15rem 0 0" }}>
+            What&rsquo;s on the website right now.
+          </p>
+        </div>
+
+        {isOwner && (
+          <Link
+            href="/admin/settings"
+            className="adm-btn adm-btn-ghost adm-mobile-only"
+            style={{ alignItems: "center", gap: "0.4rem" }}
+          >
+            <Settings size={16} aria-hidden />
+            <span>Settings</span>
+          </Link>
+        )}
+      </div>
 
       <div className="adm-grid adm-grid-2 adm-grid-4" style={{ marginBottom: "1.5rem" }}>
         <div className="adm-card adm-stat">

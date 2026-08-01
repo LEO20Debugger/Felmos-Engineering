@@ -1,6 +1,5 @@
 import { api, type AdminSettingsPayload } from "@/lib/admin/api";
 import { SettingsForm } from "./SettingsForm";
-import { MailRecipientsList } from "./MailRecipientsList";
 
 export const metadata = { title: "Settings" };
 
@@ -17,11 +16,10 @@ export default async function SettingsPage() {
         </p>
       </div>
 
-      {/* Main Settings Form */}
-      <SettingsForm initialSettings={settings} />
-
-      {/* Lead Mail Routing */}
-      <MailRecipientsList recipients={mailRecipients} />
+      <SettingsForm
+        initialSettings={settings}
+        mailRecipients={mailRecipients}
+      />
     </div>
   );
 }
