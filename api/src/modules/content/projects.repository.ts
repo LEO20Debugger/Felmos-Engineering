@@ -19,7 +19,7 @@ import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { DB } from "@/db/db.module";
 import type { Db } from "@/db/client";
 import { media, projectMedia, projectServices, projects, services } from "@/db/schema";
-import { TenantRepository } from "@/common/tenant-repository";
+import { TenantRepository, type BulkAction } from "@/common/tenant-repository";
 import type { TenantContext } from "@/common/tenant-context";
 
 /** An image as every consumer of this API expects it — flattened, never a
@@ -371,48 +371,15 @@ export class ProjectsRepository extends TenantRepository<typeof projects> {
     await this.writeGallery(ctx, id, input.gallery);
   }
 
-  /**
-   * Apply one action to many projects.
-   *
-   * A loop rather than a single UPDATE ... WHERE id IN (…) because publishing
-   * is not a plain column write: `update()` stamps publishedAt the first time a
-   * row goes live and never again, and soft delete and restore each have their
-   * own stamps and their own slug-collision failure mode. Seventeen round trips
-   * inside one request is a fair price for not reimplementing any of that.
-   *
-   * Ids that are not this tenant's are skipped rather than fatal. The caller is
-   * a checkbox list that may have been rendered before someone else deleted a
-   * row, and failing the whole batch over one stale id would be worse than
-   * quietly applying the rest — the returned count is what the dashboard
-   * reports back.
-   */
+  /** Publish, unpublish, delete or restore many projects — see `bulkApply`. */
   async bulk(
     ctx: TenantContext,
     ids: number[],
-    action: "publish" | "draft" | "delete" | "restore"
+    action: BulkAction
   ): Promise<number> {
-    let affected = 0;
-
-    for (const id of ids) {
-      try {
-        if (action === "delete") await this.softDelete(ctx, id);
-        else if (action === "restore") await this.restore(ctx, id);
-        else {
-          await this.update(ctx, id, {
-            status: action === "publish" ? "published" : "draft",
-          });
-        }
-        affected += 1;
-      } catch (error) {
-        /* A 404 means the row moved out from under the list. Anything else —
-           a slug collision on restore, say — is a real failure the editor
-           needs to see. */
-        if ((error as { status?: number })?.status === 404) continue;
-        throw error;
-      }
-    }
-
-    return affected;
+    return this.bulkApply(ctx, ids, action, (id, status) =>
+      this.update(ctx, id, { status })
+    );
   }
 
   /**

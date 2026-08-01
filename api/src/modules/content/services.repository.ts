@@ -9,7 +9,7 @@ import { asc, desc, eq, sql } from "drizzle-orm";
 import { DB } from "@/db/db.module";
 import type { Db } from "@/db/client";
 import { media, services } from "@/db/schema";
-import { TenantRepository } from "@/common/tenant-repository";
+import { TenantRepository, type BulkAction } from "@/common/tenant-repository";
 import type { TenantContext } from "@/common/tenant-context";
 
 /** The shape returned to callers — media flattened into the row so the web app
@@ -228,6 +228,17 @@ export class ServicesRepository extends TenantRepository<typeof services> {
     } catch (error) {
       this.rethrowDuplicate(error);
     }
+  }
+
+  /** Publish, unpublish, delete or restore many services — see `bulkApply`. */
+  async bulk(
+    ctx: TenantContext,
+    ids: number[],
+    action: BulkAction
+  ): Promise<number> {
+    return this.bulkApply(ctx, ids, action, (id, status) =>
+      this.update(ctx, id, { status })
+    );
   }
 
   private async nextSortOrder(ctx: TenantContext): Promise<number> {

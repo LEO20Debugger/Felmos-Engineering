@@ -296,6 +296,10 @@ function Lightbox({
   const [focal, setFocal] = useState({ x: item.focalX, y: item.focalY });
   const dialog = useRef<HTMLDivElement>(null);
 
+  /* Derived from the id rather than useId: only one viewer is ever mounted, so
+     this is unique, and it stays readable in the DOM. */
+  const saveFormId = `media-save-${item.id}`;
+
   /* Keyboard is how anyone reviewing a few hundred images will actually move
      through them. Arrows are ignored while a field has focus, so cursoring
      through the description does not jump to the next picture; Escape closes
@@ -418,7 +422,7 @@ function Lightbox({
         </div>
 
         <div className="adm-lb-panel">
-          <form action={save}>
+          <form id={saveFormId} action={save}>
             <input type="hidden" name="id" value={item.id} />
             <input type="hidden" name="focalX" value={focal.x} />
             <input type="hidden" name="focalY" value={focal.y} />
@@ -438,24 +442,29 @@ function Lightbox({
               Click the most important part of the picture to set the focal
               point. Crops keep it in frame.
             </p>
-
-            <button className="adm-btn">Save</button>
           </form>
 
-          <form
-            action={remove}
-            onSubmit={onDeleteSubmit}
-            style={{ marginTop: "1.25rem" }}
-          >
-            <input type="hidden" name="id" value={item.id} />
-            <ConfirmButton confirmLabel="Yes, delete it">Delete image</ConfirmButton>
-            {deleteError ? (
-              /* Kept inline as well as in the toast: the API's 409 names every
-                 service, project, article or person still using this image,
-                 which is a list worth reading rather than watching fade. */
-              <p className="adm-error">{deleteError}</p>
-            ) : null}
-          </form>
+          {/* Both actions on one row. Save submits the form above from outside
+              it via `form=` — it can, because it is a plain button with no
+              pending state to read. Delete cannot: ConfirmButton calls
+              useFormStatus, which only reports from inside the form it belongs
+              to, so its own form stays wrapped around it. */}
+          <div className="adm-lb-actions">
+            <button className="adm-btn" form={saveFormId}>
+              Save
+            </button>
+
+            <form action={remove} onSubmit={onDeleteSubmit}>
+              <input type="hidden" name="id" value={item.id} />
+              <ConfirmButton confirmLabel="Yes, delete it">Delete image</ConfirmButton>
+              {deleteError ? (
+                /* Kept inline as well as in the toast: the API's 409 names every
+                   service, project, article or person still using this image,
+                   which is a list worth reading rather than watching fade. */
+                <p className="adm-error">{deleteError}</p>
+              ) : null}
+            </form>
+          </div>
         </div>
       </div>
     </div>
