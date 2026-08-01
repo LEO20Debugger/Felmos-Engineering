@@ -9,13 +9,6 @@
       "autoPort": true
     },
     {
-      "comment": "Same app on a spare port, skipping predev — which frees 3000 by killing whatever holds it, including another session's server.",
-      "name": "felmos-web-alt",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "cd web && npx next dev --turbopack -p 3100"],
-      "port": 3100
-    },
-    {
       "name": "felmos-admin",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "admin", "run", "dev"],
