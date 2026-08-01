@@ -2,26 +2,18 @@
 
 import { useActionState, useState } from "react";
 
-import { resendLead, updateLead, type FormState } from "../../actions";
+import type { AdminLead } from "@/lib/admin/api";
+import {
+  deleteLead,
+  resendLead,
+  restoreLead,
+  updateLead,
+  type FormState,
+} from "../../actions";
+import { ConfirmButton } from "../ConfirmButton";
 import { Toast } from "../Toast";
 
-export type Lead = {
-  id: number;
-  name: string;
-  phone: string;
-  email: string;
-  location: string;
-  serviceText: string;
-  preferredDate: string | null;
-  message: string | null;
-  status: string;
-  emailStatus: "pending" | "sent" | "failed";
-  emailError: string | null;
-  referrerHost: string | null;
-  landingPath: string | null;
-  internalNotes: string | null;
-  createdAt: string;
-};
+export type Lead = AdminLead;
 
 const STATUSES = ["new", "contacted", "quoted", "won", "lost", "spam"] as const;
 
@@ -42,8 +34,19 @@ const formatDate = (value: string): string =>
  * A card rather than a table row, and a list rather than a detail route: on a
  * phone a table of eleven columns is unreadable, and the useful actions — call
  * them, email them, mark contacted — should not require a second page load.
+ *
+ * The select checkbox sits outside the expand button rather than inside it,
+ * because a control nested in a button swallows its own clicks.
  */
-export function LeadCard({ lead }: { lead: Lead }) {
+export function LeadCard({
+  lead,
+  selected,
+  onSelect,
+}: {
+  lead: Lead;
+  selected: boolean;
+  onSelect: (id: number) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [saveState, save] = useActionState<FormState, FormData>(updateLead, {
     ok: false,
@@ -52,49 +55,77 @@ export function LeadCard({ lead }: { lead: Lead }) {
     ok: false,
   });
 
-  return (
-    <div className="adm-card" style={{ padding: "0.9rem" }}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        style={{
-          display: "flex",
-          width: "100%",
-          gap: "0.75rem",
-          alignItems: "flex-start",
-          background: "none",
-          border: 0,
-          padding: 0,
-          font: "inherit",
-          textAlign: "left",
-          cursor: "pointer",
-        }}
-      >
-        <span style={{ flex: 1, minWidth: 0 }}>
-          <strong style={{ display: "block" }}>{lead.name}</strong>
-          <span className="adm-muted">
-            {lead.serviceText} · {lead.location}
-          </span>
-        </span>
+  const deleted = lead.isDeleted === 1;
 
-        <span style={{ textAlign: "right", flex: "none" }}>
-          <span
-            className={`adm-pill ${
-              lead.status === "won"
-                ? "adm-pill-live"
-                : lead.status === "lost" || lead.status === "spam"
+  const attribution: [string, string][] = [
+    ["Came from", lead.referrerHost ?? ""],
+    ["Landed on", lead.landingPath ?? ""],
+    ["Campaign source", lead.utmSource ?? ""],
+    ["Campaign medium", lead.utmMedium ?? ""],
+    ["Campaign", lead.utmCampaign ?? ""],
+    ["Device", lead.device ?? ""],
+  ].filter(([, value]) => value !== "") as [string, string][];
+
+  return (
+    <div
+      className="adm-card"
+      style={{ padding: "0.9rem", opacity: deleted ? 0.6 : 1 }}
+    >
+      <div style={{ display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
+        <label className="adm-row-tick" style={{ paddingTop: "0.15rem" }}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={() => onSelect(lead.id)}
+            aria-label={`Select the request from ${lead.name}`}
+          />
+        </label>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          style={{
+            display: "flex",
+            flex: 1,
+            minWidth: 0,
+            gap: "0.75rem",
+            alignItems: "flex-start",
+            background: "none",
+            border: 0,
+            padding: 0,
+            font: "inherit",
+            textAlign: "left",
+            cursor: "pointer",
+          }}
+        >
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <strong style={{ display: "block" }}>{lead.name}</strong>
+            <span className="adm-muted">
+              {lead.serviceText} · {lead.location}
+            </span>
+          </span>
+
+          <span style={{ textAlign: "right", flex: "none" }}>
+            <span
+              className={`adm-pill ${
+                deleted
                   ? "adm-pill-gone"
-                  : "adm-pill-draft"
-            }`}
-          >
-            {lead.status}
+                  : lead.status === "won"
+                    ? "adm-pill-live"
+                    : lead.status === "lost" || lead.status === "spam"
+                      ? "adm-pill-gone"
+                      : "adm-pill-draft"
+              }`}
+            >
+              {deleted ? "deleted" : lead.status}
+            </span>
+            <span className="adm-muted" style={{ display: "block", fontSize: "0.7rem" }}>
+              {formatDate(lead.createdAt)}
+            </span>
           </span>
-          <span className="adm-muted" style={{ display: "block", fontSize: "0.7rem" }}>
-            {formatDate(lead.createdAt)}
-          </span>
-        </span>
-      </button>
+        </button>
+      </div>
 
       {lead.emailStatus !== "sent" ? (
         <p className="adm-error" style={{ marginBottom: 0 }}>
@@ -103,6 +134,15 @@ export function LeadCard({ lead }: { lead: Lead }) {
           Not emailed
           {lead.emailError ? ` — ${lead.emailError.replace(/\.$/, "")}` : ""}.
         </p>
+      ) : null}
+
+      {deleted ? (
+        <form action={restoreLead} style={{ marginTop: "0.6rem" }}>
+          <input type="hidden" name="id" value={lead.id} />
+          <button className="adm-btn adm-btn-ghost" style={{ minHeight: "2.25rem" }}>
+            Restore
+          </button>
+        </form>
       ) : null}
 
       {open ? (
@@ -139,12 +179,18 @@ export function LeadCard({ lead }: { lead: Lead }) {
             <dd style={{ margin: 0 }}>{lead.email}</dd>
             <dt className="adm-muted">Preferred</dt>
             <dd style={{ margin: 0 }}>{lead.preferredDate ?? "Not specified"}</dd>
-            {lead.referrerHost ? (
-              <>
-                <dt className="adm-muted">Came from</dt>
-                <dd style={{ margin: 0 }}>{lead.referrerHost}</dd>
-              </>
-            ) : null}
+            <dt className="adm-muted">Confirmation</dt>
+            <dd style={{ margin: 0 }}>
+              {lead.confirmationSentAt
+                ? `Sent to ${lead.email}`
+                : "Not sent yet"}
+            </dd>
+            {attribution.map(([label, value]) => (
+              <span key={label} style={{ display: "contents" }}>
+                <dt className="adm-muted">{label}</dt>
+                <dd style={{ margin: 0, wordBreak: "break-word" }}>{value}</dd>
+              </span>
+            ))}
           </dl>
 
           {lead.message ? (
@@ -163,47 +209,69 @@ export function LeadCard({ lead }: { lead: Lead }) {
             <p className="adm-muted">No message left.</p>
           )}
 
-          <form action={save}>
-            <input type="hidden" name="id" value={lead.id} />
+          {!deleted ? (
+            <form action={save}>
+              <input type="hidden" name="id" value={lead.id} />
 
-            <label className="adm-field">
-              <span>Status</span>
-              <select className="adm-select" name="status" defaultValue={lead.status}>
-                {STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <label className="adm-field">
+                <span>Status</span>
+                <select className="adm-select" name="status" defaultValue={lead.status}>
+                  {STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-            <label className="adm-field">
-              <span>Internal notes</span>
-              <textarea
-                className="adm-textarea"
-                name="internalNotes"
-                defaultValue={lead.internalNotes ?? ""}
-                placeholder="Not shown to the client."
-                style={{ minHeight: "4.5rem" }}
-              />
-            </label>
+              <label className="adm-field">
+                <span>Internal notes</span>
+                <textarea
+                  className="adm-textarea"
+                  name="internalNotes"
+                  defaultValue={lead.internalNotes ?? ""}
+                  placeholder="Not shown to the client."
+                  style={{ minHeight: "4.5rem" }}
+                />
+              </label>
 
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              <button className="adm-btn">Save</button>
-            </div>
-          </form>
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <button className="adm-btn">Save</button>
+              </div>
+            </form>
+          ) : null}
 
           <Toast state={saveState} />
           <Toast state={resendState} />
 
-          {lead.emailStatus !== "sent" ? (
-            <form action={resend} style={{ marginTop: "0.9rem" }}>
-              <input type="hidden" name="id" value={lead.id} />
-              <button className="adm-btn adm-btn-ghost">
-                Try sending the email again
-              </button>
-            </form>
-          ) : null}
+          <div
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+              flexWrap: "wrap",
+              alignItems: "center",
+              marginTop: "0.9rem",
+            }}
+          >
+            {lead.emailStatus !== "sent" ? (
+              <form action={resend}>
+                <input type="hidden" name="id" value={lead.id} />
+                <button className="adm-btn adm-btn-ghost">
+                  Try sending the email again
+                </button>
+              </form>
+            ) : null}
+
+            {!deleted ? (
+              <form action={deleteLead} style={{ marginLeft: "auto" }}>
+                <input type="hidden" name="id" value={lead.id} />
+                {/* Soft delete — the row is recoverable from "Show deleted",
+                    which is why this is a single confirm rather than a
+                    heavier warning. */}
+                <ConfirmButton confirmLabel="Confirm delete">Delete</ConfirmButton>
+              </form>
+            ) : null}
+          </div>
         </div>
       ) : null}
     </div>

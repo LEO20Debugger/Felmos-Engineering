@@ -87,6 +87,12 @@ export const leads = mysqlTable(
     emailError: varchar("email_error", { length: 400 }),
     emailSentAt: varchar("email_sent_at", { length: 32 }),
 
+    /** When the enquirer's own confirmation went out. Tracked separately from
+        the staff notification and never allowed to affect it: an auto-reply
+        that bounces off a mistyped address is not a reason to mark the lead
+        undelivered, but it is worth being able to see. */
+    confirmationSentAt: varchar("confirmation_sent_at", { length: 32 }),
+
     ...timestamps,
     ...softDelete,
     ...actors,

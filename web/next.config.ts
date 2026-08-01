@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /* Lets a second build or dev server run against the same checkout without
+     fighting the first one for a lock on .next — on Windows the loser dies
+     with EPERM rather than waiting. Unset in normal use. */
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   images: {
     // Photography is hot-linked from Unsplash and Pexels but proxied and
     // re-encoded by next/image, so the browser only ever requests our own

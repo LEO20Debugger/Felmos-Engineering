@@ -173,6 +173,11 @@ export function MailRecipientsList({
                       <form action={async (fd) => { await updateMailRecipient({ ok: false }, fd); }}>
                         <input type="hidden" name="id" value={r.id} />
                         <input type="hidden" name="email" value={r.email} />
+                        {/* Carried through even though this form only changes
+                            `active`: the action posts every field it has, and
+                            the API reads a present-but-empty name as "clear
+                            it" — so omitting this wipes the name on toggle. */}
+                        <input type="hidden" name="name" value={r.name ?? ""} />
                         <input type="hidden" name="role" value={r.role} />
                         <input
                           type="hidden"

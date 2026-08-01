@@ -274,6 +274,52 @@ export type AdminSettingsPayload = {
   mailRecipients: AdminMailRecipient[];
 };
 
+export type AdminLeadStatus =
+  | "new"
+  | "contacted"
+  | "quoted"
+  | "won"
+  | "lost"
+  | "spam";
+
+export type AdminLead = {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  location: string;
+  serviceText: string;
+  preferredDate: string | null;
+  message: string | null;
+  status: AdminLeadStatus;
+  emailStatus: "pending" | "sent" | "failed";
+  emailError: string | null;
+  confirmationSentAt: string | null;
+  referrerHost: string | null;
+  landingPath: string | null;
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  device: "mobile" | "tablet" | "desktop" | "bot" | null;
+  internalNotes: string | null;
+  isDeleted: number;
+  createdAt: string;
+};
+
+export type AdminLeadsPayload = {
+  leads: AdminLead[];
+  total: number;
+  page: number;
+  perPage: number;
+};
+
+export type AdminLeadCounts = {
+  byStatus: Partial<Record<AdminLeadStatus, number>>;
+  total: number;
+  undelivered: number;
+  deleted: number;
+};
+
 /**
  * Build a URL for a media row at a given size.
  *

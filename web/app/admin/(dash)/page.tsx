@@ -1,22 +1,28 @@
 import Link from "next/link";
 import { Settings } from "lucide-react";
 
-import { api, currentUser, type AdminService } from "@/lib/admin/api";
+import {
+  api,
+  currentUser,
+  type AdminLeadCounts,
+  type AdminService,
+} from "@/lib/admin/api";
 
 /**
  * Overview.
  *
- * Deliberately thin for now: it counts what exists. The lead and traffic
- * panels land with Phases 6 and 7, when there is real data behind them —
- * showing empty charts before then would suggest something is broken.
+ * Deliberately thin: it counts what exists. The traffic panel lands with
+ * Phase 7, when there is real data behind it — an empty chart before then
+ * would suggest something is broken.
  */
 export default async function OverviewPage() {
   const user = await currentUser();
   const isOwner = user?.role === "owner";
 
-  const { services } = await api.get<{ services: AdminService[] }>(
-    "/admin/services"
-  );
+  const [{ services }, leads] = await Promise.all([
+    api.get<{ services: AdminService[] }>("/admin/services"),
+    api.get<AdminLeadCounts>("/admin/leads/counts"),
+  ]);
 
   const published = services.filter((s) => s.status === "published").length;
   const drafts = services.length - published;
@@ -64,10 +70,12 @@ export default async function OverviewPage() {
           <b>{drafts}</b>
           <span className="adm-muted">Services in draft</span>
         </div>
-        <div className="adm-card adm-stat">
-          <b>—</b>
-          <span className="adm-muted">Inspection requests</span>
-        </div>
+        {/* New rather than total: the number that matters on a dashboard is
+            the one that needs acting on. */}
+        <Link href="/admin/leads?status=new" className="adm-card adm-stat">
+          <b>{leads.byStatus.new ?? 0}</b>
+          <span className="adm-muted">New requests</span>
+        </Link>
         <div className="adm-card adm-stat">
           <b>—</b>
           <span className="adm-muted">Visits this week</span>
@@ -85,14 +93,27 @@ export default async function OverviewPage() {
         </div>
       ) : null}
 
+      {leads.undelivered > 0 ? (
+        <div className="adm-note adm-note-warn" style={{ marginBottom: "1.5rem" }}>
+          <strong>
+            {leads.undelivered} request
+            {leads.undelivered === 1 ? " was" : "s were"} not emailed.
+          </strong>
+          <p style={{ margin: "0.35rem 0 0", fontSize: "0.875rem" }}>
+            Nothing is lost — they are saved in{" "}
+            <Link href="/admin/leads">inspection requests</Link>. This usually
+            means no sending account is configured yet.
+          </p>
+        </div>
+      ) : null}
+
       <div className="adm-card" style={{ padding: "1rem" }}>
         <h2 style={{ margin: "0 0 0.5rem", fontFamily: "var(--font-heading)" }}>
           Still to come
         </h2>
         <p className="adm-muted" style={{ margin: 0 }}>
-          Inspection requests, visitor numbers and the remaining content types
-          arrive in later stages. Services are editable now —{" "}
-          <Link href="/admin/services">start there</Link>.
+          Visitor numbers arrive in a later stage. Everything else is editable
+          now — <Link href="/admin/services">start with services</Link>.
         </p>
       </div>
     </>

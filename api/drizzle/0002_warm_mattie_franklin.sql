@@ -1,0 +1,1 @@
+ALTER TABLE `leads` ADD `confirmation_sent_at` varchar(32);
