@@ -2,26 +2,31 @@
   <!--
     Favicon. The SAME drawing as components/brand/Logo.tsx, on a white tile.
 
-    An earlier version of this file redrew the mark from scratch with the left
-    tower removed, on the reasoning that at 16px the extra mass is mud. That
-    reasoning was wrong in an important way: the left tower is a third of the
-    silhouette, so dropping it does not simplify the mark, it makes a different
-    one. Side by side with the site header the two read as two logos.
+    An earlier version of this file redrew the mark from scratch with a mass
+    removed, on the reasoning that at 16px the extra shape is mud. That
+    reasoning was wrong in an important way: dropping a mass does not simplify
+    the mark, it makes a different one. Side by side with the site header the
+    two read as two logos.
 
-    So the path data below is copied verbatim from LogoMark, and the only
-    departures are the two that cost nothing:
+    So the path data below is copied verbatim from LogoMark, which is itself a
+    machine trace of logo.png at the repo root, and the only departures are the
+    two that cost nothing:
 
-      - the glazing bars are dropped. They are sub pixel at any favicon size
-        and only muddy the glass tower into grey.
-      - the whole group is scaled and centred, because LogoMark is drawn edge
-        to edge for a transparent context and would otherwise collide with this
-        tile's rounded corners. 0.92 is as large as it goes while the splayed
-        ends of the plinth stay clear of the corner radius, and it is worth
+      - the mullions are dropped. They are sub pixel at any favicon size and
+        only muddy the glass tower into grey.
+      - the whole group is scaled and centred. LogoMark is drawn edge to edge
+        for a transparent context and would otherwise collide with this tile's
+        rounded corners. 0.92 of the tile height is as large as it goes while
+        the splayed feet stay clear of the corner radius, and it is worth
         pushing that far: every tenth of scale is another fraction of a device
-        pixel on the reveal, which is the first thing to smear at 16px.
+        pixel on the shafts, which are the first thing to smear at 16px.
 
-    Keep it that way. If the mark changes, copy the paths across again and rerun
-    `npm run icons`, rather than redrawing to taste.
+    The transform is scale(0.13822), which is 64 * 0.92 / 426, plus the offset
+    that centres the artwork's own 322x426 box on the tile and cancels the
+    viewBox origin (10, 18) that LogoMark carries.
+
+    Keep it that way. If the mark changes, retrace logo.png, copy the paths
+    across again and rerun `npm run icons`, rather than redrawing to taste.
 
     White ground, matching the supplied artwork, so the mark keeps its own
     colours instead of being restated in a reversed palette. The tile also fixes
@@ -38,12 +43,10 @@
     names that used to be written out here in full were caught.
   -->
   <rect width="64" height="64" rx="13" fill="#ffffff"/>
-  <g transform="translate(2.56 3.94) scale(0.92)">
-    <path d="M14 54 V40 H23 V54 Z" fill="#223c56"/>
-    <path d="M22 54 V13 L26 3 H33.5 V54 Z" fill="#22a45d"/>
-    <path d="M35 54 V23 H37 V54 Z" fill="#22a45d"/>
-    <path d="M45.5 54 V30 H50 V54 Z" fill="#223c56"/>
-    <path d="M38.5 54 V27 L41 24 H45.5 V54 Z" fill="#29a9e0"/>
-    <path d="M6 58 L12 54 H52 L58 58 Z" fill="#223c56"/>
+  <g transform="translate(8.363 0.072) scale(0.13822)">
+    <path d="M169.5 18 106.5 60V157L150 195V443.5H169.5Z" fill="#22a45d"/>
+    <path d="M173.5 163 238.5 203V309L193.5 340V443.5H173.5Z" fill="#29a9e0"/>
+    <path d="M93.5 252 145.5 293V443.5H10L23 425.5H93.5Z" fill="#223c56"/>
+    <path d="M255.5 304 196.5 344V443.5H331.5L318 425.5H255.5Z" fill="#223c56"/>
   </g>
 </svg>
