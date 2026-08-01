@@ -56,12 +56,13 @@ export function ConfirmButton({
 
   return (
     <span style={{ display: "inline-flex", gap: "0.4rem", alignItems: "center" }}>
-      <button type="submit" className={className} autoFocus>
+      {/* adm-armed only carries the entrance animation — see admin.css. */}
+      <button type="submit" className={`${className} adm-armed`} autoFocus>
         {confirmLabel}
       </button>
       <button
         type="button"
-        className="adm-btn adm-btn-ghost"
+        className="adm-btn adm-btn-ghost adm-armed"
         onClick={() => setArmed(false)}
       >
         Cancel
