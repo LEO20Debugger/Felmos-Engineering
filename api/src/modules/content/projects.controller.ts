@@ -78,6 +78,11 @@ const projectSchema = z.object({
 const patchSchema = projectSchema.partial();
 const reorderSchema = z.object({ ids: z.array(z.number().int().positive()) });
 
+const bulkSchema = z.object({
+  ids: z.array(z.number().int().positive()).min(1).max(200),
+  action: z.enum(["publish", "draft", "delete", "restore"]),
+});
+
 /* ─────────────────────────── public (site) ─────────────────────────── */
 
 /** The nested `metric` object the site's components have always read. Kept as
@@ -152,6 +157,29 @@ export class AdminProjectsController {
     const id = await this.repo.create(tenant, body);
     this.refresh(tenant.companyId, body.slug);
     return { id };
+  }
+
+  /**
+   * One action across many projects.
+   *
+   * Declared before the `:id` routes for the same reason `reorder` is — Nest
+   * matches in declaration order, and "bulk" would otherwise be read as an id.
+   *
+   * A single endpoint rather than the dashboard looping over the per-project
+   * ones: seventeen PATCHes would mean seventeen revalidation emits, and the
+   * site would rebuild the projects pages seventeen times for one click.
+   */
+  @Post("bulk")
+  async bulk(
+    @Tenant() tenant: TenantContext,
+    @ZodBody(bulkSchema) body: z.infer<typeof bulkSchema>
+  ): Promise<{ ok: true; affected: number }> {
+    const affected = await this.repo.bulk(tenant, body.ids, body.action);
+
+    /* Tag-based, so every project's own page is covered without listing
+       seventeen slugs — they all read the same tagged fetch. */
+    this.refresh(tenant.companyId);
+    return { ok: true, affected };
   }
 
   @Patch("reorder")

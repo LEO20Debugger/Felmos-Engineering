@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { api, mediaUrl, type AdminProject } from "@/lib/admin/api";
-import { restoreProject } from "../../actions";
+import { ProjectList } from "./ProjectList";
 
 export const metadata = { title: "Projects" };
 
@@ -19,6 +19,13 @@ export default async function ProjectsPage({
 
   const live = projects.filter((p) => !p.isDeleted);
   const drafts = live.filter((p) => p.status !== "published").length;
+
+  /* Thumbnails are resolved here rather than in the list, so the client
+     component never needs the media helpers or the API's base URL. */
+  const rows = projects.map((project) => ({
+    ...project,
+    thumb: mediaUrl(project.image, 96, 96),
+  }));
 
   return (
     <>
@@ -53,93 +60,7 @@ export default async function ProjectsPage({
         </Link>
       </div>
 
-      <div className="adm-card">
-        {projects.length === 0 ? (
-          <p className="adm-muted" style={{ padding: "1.5rem", textAlign: "center" }}>
-            No projects yet.
-          </p>
-        ) : (
-          projects.map((project) => {
-            const src = mediaUrl(project.image, 96, 96);
-
-            const body = (
-              <>
-                {src ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="adm-thumb" src={src} alt="" width={48} height={48} />
-                ) : (
-                  <span className="adm-thumb" aria-hidden />
-                )}
-
-                <span style={{ flex: 1, minWidth: 0 }}>
-                  <strong
-                    style={{
-                      display: "block",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {project.title}
-                  </strong>
-                  <span className="adm-muted">
-                    {[
-                      project.location,
-                      project.year ? String(project.year) : null,
-                      /* The photograph count is the thing most likely to be
-                         wrong after an import, and the only way to see it
-                         without opening every project. */
-                      project.gallery.length > 0
-                        ? `${project.gallery.length} photo${project.gallery.length === 1 ? "" : "s"}`
-                        : null,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ") || `/${project.slug}`}
-                  </span>
-                </span>
-
-                <span
-                  className={`adm-pill ${
-                    project.isDeleted
-                      ? "adm-pill-gone"
-                      : project.status === "published"
-                        ? "adm-pill-live"
-                        : "adm-pill-draft"
-                  }`}
-                >
-                  {project.isDeleted
-                    ? "Deleted"
-                    : project.status === "published"
-                      ? "Live"
-                      : "Draft"}
-                </span>
-              </>
-            );
-
-            /* A deleted row isn't a link — its edit page would only offer
-               changes that can't be saved. Restore is the one action. */
-            return project.isDeleted ? (
-              <div key={project.id} className="adm-row">
-                {body}
-                <form action={restoreProject}>
-                  <input type="hidden" name="id" value={project.id} />
-                  <button className="adm-btn adm-btn-ghost" style={{ minHeight: "2.25rem" }}>
-                    Restore
-                  </button>
-                </form>
-              </div>
-            ) : (
-              <Link
-                key={project.id}
-                href={`/admin/projects/${project.id}`}
-                className="adm-row"
-              >
-                {body}
-              </Link>
-            );
-          })
-        )}
-      </div>
+      <ProjectList projects={rows} showDeleted={showDeleted} />
     </>
   );
 }
