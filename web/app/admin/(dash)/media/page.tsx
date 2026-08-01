@@ -13,7 +13,14 @@ export default async function MediaPage() {
      images straight off Railway with no CDN in front, so asking for a 2000px
      file to fill a 150px tile would be slow and billed as egress on every
      load of this page. */
-  const items = media.map((m) => ({ ...m, thumb: mediaUrl(m, 360, 360) }));
+  const items = media.map((m) => ({
+    ...m,
+    thumb: mediaUrl(m, 360, 360),
+    /* The viewer's copy: wide, and without the square crop the grid asks for.
+       Only ever fetched for the image someone actually opens, since no tag
+       carries this URL until the viewer is on screen. */
+    full: mediaUrl(m, 1600),
+  }));
 
   return (
     <>

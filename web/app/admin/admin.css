@@ -782,10 +782,6 @@
 
 .adm-tile:hover img { transform: scale(1.05); }
 
-.adm-tile[aria-pressed="true"] {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-500) 30%, transparent);
-}
-
 /* ---- the armed state of a two-step delete ---- */
 
 /* Both buttons swap in at once when the first press arms the control, so the
@@ -793,4 +789,189 @@
    button that was already there. */
 .adm-armed {
   animation: adm-pop 0.22s var(--adm-ease) both;
+}
+
+/* ── lightbox ────────────────────────────────────────────────────────── */
+
+/* The media library's viewer. It replaces the panel that used to open under
+   the grid: on a phone that panel pushed the picture off screen, and on a
+   desktop it left the picture at thumbnail size, which is no use for deciding
+   whether an image is the right one.
+   Sits below the toast (z-index 60) so confirmations still read over it. */
+.adm-lb {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in srgb, #05070c 84%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  animation: adm-fade 0.18s var(--adm-ease) both;
+}
+
+.adm-lb-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  padding-top: calc(0.6rem + env(safe-area-inset-top));
+  color: #fff;
+}
+
+.adm-lb-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adm-lb-count {
+  flex: none;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* Picture above, details below on a phone; side by side once there is width
+   for both. */
+.adm-lb-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+@media (min-width: 60rem) {
+  .adm-lb-body {
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr) 22rem;
+  }
+}
+
+.adm-lb-stage {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Room either side for the arrows, so they never sit on top of the photo. */
+  padding: 0 3.5rem 1rem;
+}
+
+/* Shrink-wraps the picture — inline-block with no line box of its own — so
+   that the element's rectangle is the picture's rectangle. The focal-point
+   click reads its coordinates from this box, and any padding or leading here
+   would put the marker somewhere the click was not. */
+.adm-lb-frame {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+  cursor: crosshair;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* Capped against the viewport rather than the stage: a percentage height
+   inside an auto-height parent resolves to nothing, and the picture would
+   spill past the panel below it. The subtraction covers the header, and on a
+   phone the 55dvh leaves the detail drawer its 45vh. */
+.adm-lb-img {
+  max-width: 100%;
+  max-height: calc(55dvh - 4rem);
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  animation: adm-pop 0.2s var(--adm-ease) both;
+}
+
+@media (min-width: 60rem) {
+  .adm-lb-img { max-height: calc(100dvh - 6rem); }
+}
+
+/* Reads over both a bright sky and a dark interior, which a flat white or
+   black button would not. */
+.adm-lb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #fff 22%, transparent);
+  background: color-mix(in srgb, #05070c 45%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background 0.2s var(--adm-ease),
+    transform 0.2s var(--adm-ease);
+}
+
+.adm-lb-btn:hover {
+  background: color-mix(in srgb, #05070c 70%, transparent);
+  transform: scale(1.06);
+}
+
+.adm-lb-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: none;
+}
+
+.adm-lb-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.adm-lb-nav:hover { transform: translateY(-50%) scale(1.06); }
+.adm-lb-nav:disabled { transform: translateY(-50%); }
+
+.adm-lb-prev { left: 0.5rem; }
+.adm-lb-next { right: 0.5rem; }
+
+.adm-lb-panel {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--adm-card);
+  border-top: 1px solid var(--color-divider);
+  /* On a phone the panel is a drawer under the picture; capped so the picture
+     always keeps the larger half of the screen. */
+  max-height: 45vh;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 60rem) {
+  .adm-lb-panel {
+    max-height: none;
+    border-top: 0;
+    border-left: 1px solid var(--color-divider);
+  }
+}
+
+/* The focal-point marker, over the picture in the viewer. */
+.adm-lb-focal {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-lb,
+  .adm-lb-img {
+    animation: none;
+  }
 }
