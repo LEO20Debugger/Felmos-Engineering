@@ -260,6 +260,43 @@
   color: var(--color-neutral-900);
 }
 
+/**
+ * A second span in a field is a hint or an error sitting *under* the control,
+ * not another label — but the rule above matches every direct span, so both
+ * inherited the label's uppercase, its 600 weight and its tracking. A note
+ * explaining a field ended up shouting in the same voice as the field's own
+ * name, and the slug hints, the alt-text note and every validation message
+ * read as second headings.
+ *
+ * The rule above also only spaces itself *below*, since it was written for a
+ * label sitting above an input — so a hint had no gap at all and pressed
+ * against the control it was describing.
+ *
+ * Colour is deliberately not set here: an error under a field has its own, and
+ * this selector outweighs `.adm-error` on specificity, so setting it would win
+ * and quietly grey out validation messages.
+ */
+.adm-field > span:not(.adm-inputwrap) ~ span:not(.adm-inputwrap) {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  line-height: 1.45;
+}
+
+/* Hints, but not errors — see above. */
+.adm-field > span:not(.adm-inputwrap) ~ span:not(.adm-inputwrap):not(.adm-error) {
+  color: var(--color-neutral-700);
+}
+
+/* An error inside a field is red. The label rule above was quietly winning
+   this on specificity, so validation messages rendered in the label's grey —
+   the one colour a failure must not be. */
+.adm-field > span.adm-error {
+  color: var(--color-danger);
+}
+
 .adm-input,
 .adm-select,
 .adm-textarea {

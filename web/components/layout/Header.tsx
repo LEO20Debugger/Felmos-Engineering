@@ -169,11 +169,12 @@ export default function Header() {
           </Link>
 
           {/* Desktop navigation */}
-          {/* gap-5 at lg, gap-7 from xl. Six nav items, the phone and the CTA
-              leave ~24px of slack at exactly 1024px on gap-7 — enough today,
-              but site.phone is a placeholder and a real longer number would
-              take the bar over. The tighter gap at the tightest breakpoint is
-              the cheap insurance. */}
+          {/* gap-5 at lg, gap-7 from xl. This used to be insurance against the
+              phone number's length — it was spelled out in the bar, and a real
+              number longer than the placeholder would have overflowed at
+              1024px. The phone is an icon now, so the bar's width no longer
+              depends on it; the tighter gap at the tightest breakpoint stays
+              because six nav items plus two controls is still snug there. */}
           <nav className="mr-auto hidden lg:flex lg:gap-5 xl:gap-7" aria-label="Primary">
             {navLinks.map((l) => (
               <Link
@@ -192,9 +193,19 @@ export default function Header() {
           </nav>
 
           <div className="ml-auto hidden items-center gap-2.5 lg:flex">
-            <a href={site.phoneHref} className="btn btn-secondary text-ink no-underline">
-              <Phone size={16} strokeWidth={1.5} />
-              {site.phone}
+            {/* Icon only. The number is still the accessible name and still
+                what gets dialled — this is a change of what the bar draws, not
+                of what the control is. It also retires the overflow risk noted
+                on the nav above: the bar's width no longer depends on how long
+                the phone number happens to be. The drawer still spells it out,
+                where there is room and where a thumb is the pointer. */}
+            <a
+              href={site.phoneHref}
+              aria-label={`Call ${site.phone}`}
+              title={site.phone}
+              className="btn btn-secondary btn-icon text-ink no-underline"
+            >
+              <Phone size={18} strokeWidth={1.5} aria-hidden />
             </a>
             <Link href="/contact" className="btn btn-primary no-underline">
               Book Inspection
