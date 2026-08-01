@@ -39,7 +39,9 @@ function ActionButton({
       name="action"
       value={action}
       disabled={pending}
-      className={`adm-btn ${danger ? "adm-btn-danger" : "adm-btn-ghost"}`}
+      /* Solid, like every other button that changes something. These are the
+         whole point of the bar, and as outlines they read as disabled. */
+      className={`adm-btn ${danger ? "adm-btn-danger" : ""}`}
       style={{ minHeight: "2.25rem" }}
     >
       {children}
@@ -116,13 +118,16 @@ export function ServiceList({
         ) : (
           services.map((service) => (
             <div key={service.id} className="adm-row">
-              <input
-                type="checkbox"
-                checked={selected.includes(service.id)}
-                onChange={() => toggle(service.id)}
-                aria-label={`Select ${service.title}`}
-                style={{ flex: "0 0 auto" }}
-              />
+              {/* The label is the tap target, not the checkbox — see
+                  .adm-row-tick in admin.css. */}
+              <label className="adm-row-tick">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(service.id)}
+                  onChange={() => toggle(service.id)}
+                  aria-label={`Select ${service.title}`}
+                />
+              </label>
 
               {service.thumb ? (
                 // eslint-disable-next-line @next/next/no-img-element

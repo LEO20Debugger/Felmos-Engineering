@@ -364,15 +364,44 @@
 .adm-btn:hover { background: var(--color-accent-800); }
 .adm-btn[disabled] { opacity: 0.6; cursor: progress; }
 
+/* The secondary button. Tinted rather than fully transparent with a grey
+   hairline: these sit next to solid buttons on the same bar, and at a hairline
+   they read as links someone forgot to style rather than controls — which was
+   the complaint. Still clearly below a solid fill in the hierarchy. */
 .adm-btn-ghost {
-  background: transparent;
+  background: color-mix(in srgb, var(--color-accent-700) 12%, transparent);
   color: var(--color-accent-700);
-  border-color: var(--color-neutral-400);
+  border-color: color-mix(in srgb, var(--color-accent-700) 40%, transparent);
 }
-.adm-btn-ghost:hover { background: var(--color-neutral-200); }
+.adm-btn-ghost:hover {
+  background: color-mix(in srgb, var(--color-accent-700) 20%, transparent);
+}
+
+/* accent-700 does not walk the ramp between themes — it is #1b5f85 in both —
+   so on a dark card the ghost label sat at about 2.1:1, which is why these
+   read as greyed out rather than clickable. accent-400 is 7.2:1 there. */
+[data-theme="dark"] .adm-btn-ghost {
+  background: color-mix(in srgb, var(--color-accent-400) 14%, transparent);
+  color: var(--color-accent-400);
+  border-color: color-mix(in srgb, var(--color-accent-400) 45%, transparent);
+}
+[data-theme="dark"] .adm-btn-ghost:hover {
+  background: color-mix(in srgb, var(--color-accent-400) 22%, transparent);
+}
 
 .adm-btn-danger { background: var(--color-danger); }
 .adm-btn-danger:hover { background: #8f342d; }
+
+/* The danger token is a deep red in the light theme and a pale salmon in the
+   dark one, so a single light label cannot serve both — on the dark theme it
+   was 2.1:1, a white-on-pink wash. The button stays red either way; only the
+   text flips to whichever side of it can be read. */
+[data-theme="dark"] .adm-btn-danger {
+  color: var(--color-neutral-100);
+}
+[data-theme="dark"] .adm-btn-danger:hover {
+  background: #e2766e;
+}
 
 /* Sticky save bar — the single most important affordance on a phone, where
    the submit button would otherwise sit below a long form. */
@@ -408,6 +437,39 @@
 
 .adm-row:last-child { border-bottom: 0; }
 .adm-row:hover { background: var(--color-neutral-100); }
+
+/**
+ * The tap target around a row's select checkbox.
+ *
+ * The control itself stays small — a 44px checkbox would dominate the row —
+ * but the label around it is a full 44px touch target, which the bare 13px
+ * default control is nowhere near. This is a tool used from a phone on site,
+ * so a tick that takes two attempts is a real cost.
+ *
+ * A bare <label> rather than extending the row's link to cover the checkbox:
+ * the link opens the item, and one element that both selects and navigates
+ * makes every tap a guess.
+ *
+ * The negative margins let the target claim the row's own padding and part of
+ * its gap instead of making every row taller — layout still sees a small box,
+ * while the hit area is the full square.
+ */
+.adm-row-tick {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -0.75rem -0.5rem -0.75rem -0.75rem;
+  cursor: pointer;
+}
+
+.adm-row-tick input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--color-accent-600);
+  cursor: pointer;
+}
 
 .adm-thumb {
   flex: none;
