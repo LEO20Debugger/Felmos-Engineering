@@ -1167,25 +1167,34 @@ export const team = [
   image: ImageKey;
 }>;
 
-/* ───────────────────────────── company history ─────────────────────────── */
+/* ───────────────────────────── who we are & HSE policy ─────────────────────────── */
 
-/* ⚠️  DO NOT SHIP WITHOUT SIGN-OFF ⚠️
-   Milestone 01's year is derived from site.founded and is therefore as good as
-   that value. Everything else below — the three later years and all four
-   description lines — is INVENTED to shape the section.
-
-   If sign-off doesn't arrive: delete entries 02–04. The section renders
-   whatever is in the array, so a single founding entry degrades honestly. */
-export const milestones = [
-  {
-    year: String(site.founded),
-    title: "Practice founded",
-    line: "Started with soil investigation for residential developers.",
-  },
-  { year: "2019", title: "Materials lab in house", line: "Sample testing stopped being outsourced." }, // INVENTED
-  { year: "2022", title: "First lender framework", line: "Verification reports accepted without rework." }, // INVENTED
-  { year: "2025", title: "Fifth discipline added", line: "Foundation assessment joined the practice." }, // INVENTED
+export const whoWeAre = [
+  "We are approved by Lagos State Material Testing Laboratory",
+  "Executed over Two Thousand non-destructive tests all over Nigeria",
+  "Delivery of report within ten working days of test",
+  "Qualified and excellent staff",
+  "Modern Ultrasonic equipments",
 ] as const;
+
+export const hsePolicy = {
+  statement: "We strive to achieve an incident-free workplace.",
+  targets: [
+    "Zero Incident",
+    "Zero Loss",
+    "No Harm to People",
+    "No Damage to Property or the Environment",
+  ],
+  commitments: [
+    "Ensuring no activity takes priority over Health, Safety and Environment (HSE)",
+    "Creating and maintaining a safe, healthy environment for all personnel",
+    "Making HSE everyone's responsibility, through continuous improvement and learning",
+    "Applying technical and operational solutions to strengthen HSE performance",
+    "Identifying and eliminating hazards before they become incidents",
+    "Implementing our HSE management system",
+    "Implementing our quality management system",
+  ],
+} as const;
 
 /* ─────────────────────── accreditations & standards ────────────────────── */
 
