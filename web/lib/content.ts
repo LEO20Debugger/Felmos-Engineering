@@ -880,29 +880,41 @@ export const instrumentPhotos: readonly string[] = [
 ];
 
 /**
- * The three photographs behind the homepage banner, in the order they play.
+ * The three frames of the homepage banner, in the order they play.
  *
- * Matched on alt text for the same reason `instrumentPhotos` is — ids differ
- * between databases and would not survive a re-import. Editable in the
- * dashboard, and the banner falls back to its stock frames as a set if fewer
- * than three resolve: one real building between two stock ones looks like a
- * mistake, where three stock ones just look like the old banner.
+ * Mixed sources deliberately. The BUA tower is Felmos's own photograph and
+ * comes out of the project galleries; the other two are stock. The company's
+ * building shots top out around 1280px — ample on a project page, soft stretched
+ * across a full-bleed banner on a desktop — so the banner leads with the real
+ * one and keeps two stock frames that hold up at that width.
  *
- * Why these three and not projects 01–03 in order: Eko Electricity has no
- * exterior photograph in the company's brief — both its images are interior
- * testing shots, and the only exterior was a satellite screenshot. The BUA
- * tower stands in, being the sharpest building image in the set and the closest
- * in feel to the stock crane photograph it replaces.
- *
- * St. Nicholas House is the one portrait frame (960×1280). It crops to a band
- * of facade in a full-bleed banner, which is why every frame renders through
- * `focalPosition()` — moving the focal point on the Media page re-aims the crop
- * without touching this file.
+ * A `project` frame is matched on alt text rather than id: ids differ between
+ * every database the import has run against and would not survive a re-import.
+ * If the match fails — the project unpublished, or its alt edited in the
+ * dashboard — the frame falls back to `fallback` rather than leaving a hole.
+ * The crossfade is a three-step CSS loop on one clock, so a missing frame reads
+ * as a blank flash rather than as a shorter cycle.
  */
-export const heroPhotos: readonly string[] = [
-  "The main pavilion at Tafawa Balewa Square, its cantilevered roof over the terraced seating",
-  "St. Nicholas House, a banded high-rise on Catholic Mission Street, Lagos Island",
-  "The office tower under construction at Mulliner Road, Ikoyi, with its tower crane",
+export type HeroFrame =
+  | { source: "project"; alt: string; fallback: ImageKey }
+  | { source: "stock"; image: ImageKey; alt: string };
+
+export const heroFrames: readonly HeroFrame[] = [
+  {
+    source: "project",
+    alt: "The office tower under construction at Mulliner Road, Ikoyi, with its tower crane",
+    fallback: "hero",
+  },
+  {
+    source: "stock",
+    image: "hero-3",
+    alt: "Two high-rise blocks under construction, a tower crane rising beside the left one",
+  },
+  {
+    source: "stock",
+    image: "hero-2",
+    alt: "A site engineer sighting through a levelling instrument mounted on a tripod",
+  },
 ];
 
 /* ─────────────────────────────── why felmos ────────────────────────────── */
