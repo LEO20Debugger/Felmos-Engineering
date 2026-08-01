@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Phone } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
-import { images } from "@/lib/images";
-import { focalPosition, mediaUrl, type Media } from "@/lib/media";
 import { site } from "@/lib/site";
 
 /* Split per word because each word animates in on its own delay. This is the
@@ -21,61 +19,13 @@ const HEADLINE = [
   "Trust",
 ];
 
-/* The three frames of the banner, in the order they play. Stacked in this same
-   order in the DOM, which is what puts each one above the last — the crossfade
-   depends on that, so do not reorder these without reading .hero-slide in
-   globals.css. */
+/* The banner's three layers, in the order they play. Stacked in this same order
+   in the DOM, which is what puts each one above the last — the crossfade depends
+   on that, so do not reorder these without reading .hero-slide in globals.css. */
 const SLIDES = ["hero-slide", "hero-slide-2", "hero-slide-3"] as const;
 
-/* The stock banner, kept as the fallback rather than deleted. It is what the
-   page shows if the API is unreachable at build time, or if someone unpublishes
-   one of the three projects the real frames come from. */
-const STOCK_FRAMES = [
-  {
-    src: images.hero,
-    /* Corrected: this photograph is the skyline, not people. The previous alt
-       described engineers walking a concrete deck, which is not in the frame —
-       a screen reader was being told about a different picture entirely. */
-    alt: "Tower cranes standing over a glass-clad high-rise under construction",
-  },
-  {
-    src: images["hero-2"],
-    alt: "A site engineer sighting through a levelling instrument mounted on a tripod",
-  },
-  {
-    src: images["hero-3"],
-    alt: "Two high-rise blocks under construction, a tower crane rising beside the left one",
-  },
-];
-
-/**
- * Build the banner frames from the company's own project photography, falling
- * back to the stock set as a whole.
- *
- * All-or-nothing on purpose: one real building between two stock photographs
- * reads as a mistake, where three stock photographs just read as the old banner.
- *
- * Width only, no height, so the API returns the whole photograph scaled rather
- * than a centre crop. All cropping then happens once in the browser, under
- * object-position, which is what lets the focal point set on the Media page
- * actually aim the banner.
- */
-function framesFor(photos: Media[]) {
-  if (photos.length < SLIDES.length) {
-    return STOCK_FRAMES.map((frame, i) => ({
-      ...frame,
-      className: SLIDES[i] as string,
-      position: "center",
-    }));
-  }
-
-  return photos.slice(0, SLIDES.length).map((photo, i) => ({
-    src: mediaUrl(photo, 1600),
-    alt: photo.alt,
-    className: SLIDES[i] as string,
-    position: focalPosition(photo),
-  }));
-}
+/** A frame, already resolved to a URL by the page. */
+export type HeroBannerFrame = { src: string; alt: string; position: string };
 
 /**
  * Full-bleed banner hero: the photograph spans the viewport and the copy sits
@@ -86,9 +36,7 @@ function framesFor(photos: Media[]) {
  * so this stays a server component and the first frame is still painted as the
  * LCP element rather than being faded in by script after hydration.
  */
-export default function Hero({ photos = [] }: { photos?: Media[] }) {
-  const frames = framesFor(photos);
-
+export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
   return (
     <section
       className="banner items-end"
@@ -121,7 +69,7 @@ export default function Hero({ photos = [] }: { photos?: Media[] }) {
           loading={i === 0 ? undefined : "eager"}
           fetchPriority={i === 0 ? undefined : "low"}
           sizes="100vw"
-          className={`${f.className} -z-20 object-cover`}
+          className={`${SLIDES[i]} -z-20 object-cover`}
         />
       ))}
 
