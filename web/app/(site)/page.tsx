@@ -42,7 +42,11 @@ export default async function HomePage() {
           alt: photo.alt,
           position: focalPosition(photo),
         }
-      : { src: images[frame.fallback], alt: frame.alt, position: "center" };
+      : {
+          src: images[frame.fallback],
+          alt: frame.fallbackAlt,
+          position: "center",
+        };
   });
 
   return (
