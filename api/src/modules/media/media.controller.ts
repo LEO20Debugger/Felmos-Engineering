@@ -25,6 +25,10 @@ import { JwtAccessGuard } from "@/modules/auth/auth.guards";
 import { MediaRepository, type MediaRow } from "./media.repository";
 import { readVariant, storeImage } from "./media.storage";
 
+const bulkDeleteSchema = z.object({
+  ids: z.array(z.number().int().positive()).min(1).max(200),
+});
+
 const metaSchema = z.object({
   alt: z.string().max(300).optional(),
   title: z.string().max(200).optional(),
@@ -127,6 +131,24 @@ export class AdminMediaController {
     } as never);
 
     return { id };
+  }
+
+  /**
+   * Delete several at once, skipping any still in use.
+   *
+   * POST rather than DELETE because it carries a body, and declared before the
+   * `:id` routes so "bulk-delete" is never read as an id.
+   *
+   * Partial success is the point: the response says how many went and names
+   * what is still holding the rest, so clearing a library does not turn into
+   * twenty single deletes to find the two that matter.
+   */
+  @Post("bulk-delete")
+  async removeMany(
+    @Tenant() tenant: TenantContext,
+    @ZodBody(bulkDeleteSchema) body: z.infer<typeof bulkDeleteSchema>
+  ): Promise<{ deleted: number; blocked: { id: number; reason: string }[] }> {
+    return this.repo.deleteManyIfUnused(tenant, body.ids);
   }
 
   @Patch(":id")

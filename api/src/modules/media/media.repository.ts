@@ -190,4 +190,43 @@ export class MediaRepository extends TenantRepository<typeof media> {
 
     await this.softDelete(ctx, id);
   }
+
+  /**
+   * Delete many, skipping the ones still in use.
+   *
+   * Partial success rather than all-or-nothing. Someone clearing out a library
+   * selects everything that looks unwanted, and a batch that refuses entirely
+   * because one image is still on a project page tells them nothing about the
+   * other nineteen. So each is attempted, and the ones that could not go are
+   * reported back with the reason the single delete would have given.
+   */
+  async deleteManyIfUnused(
+    ctx: TenantContext,
+    ids: number[]
+  ): Promise<{ deleted: number; blocked: { id: number; reason: string }[] }> {
+    let deleted = 0;
+    const blocked: { id: number; reason: string }[] = [];
+
+    for (const id of ids) {
+      try {
+        await this.deleteIfUnused(ctx, id);
+        deleted += 1;
+      } catch (error) {
+        const status = (error as { status?: number })?.status;
+
+        if (status === 409) {
+          const message = (error as { message?: string }).message ?? "Still in use.";
+          blocked.push({ id, reason: message });
+          continue;
+        }
+
+        /* Already gone, or never this tenant's — the grid was rendered before
+           someone else got there. Nothing to report and nothing to fix. */
+        if (status === 404) continue;
+        throw error;
+      }
+    }
+
+    return { deleted, blocked };
+  }
 }
