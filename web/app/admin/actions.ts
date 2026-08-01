@@ -695,3 +695,111 @@ export async function deleteMedia(
   revalidatePath("/admin/media");
   return { ok: true, message: "Deleted." };
 }
+
+/* ─────────────────────────────── settings ─────────────────────────────── */
+
+export async function updateSiteSettings(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const text = (key: string): string | null => {
+    const val = String(formData.get(key) ?? "").trim();
+    return val === "" ? null : val;
+  };
+
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) {
+    return { ok: false, message: "Company name is required.", errors: { name: "Required." } };
+  }
+
+  const foundedRaw = text("founded");
+  const founded = foundedRaw ? Number(foundedRaw) : null;
+
+  const hoursStructured = String(formData.get("hoursStructured") ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const payload = {
+    name,
+    shortName: text("shortName"),
+    tagline: text("tagline"),
+    description: text("description"),
+    url: text("url"),
+    phone: text("phone"),
+    phoneHref: text("phoneHref"),
+    secondaryPhone: text("secondaryPhone"),
+    secondaryPhoneHref: text("secondaryPhoneHref"),
+    email: text("email"),
+    emailHref: text("emailHref"),
+    addressStreet: text("addressStreet"),
+    addressLocality: text("addressLocality"),
+    addressRegion: text("addressRegion"),
+    addressPostalCode: text("addressPostalCode"),
+    addressCountry: text("addressCountry"),
+    addressShort: text("addressShort"),
+    addressFull: text("addressFull"),
+    geoLat: text("geoLat"),
+    geoLng: text("geoLng"),
+    hours: text("hours"),
+    hoursStructured,
+    founded: Number.isInteger(founded) && (founded ?? 0) > 0 ? founded : null,
+  };
+
+  try {
+    await api.patch("/admin/settings", payload);
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/settings");
+  return { ok: true, message: "Settings saved." };
+}
+
+export async function createMailRecipient(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const email = String(formData.get("email") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim() || null;
+  const role = String(formData.get("role") ?? "to");
+
+  if (!email) {
+    return { ok: false, message: "Email address is required.", errors: { email: "Required." } };
+  }
+
+  try {
+    await api.post("/admin/settings/mail-recipients", { email, name, role, active: true });
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/settings");
+  return { ok: true, message: `Added ${email} to recipients.` };
+}
+
+export async function updateMailRecipient(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+  const email = String(formData.get("email") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim() || null;
+  const role = String(formData.get("role") ?? "to");
+  const active = formData.get("active") === "1" || formData.get("active") === "true";
+
+  try {
+    await api.patch(`/admin/settings/mail-recipients/${id}`, { email, name, role, active });
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/settings");
+  return { ok: true, message: "Recipient updated." };
+}
+
+export async function deleteMailRecipient(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.del(`/admin/settings/mail-recipients/${id}`);
+  revalidatePath("/admin/settings");
+}

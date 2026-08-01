@@ -188,6 +188,55 @@ export type AdminMedia = AdminImage & {
   createdAt: string;
 };
 
+export type AdminSiteSettings = {
+  id: number;
+  companyId: number;
+  name: string;
+  shortName: string | null;
+  tagline: string | null;
+  description: string | null;
+  url: string | null;
+  phone: string | null;
+  phoneHref: string | null;
+  secondaryPhone: string | null;
+  secondaryPhoneHref: string | null;
+  email: string | null;
+  emailHref: string | null;
+  addressStreet: string | null;
+  addressLocality: string | null;
+  addressRegion: string | null;
+  addressPostalCode: string | null;
+  addressCountry: string | null;
+  addressShort: string | null;
+  addressFull: string | null;
+  geoLat: string | null;
+  geoLng: string | null;
+  mapEmbed: string | null;
+  mapLink: string | null;
+  hours: string | null;
+  hoursStructured: string[];
+  founded: number | null;
+  socials: { label: string; href: string; icon: string }[];
+  updatedAt: string;
+};
+
+export type AdminMailRecipient = {
+  id: number;
+  companyId: number;
+  email: string;
+  name: string | null;
+  role: "to" | "cc" | "bcc";
+  active: number;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AdminSettingsPayload = {
+  settings: AdminSiteSettings | null;
+  mailRecipients: AdminMailRecipient[];
+};
+
 /**
  * Build a URL for a media row at a given size.
  *
