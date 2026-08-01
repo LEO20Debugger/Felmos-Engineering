@@ -11,16 +11,20 @@ import {
   PublicServicesController,
 } from "./services.controller";
 import { ServicesRepository } from "./services.repository";
+import { AdminTeamController, PublicTeamController } from "./team.controller";
+import { TeamRepository } from "./team.repository";
 
 @Module({
   controllers: [
     PublicServicesController,
     PublicProjectsController,
+    PublicTeamController,
     PublicContentController,
     AdminServicesController,
     AdminProjectsController,
+    AdminTeamController,
   ],
-  providers: [ServicesRepository, ProjectsRepository],
-  exports: [ServicesRepository, ProjectsRepository],
+  providers: [ServicesRepository, ProjectsRepository, TeamRepository],
+  exports: [ServicesRepository, ProjectsRepository, TeamRepository],
 })
 export class ContentModule {}
