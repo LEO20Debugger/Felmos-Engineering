@@ -896,7 +896,16 @@ export const instrumentPhotos: readonly string[] = [
  * as a blank flash rather than as a shorter cycle.
  */
 export type HeroFrame =
-  | { source: "project"; alt: string; fallback: ImageKey }
+  | {
+      source: "project";
+      alt: string;
+      fallback: ImageKey;
+      /** Describes the FALLBACK picture, not the project one. Alt text travels
+          with the image it belongs to — reusing the project's description over
+          a stock photograph tells a screen reader about a building that isn't
+          on screen, which is worse than no banner at all. */
+      fallbackAlt: string;
+    }
   | { source: "stock"; image: ImageKey; alt: string };
 
 export const heroFrames: readonly HeroFrame[] = [
@@ -904,6 +913,8 @@ export const heroFrames: readonly HeroFrame[] = [
     source: "project",
     alt: "The office tower under construction at Mulliner Road, Ikoyi, with its tower crane",
     fallback: "hero",
+    fallbackAlt:
+      "Tower cranes standing over a glass-clad high-rise under construction",
   },
   {
     source: "stock",
@@ -916,6 +927,19 @@ export const heroFrames: readonly HeroFrame[] = [
     alt: "A site engineer sighting through a levelling instrument mounted on a tripod",
   },
 ];
+
+/**
+ * The About banner photograph.
+ *
+ * Same alt-matched-with-a-fallback shape as `heroFrames`, and for the same
+ * reasons. A team-on-site shot rather than an empty building: this is the page
+ * that answers "who are you", and the survey team walking up to a job says that
+ * better than a facade does.
+ */
+export const aboutHeroPhoto: { alt: string; fallback: ImageKey } = {
+  alt: "The main resort building with its curved external staircase, the survey team on site",
+  fallback: "about-hero",
+};
 
 /* ─────────────────────────────── why felmos ────────────────────────────── */
 
