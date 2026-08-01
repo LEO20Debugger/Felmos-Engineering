@@ -5,6 +5,7 @@ import "../admin.css";
 import { currentUser } from "@/lib/admin/api";
 import { logout } from "../actions";
 import { AdminNav } from "./AdminNav";
+import { LogoMark } from "@/components/brand/Logo";
 
 export const metadata: Metadata = {
   title: { default: "Dashboard", template: "%s — Felmos Admin" },
@@ -39,7 +40,8 @@ export default async function DashboardLayout({
             hold a brand, a name and a sign-out button on a 375px screen, and
             the full strings wrapped it onto two lines. */}
         <a href="/admin" className="adm-brand">
-          Felmos<span className="adm-wide-only"> Engineering</span> Admin
+          <LogoMark size={24} tone="onDark" />
+          <span>Felmos<span className="adm-wide-only"> Engineering</span> Admin</span>
         </a>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
