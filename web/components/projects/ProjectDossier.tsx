@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import Photo from "@/components/ui/Photo";
-import type { CmsProject, CmsService } from "@/lib/cms";
+import ReviewCard from "@/components/reviews/ReviewCard";
+import type { CmsProject, CmsReview, CmsService } from "@/lib/cms";
 
 /**
  * One project's record, on its own page.
@@ -20,9 +21,13 @@ import type { CmsProject, CmsService } from "@/lib/cms";
 export default function ProjectDossier({
   project,
   services,
+  reviews = [],
 }: {
   project: CmsProject;
   services: CmsService[];
+  /** Approved reviews the client attached to this project, if any. Passed in
+      rather than fetched here, for the same reason `services` is. */
+  reviews?: CmsReview[];
 }) {
   const facts = [
     ["Client", project.client],
@@ -121,6 +126,25 @@ export default function ProjectDossier({
           ) : null}
         </div>
       </div>
+
+      {/* What the client said about this specific job — under the record it
+          refers to, where it reads as evidence rather than decoration. Absent
+          entirely when nobody has reviewed this project, like every other
+          block above. */}
+      {reviews.length > 0 ? (
+        <section className="mt-12 border-t border-divider pt-8 md:mt-16 md:pt-10">
+          <h2 className="kicker m-0 mb-5 block">
+            {reviews.length === 1 ? "What the client said" : "What clients said"}
+          </h2>
+          <ul className="m-0 grid list-none grid-cols-1 gap-5 p-0 md:grid-cols-2">
+            {reviews.map((review) => (
+              <li key={review.id}>
+                <ReviewCard review={review} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </article>
   );
 }

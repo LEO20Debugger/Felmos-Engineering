@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   Briefcase,
-  Building2,
   Image as ImageIcon,
   Inbox,
   Newspaper,
   Settings,
+  Star,
   Users,
   Wrench,
 } from "lucide-react";
@@ -32,12 +32,20 @@ const PRIMARY = [
 
 const SECONDARY = [
   { href: "/admin/team", label: "Team", icon: Users },
-  { href: "/admin/testimonials", label: "Quotes", icon: Building2 },
+  { href: "/admin/reviews", label: "Reviews", icon: Star },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/settings", label: "Settings", icon: Settings, ownerOnly: true },
 ] as const;
 
-export function AdminNav({ role }: { role: "owner" | "editor" }) {
+export function AdminNav({
+  role,
+  pendingReviews = 0,
+}: {
+  role: "owner" | "editor";
+  /** Visitor submissions waiting on a decision. Counted on the server in the
+      dashboard layout — this is a client component and cannot read the API. */
+  pendingReviews?: number;
+}) {
   const pathname = usePathname();
 
   const isCurrent = (href: string, exact?: boolean) =>
@@ -64,6 +72,16 @@ export function AdminNav({ role }: { role: "owner" | "editor" }) {
         >
           <Icon size={20} aria-hidden />
           <span>{label}</span>
+          {/* Reviews is the only item with a count, because it is the only one
+              where something arrives without anybody here doing anything. The
+              number is in the link text for screen readers rather than being a
+              purely visual dot. */}
+          {href === "/admin/reviews" && pendingReviews > 0 ? (
+            <span className="adm-nav-badge">
+              {pendingReviews > 99 ? "99+" : pendingReviews}
+              <span className="adm-sr-only"> awaiting approval</span>
+            </span>
+          ) : null}
         </Link>
       ))}
     </nav>

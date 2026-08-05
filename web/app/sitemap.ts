@@ -22,6 +22,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     { url: `${site.url}/about`, lastModified: now, changeFrequency: "yearly", priority: 0.7 },
     { url: `${site.url}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.8 },
+    /* Weekly: this page changes whenever a review is approved, which is more
+       often than anything else here except the blog index. */
+    { url: `${site.url}/reviews`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     /* The index changes whenever a post is added; the posts themselves do not,
        so each carries its own publication date as lastModified rather than the
        build time. A crawler told every URL changed today learns nothing. */

@@ -281,6 +281,31 @@ export const testimonials = mysqlTable(
     company: varchar("company", { length: 160 }),
     projectId: bigintId("project_id").references(() => projects.id),
     rating: smallint("rating", { unsigned: true }),
+
+    /**
+     * Who wrote this row.
+     *
+     * Moderation deliberately reuses `status` rather than adding a third state:
+     * a visitor's submission is inserted as `draft` and approving it is the
+     * same publish every other content table already implements, so nothing in
+     * TenantRepository needed a special case. What `status` alone cannot say is
+     * whether a draft is a half-written staff quote or a stranger's submission
+     * waiting on a decision — which is the only queue anyone actually works
+     * from. That distinction is this column.
+     */
+    source: varchar("source", { length: 16 })
+      .notNull()
+      .default("staff")
+      .$type<"staff" | "visitor">(),
+
+    /** How to reach the reviewer. Never returned by the public endpoint — it is
+        collected so a claim can be checked, not so it can be displayed. */
+    submitterEmail: varchar("submitter_email", { length: 255 }),
+
+    /* Kept for triage. When something that reads like spam arrives, the address
+       and agent are what distinguish one bad submission from a run of them. */
+    submittedIp: varchar("submitted_ip", { length: 45 }),
+    submittedUserAgent: varchar("submitted_user_agent", { length: 400 }),
   },
   (t) => [
     uniqueIndex("uq_testimonials_slug_active").on(t.companyId, t.slugActive),
@@ -289,6 +314,13 @@ export const testimonials = mysqlTable(
       t.isDeleted,
       t.status,
       t.sortOrder
+    ),
+    /** The pending queue: source = 'visitor' AND status = 'draft'. */
+    index("ix_testimonials_queue").on(
+      t.companyId,
+      t.isDeleted,
+      t.source,
+      t.status
     ),
   ]
 );

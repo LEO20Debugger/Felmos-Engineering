@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { navLinks, site } from "@/lib/site";
+import { bannerCredits } from "@/lib/content";
 import { getServices } from "@/lib/cms";
 import Logo from "@/components/brand/Logo";
 
@@ -69,6 +70,14 @@ export default async function Footer() {
                   </Link>
                 </li>
               ))}
+              {/* Appended here rather than added to `navLinks`, which also
+                  drives the header — /reviews is worth a footer link and a
+                  homepage section, but not a seventh item in the top nav. */}
+              <li>
+                <Link href="/reviews" className="text-[14px] text-ink no-underline hover:text-link">
+                  Reviews
+                </Link>
+              </li>
             </ul>
           </nav>
 
@@ -124,6 +133,42 @@ export default async function Footer() {
           <span>© {new Date().getFullYear()} Felmos Engineering. All rights reserved.</span>
           <span>Certified Structural Testing &amp; Engineering Services</span>
         </div>
+
+        {/* Not a nicety — the banner photographs of Tafawa Balewa Square and the
+            National Stadium are CC BY-SA, and naming the photographer is a
+            condition of using them. It lives here rather than on the banner
+            because the three frames crossfade on a pure-CSS clock: nothing on
+            the page knows which photograph is showing, so a per-frame credit
+            would mean making the hero a client component. Renders nothing at
+            all once every frame is Felmos's own photography. */}
+        {bannerCredits.length > 0 && (
+          <p className="mt-2.5 text-[11.5px] leading-[1.6] opacity-45">
+            Banner photography:{" "}
+            {bannerCredits.map((credit, i) => (
+              <span key={credit.sourceUrl}>
+                {i > 0 && " · "}
+                <a
+                  href={credit.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-inherit underline decoration-current/30 underline-offset-2 hover:decoration-current"
+                >
+                  {credit.subject}
+                </a>{" "}
+                by {credit.author} (
+                <a
+                  href={credit.licenseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-inherit underline decoration-current/30 underline-offset-2 hover:decoration-current"
+                >
+                  {credit.license}
+                </a>
+                )
+              </span>
+            ))}
+          </p>
+        )}
       </div>
     </footer>
   );

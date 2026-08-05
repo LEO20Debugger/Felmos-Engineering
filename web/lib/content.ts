@@ -880,13 +880,37 @@ export const instrumentPhotos: readonly string[] = [
 ];
 
 /**
+ * Attribution for a photograph whose licence requires it.
+ *
+ * Unsplash and Pexels ask for nothing, so nothing in `lib/images.ts` carries
+ * one of these. The Wikimedia Commons photographs do — see `bannerCredits`.
+ */
+export type PhotoCredit = {
+  /** What was photographed, as a reader would name it — not a filename. */
+  subject: string;
+  author: string;
+  /** Spelled as the licence spells itself, e.g. "CC BY-SA 4.0". */
+  license: string;
+  licenseUrl: string;
+  /** The Commons file page, where the full licence terms live. */
+  sourceUrl: string;
+};
+
+/**
  * The three frames of the homepage banner, in the order they play.
  *
- * Mixed sources deliberately. The BUA tower is Felmos's own photograph and
- * comes out of the project galleries; the other two are stock. The company's
- * building shots top out around 1280px — ample on a project page, soft stretched
- * across a full-bleed banner on a desktop — so the banner leads with the real
- * one and keeps two stock frames that hold up at that width.
+ * All three are buildings Felmos actually tested. Two are `local`: photographs
+ * of Tafawa Balewa Square and the National Stadium at Surulere, vendored into
+ * public/banner/ from Wikimedia Commons because Felmos's own shots of those
+ * sites top out around 1280px — ample on a project page, soft stretched across
+ * a full-bleed banner on a desktop. The third is the BUA tower, Felmos's own
+ * photograph, out of the project galleries; it is last because at 1280px it is
+ * the softest of the three and should not be the frame that paints first.
+ *
+ * A `local` frame's credit is not decoration — the Commons photographs are
+ * CC BY-SA 4.0 and the footer credit line is a licence condition. `bannerCredits`
+ * below derives from this array so the two cannot drift apart. See
+ * public/banner/README.md.
  *
  * A `project` frame is matched on alt text rather than id: ids differ between
  * every database the import has run against and would not survive a re-import.
@@ -906,9 +930,54 @@ export type HeroFrame =
           on screen, which is worse than no banner at all. */
       fallbackAlt: string;
     }
+  | {
+      source: "local";
+      /** Path under public/, so next/image optimises it off our own disk. */
+      src: string;
+      alt: string;
+      /** CSS object-position. The banner goes nearly square on a phone, so a
+          frame whose subject sits off-centre says where to hold. */
+      position?: string;
+      credit: PhotoCredit;
+    }
   | { source: "stock"; image: ImageKey; alt: string };
 
 export const heroFrames: readonly HeroFrame[] = [
+  {
+    source: "local",
+    src: "/banner/tafawa-balewa-square.jpg",
+    alt: "The Tafawa Balewa Square entrance gate on Lagos Island, its white horse sculptures and red eagles above the arcade",
+    /* Held above centre: the horses and eagles sit in the upper half. Only bites
+       on a wide, short window — anywhere the banner is taller than 1:1.84 the
+       photograph is the narrower shape and gets cropped left and right instead,
+       where centred is right. */
+    position: "center 38%",
+    credit: {
+      subject: "Tafawa Balewa Square",
+      author: "Sidhant Bendre",
+      license: "CC BY-SA 4.0",
+      licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+      sourceUrl:
+        "https://commons.wikimedia.org/wiki/File:Tafawa_Balewa_Square_Image.jpg",
+    },
+  },
+  {
+    source: "local",
+    src: "/banner/national-stadium-surulere.jpg",
+    alt: "The National Stadium at Surulere from directly above, its running track and terracing ringing an empty pitch",
+    /* Straight down rather than the more obvious elevation of the main bowl.
+       The banner goes nearly square on a phone, and a narrow slice of an
+       elevation is an unreadable wall of terracing; a slice of this one still
+       shows track, pitch and stands and still reads as a stadium. */
+    credit: {
+      subject: "National Stadium, Surulere",
+      author: "Isaacayodele32",
+      license: "CC BY-SA 4.0",
+      licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+      sourceUrl:
+        "https://commons.wikimedia.org/wiki/File:National_Stadium,_Surulere_-_2024.jpg",
+    },
+  },
   {
     source: "project",
     alt: "The office tower under construction at Mulliner Road, Ikoyi, with its tower crane",
@@ -916,17 +985,17 @@ export const heroFrames: readonly HeroFrame[] = [
     fallbackAlt:
       "Tower cranes standing over a glass-clad high-rise under construction",
   },
-  {
-    source: "stock",
-    image: "hero-3",
-    alt: "Two high-rise blocks under construction, a tower crane rising beside the left one",
-  },
-  {
-    source: "stock",
-    image: "hero-2",
-    alt: "A site engineer sighting through a levelling instrument mounted on a tripod",
-  },
 ];
+
+/**
+ * Every credit the banner owes, in frame order.
+ *
+ * Derived rather than written out, so removing a frame removes its credit and
+ * no line is left crediting a photograph nobody can see.
+ */
+export const bannerCredits: readonly PhotoCredit[] = heroFrames.flatMap((frame) =>
+  frame.source === "local" ? [frame.credit] : []
+);
 
 /**
  * The About banner photograph.
