@@ -7,7 +7,12 @@ import ProjectDossier from "@/components/projects/ProjectDossier";
 import ProjectGallery from "@/components/projects/ProjectGallery";
 import ProjectPager from "@/components/projects/ProjectPager";
 import CtaBand from "@/components/ui/CtaBand";
-import { getProjectBySlug, getProjects, getServices } from "@/lib/cms";
+import {
+  getProjectBySlug,
+  getProjects,
+  getReviewsForProject,
+  getServices,
+} from "@/lib/cms";
 import { mediaUrl } from "@/lib/media";
 
 /**
@@ -77,6 +82,10 @@ export default async function ProjectPage({
   const previous = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
 
+  /* After the notFound() guard, so a 404 never pays for this. Filtered off the
+     same cached reviews list the homepage uses, so it is not a second request. */
+  const reviews = await getReviewsForProject(project.id);
+
   return (
     <>
       {/* Up to the index on the left, along the set on the right. One row, so
@@ -100,7 +109,7 @@ export default async function ProjectPage({
         )}
       </div>
 
-      <ProjectDossier project={project} services={services} />
+      <ProjectDossier project={project} services={services} reviews={reviews} />
       <ProjectGallery images={project.gallery} />
 
       <CtaBand

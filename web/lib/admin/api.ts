@@ -219,6 +219,36 @@ export type AdminPost = {
   image: AdminImage | null;
 };
 
+/**
+ * A client review as the dashboard sees it.
+ *
+ * `source` is what separates the moderation queue from staff drafts — a
+ * `draft` from a visitor is waiting on a decision, a `draft` from staff is
+ * half-written. `submitterEmail` and the two `submitted*` columns exist only
+ * here: the public endpoint does not return them.
+ */
+export type AdminReview = {
+  id: number;
+  slug: string;
+  quote: string;
+  author: string;
+  role: string | null;
+  company: string | null;
+  /** 1–5, or null for a quote collected before ratings existed. */
+  rating: number | null;
+  projectId: number | null;
+  source: "staff" | "visitor";
+  submitterEmail: string | null;
+  submittedIp: string | null;
+  submittedUserAgent: string | null;
+  status: "draft" | "published";
+  publishedAt: string | null;
+  sortOrder: number;
+  isDeleted: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AdminMedia = AdminImage & {
   title: string | null;
   bytes: number | null;

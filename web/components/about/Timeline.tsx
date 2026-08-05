@@ -98,7 +98,12 @@ export default function Timeline() {
                   as="li"
                   key={commitment}
                   delay={i % 2}
-                  className="flex items-start gap-4 border-b border-divider/60 pb-4 last:border-b-0 md:[&:nth-last-child(2)]:border-b-0"
+                  /* Only `last:` — an earlier `md:[&:nth-last-child(2)]`
+                     assumed the final two items share a row, which holds only
+                     for an even count. With seven, item 6 sits beside item 5
+                     and lost its rule while 5 kept one, leaving that row
+                     underlined on one side. */
+                  className="flex items-start gap-4 border-b border-divider/60 pb-4 last:border-b-0"
                 >
                   <span className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-link/10 font-mono text-[12px] font-bold text-link">
                     {i + 1}

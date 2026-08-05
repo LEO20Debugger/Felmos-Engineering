@@ -515,6 +515,138 @@ export async function reorderTeam(ids: number[]): Promise<void> {
   revalidatePath("/admin/team");
 }
 
+/* ─────────────────────────────── reviews ─────────────────────────────── */
+
+/**
+ * Shared shape-building for create and update.
+ *
+ * Only ever used by the staff form. A visitor's review arrives through
+ * /api/reviews and never touches a server action — which is the point: the
+ * fields a stranger controls are a strictly smaller set, and they are enforced
+ * by the API rather than by whichever form happened to post.
+ */
+function reviewFrom(formData: FormData) {
+  const text = (field: string): string | null => {
+    const value = String(formData.get(field) ?? "").trim();
+    return value === "" ? null : value;
+  };
+
+  const rating = String(formData.get("rating") ?? "").trim();
+  const projectId = String(formData.get("projectId") ?? "").trim();
+
+  return {
+    slug: String(formData.get("slug") ?? "").trim(),
+    quote: String(formData.get("quote") ?? "").trim(),
+    author: String(formData.get("author") ?? "").trim(),
+    role: text("role"),
+    company: text("company"),
+    /* "" means "no rating", which is a real state — an older quote nobody
+       ever gave a star count for. Number("") is 0, which the API would
+       reject, so the empty case has to be null rather than coerced. */
+    rating: rating ? Number(rating) : null,
+    projectId: projectId ? Number(projectId) : null,
+    status: formData.get("status") === "published" ? "published" : "draft",
+  };
+}
+
+export async function createReview(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  let id: number;
+  try {
+    const result = await api.post<{ id: number }>(
+      "/admin/reviews",
+      reviewFrom(formData)
+    );
+    id = result.id;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/reviews");
+  redirect(`/admin/reviews/${id}`);
+}
+
+export async function updateReview(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = Number(formData.get("id"));
+
+  try {
+    await api.patch(`/admin/reviews/${id}`, reviewFrom(formData));
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/reviews");
+  revalidatePath(`/admin/reviews/${id}`);
+  return { ok: true, message: "Saved." };
+}
+
+export async function deleteReview(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.del(`/admin/reviews/${id}`);
+  revalidatePath("/admin/reviews");
+  redirect("/admin/reviews?deleted=1");
+}
+
+export async function restoreReview(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  await api.post(`/admin/reviews/${id}/restore`);
+  revalidatePath("/admin/reviews");
+}
+
+/**
+ * Approve, unpublish, delete or restore several reviews at once.
+ *
+ * The one action this dashboard performs most, since the pending queue is
+ * worked in batches. "Approved" rather than "published" in the message: that
+ * is what the button says and what the person just did.
+ */
+export async function bulkReviews(
+  _previous: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const ids = formData
+    .getAll("ids")
+    .map((value) => Number(value))
+    .filter((n) => Number.isInteger(n) && n > 0);
+
+  const action = String(formData.get("action") ?? "");
+
+  if (ids.length === 0) return { ok: false, message: "Nothing selected." };
+
+  let affected: number;
+  try {
+    const result = await api.post<{ affected: number }>("/admin/reviews/bulk", {
+      ids,
+      action,
+    });
+    affected = result.affected;
+  } catch (error) {
+    return toFormState(error);
+  }
+
+  revalidatePath("/admin/reviews");
+
+  const noun = affected === 1 ? "review" : "reviews";
+  const verb = {
+    publish: "approved and published",
+    draft: "unpublished",
+    delete: "deleted",
+    restore: "restored",
+  }[action] ?? "updated";
+
+  return { ok: true, message: `${affected} ${noun} ${verb}.` };
+}
+
+export async function reorderReviews(ids: number[]): Promise<void> {
+  await api.patch("/admin/reviews/reorder", { ids });
+  revalidatePath("/admin/reviews");
+}
+
 /* ─────────────────────────────── insights ─────────────────────────────── */
 
 /**

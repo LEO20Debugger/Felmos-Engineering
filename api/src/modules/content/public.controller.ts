@@ -1,9 +1,9 @@
 import { Controller, Get, Inject, UseGuards } from "@nestjs/common";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 import { DB } from "@/db/db.module";
 import type { Db } from "@/db/client";
-import { media, posts, testimonials } from "@/db/schema";
+import { media, posts } from "@/db/schema";
 import { Tenant } from "@/common/tenant.decorator";
 import type { TenantContext } from "@/common/tenant-context";
 import { InternalKeyGuard } from "@/modules/auth/auth.guards";
@@ -87,27 +87,10 @@ export class PublicContentController {
      would only stay in step with the repository's until the first one was
      edited alone. */
 
-  @Get("testimonials")
-  async testimonials(@Tenant() tenant: TenantContext) {
-    const rows = await this.db
-      .select({
-        id: testimonials.id,
-        quote: testimonials.quote,
-        /* The current component reads `name`, not `author`. */
-        name: testimonials.author,
-        role: testimonials.role,
-        company: testimonials.company,
-      })
-      .from(testimonials)
-      .where(
-        and(
-          eq(testimonials.companyId, tenant.companyId),
-          eq(testimonials.isDeleted, 0),
-          eq(testimonials.status, "published")
-        )
-      )
-      .orderBy(asc(testimonials.sortOrder));
-
-    return { testimonials: rows };
-  }
+  /* Testimonials moved to PublicReviewsController, for the same reason team and
+     projects did — and one more: reviews are now written by visitors as well as
+     staff, so the read side has to agree with the moderation rules the write
+     side enforces. A second hand-written copy of that query here would drift
+     the first time one of them was edited alone, and the failure mode is an
+     unapproved review on the homepage. */
 }

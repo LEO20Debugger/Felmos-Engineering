@@ -4,7 +4,7 @@ import ServiceShowcase from "@/components/home/ServiceShowcase";
 import Audience from "@/components/home/Audience";
 import WhyUs from "@/components/home/WhyUs";
 import Stats from "@/components/home/Stats";
-import Testimonials from "@/components/home/Testimonials";
+import Reviews from "@/components/home/Reviews";
 import TeamSlider from "@/components/home/TeamSlider";
 import ProcessShowcase from "@/components/process/ProcessShowcase";
 import Projects from "@/components/home/Projects";
@@ -30,6 +30,12 @@ export default async function HomePage() {
   const banner = heroFrames.map((frame) => {
     if (frame.source === "stock") {
       return { src: images[frame.image], alt: frame.alt, position: "center" };
+    }
+
+    /* Served straight off public/ — next/image optimises a local path exactly
+       as it does a remote one, so this needs no next.config allowlist entry. */
+    if (frame.source === "local") {
+      return { src: frame.src, alt: frame.alt, position: frame.position ?? "center" };
     }
 
     const photo = gallery.find((image) => image.alt === frame.alt);
@@ -59,7 +65,7 @@ export default async function HomePage() {
       <ProcessShowcase />
       <Projects />
       <Stats />
-      <Testimonials />
+      <Reviews />
       {/* Last thing before the CTA, deliberately: the page closes on the people
           who would turn up, then asks for the booking. It also lands on the
           surface band between two plain-ground sections and the accent-900
