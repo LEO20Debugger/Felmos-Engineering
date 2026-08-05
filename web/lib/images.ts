@@ -22,7 +22,7 @@
  * photography before this goes live.
  */
 
-type Provider = "unsplash" | "pexels";
+type Provider = "unsplash" | "pexels" | "local";
 
 /** id + the crop the layout asks for by default, + which host serves it.
  *
@@ -79,14 +79,15 @@ export const SOURCES = {
   "process-5": { id: "1581092160562-40aa08e78837", w: 1200, h: 800 }, // the written report
   "process-6": { id: "1600880292089-90a7e086ee0c", w: 1200, h: 800 }, // recommendations
 
-  /* team — placeholder people, see note above.
+  /* team — Nigerian/African professional portraits (local assets in public/team/).
      4:5 rather than square: at 1:1 these read as avatars, at 4:5 as
      commissioned portraits. `differentiators.real-support` re-crops team-1
-     through imageAt() independently, so it is unaffected by this ratio. */
-  "team-1": { id: "1472099645785-5658abf4ff4e", w: 900, h: 1125 },
-  "team-2": { id: "1573497019940-1c28c88b4f3e", w: 900, h: 1125 },
-  "team-3": { id: "1507003211169-0a1dd7228f2d", w: 900, h: 1125 },
-  "team-4": { id: "1580489944761-15a19d654956", w: 900, h: 1125 },
+     through imageAt() independently, so it is unaffected by this ratio.
+     Source: AI-generated, replace with real staff photography before launch. */
+  "team-1": { id: "team/team-1.jpg", w: 900, h: 1125, from: "local" },
+  "team-2": { id: "team/team-2.jpg", w: 900, h: 1125, from: "local" },
+  "team-3": { id: "team/team-3.jpg", w: 900, h: 1125, from: "local" },
+  "team-4": { id: "team/team-4.jpg", w: 900, h: 1125, from: "local" },
 
   "cta-texture": { id: "1486406146926-c627a92ad1ab", w: 1920, h: 1080 },
 
@@ -120,7 +121,9 @@ type Source = { id: string; w: number; h: number; from?: Provider };
  * something it has to letterbox.
  */
 const url = (s: Source, w: number, h: number) =>
-  s.from === "pexels"
+  s.from === "local"
+    ? `/${s.id}`
+    : s.from === "pexels"
     ? `https://images.pexels.com/photos/${s.id}/pexels-photo-${s.id}.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=${w}&h=${h}`
     : `https://images.unsplash.com/photo-${s.id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
 
