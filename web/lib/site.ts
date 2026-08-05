@@ -22,13 +22,13 @@ export const site = {
   emailHref: "mailto:felmosengineering@gmail.com",
 
   address: {
-    street: "25 Odozi St, Ojodu",
+    street: "23 Odozi St, Ojodu",
     locality: "Ikeja",
     region: "Lagos",
     postalCode: "101233",
     country: "NG",
     short: "Ojodu, Ikeja, Lagos",
-    full: "25 Odozi St, Ojodu, Ikeja 101233, Lagos",
+    full: "23 Odozi St, Ojodu, Ikeja 101233, Lagos",
   },
   geo: { lat: 6.6245, lng: 3.368 },
   mapEmbed:
