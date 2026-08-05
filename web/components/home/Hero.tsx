@@ -37,18 +37,32 @@ export type HeroBannerFrame = { src: string; alt: string; position: string };
  * LCP element rather than being faded in by script after hydration.
  */
 export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
+  /* justify-start overrides .banner's bottom anchoring, for this banner only.
+     Bottom-anchored copy in a viewport-proportional banner means every pixel
+     the banner is taller than the copy becomes empty band under the navbar —
+     115px at 1280x800, and worse the taller the display, because the copy is a
+     fixed height and the banner is not. Anchoring to the top makes that gap
+     --banner-air at every size and lets the surplus fall below the copy, where
+     it is photograph rather than nothing. The inner pages keep the bottom
+     anchoring: their copy is short and the effect there is deliberate. */
   return (
     <section
-      className="banner items-end"
+      className="banner justify-start"
       style={
         {
           /* Taller than the inner pages: this is the one banner that carries
-             the full headline, lead and both calls to action. */
+             the full headline, lead and both calls to action.
+
+             Trimmed from 88vh/880px. The copy is bottom-anchored, so every
+             pixel of banner beyond what the copy needs becomes empty band
+             between the navbar and the kicker — at 88vh on a 1280x800 display
+             that was 115px of nothing. These values leave the photograph
+             dominant while letting the headline start near the top of it. */
           "--banner-min": "64svh",
-          "--banner-h": "88vh",
-          "--banner-max": "880px",
+          "--banner-h": "80vh",
+          "--banner-max": "760px",
           "--banner-min-lg": "560px",
-          "--banner-air": "clamp(24px, 6vh, 56px)",
+          "--banner-air": "clamp(20px, 4vh, 40px)",
           "--banner-foot": "clamp(32px, 6vh, 72px)",
         } as React.CSSProperties
       }
@@ -74,14 +88,23 @@ export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
       ))}
 
       {/* Two scrims: one across for legibility on wide screens, one up from the
-          base so the copy always has a dark footing on tall phone screens. */}
+          base so the copy always has a dark footing on tall phone screens.
+
+          Neutral black rather than the accent-900 navy the other banners use.
+          These frames are photographs of real buildings — Tafawa Balewa Square's
+          grey concrete, the stadium's red track — and a navy scrim tints all of
+          it the same blue, which is the one thing a scrim over documentary
+          photography should not do. Black darkens without recolouring. The
+          opacities are a step up from the navy's to hold the same contrast:
+          black at 90% is no darker than #142838 at 90%, but it stops carrying
+          the colour that was doing part of the work. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-r from-accent-900/90 via-accent-900/60 to-accent-900/20"
+        className="absolute inset-0 -z-10 bg-gradient-to-r from-black/85 via-black/55 to-black/20"
       />
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-accent-900/95 to-transparent"
+        className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-black/90 to-transparent"
       />
 
       <div className="banner-body wrap text-on-dark">

@@ -151,6 +151,42 @@
    specificity — the bare class rule silently does nothing. */
 .adm-nav a.adm-nav-overflow { display: none; }
 
+/* The count of reviews waiting on a decision.
+
+   Absolutely positioned on the phone tab bar, where the link is a stacked
+   icon-over-label and a third child in the flow would push the label off
+   centre. It goes inline in the sidebar below, where there is a row to sit at
+   the end of. */
+.adm-nav-badge {
+  position: absolute;
+  top: 0.3rem;
+  left: 50%;
+  margin-left: 0.35rem;
+  min-width: 1.15rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--color-accent-700);
+  color: var(--color-on-dark);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2rem;
+  text-align: center;
+}
+
+/* Visually hidden, still announced. The badge reads "3 awaiting approval"
+   rather than a bare "3" that means nothing out of context. */
+.adm-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (min-width: 48rem) {
   .adm-body {
     display: grid;
@@ -181,6 +217,12 @@
 
   .adm-nav a.adm-nav-overflow { display: flex; }
   .adm-main { padding: 1.5rem 2rem 4rem; }
+
+  /* Back into the flow, pushed to the end of the row. */
+  .adm-nav-badge {
+    position: static;
+    margin-left: auto;
+  }
 }
 
 /* ── surfaces ────────────────────────────────────────────────────────── */
@@ -558,6 +600,13 @@
 .adm-pill-gone {
   background: color-mix(in srgb, var(--color-danger) 16%, transparent);
   color: var(--color-danger);
+}
+/* A visitor's review that nobody has decided on yet. Accent rather than the
+   neutral draft grey — this one is waiting on a person, and it should not
+   look like a half-written staff draft sitting in the same list. */
+.adm-pill-wait {
+  background: color-mix(in srgb, var(--color-accent-500) 20%, transparent);
+  color: var(--color-accent-700);
 }
 
 /* ── toast ───────────────────────────────────────────────────────────── */

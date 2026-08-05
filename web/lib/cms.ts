@@ -107,12 +107,29 @@ export type CmsTeamMember = {
   image: Media | null;
 };
 
-export type CmsTestimonial = {
+/**
+ * A published client review.
+ *
+ * `name` rather than `author` because that is what the site's component has
+ * always read, and the API aliases the column on the way out. The submitter's
+ * email is deliberately absent from this type — the endpoint does not return
+ * it, and it should stay impossible to render by accident.
+ */
+export type CmsReview = {
   id: number;
   quote: string;
   name: string;
-  role: string;
+  role: string | null;
+  company: string | null;
+  /** 1–5, or null for a quote collected before ratings existed. */
+  rating: number | null;
+  projectId: number | null;
+  publishedAt: string | null;
 };
+
+/** The site-wide average, or null when there are too few to be meaningful —
+    the API decides which, so the badge and the section can never disagree. */
+export type RatingSummary = { average: number; count: number };
 
 export type CmsPostBlock =
   | { kind: "p"; text: string }
@@ -187,13 +204,50 @@ export async function getTeam(): Promise<CmsTeamMember[]> {
   return data.team;
 }
 
-export async function getTestimonials(): Promise<CmsTestimonial[]> {
-  const data = await get<{ testimonials: CmsTestimonial[] }>(
-    "/public/testimonials",
-    ["testimonials"],
-    { testimonials: staticTestimonials as unknown as CmsTestimonial[] }
+/**
+ * Published reviews, plus the site-wide average.
+ *
+ * Both in one call because both are rendered on the homepage — the section and
+ * the star badge in the trust bar — and Next's request cache dedupes the two
+ * components asking for it, the same way the hero and the projects section
+ * already share one `getProjects()`.
+ *
+ * The bundled snapshot has no ratings: those quotes predate the feature, and
+ * inventing star counts for them would put numbers on the site that nobody
+ * ever gave us. `summary` is null in the fallback for the same reason.
+ */
+export async function getReviews(): Promise<{
+  reviews: CmsReview[];
+  summary: RatingSummary | null;
+}> {
+  return get<{ reviews: CmsReview[]; summary: RatingSummary | null }>(
+    "/public/reviews",
+    ["reviews"],
+    {
+      reviews: staticTestimonials.map((t, index) => ({
+        id: -(index + 1),
+        quote: t.quote,
+        name: t.name,
+        role: t.role,
+        company: null,
+        rating: null,
+        projectId: null,
+        publishedAt: null,
+      })),
+      summary: null,
+    }
   );
-  return data.testimonials;
+}
+
+/** The reviews attached to one project, for its dossier page. Filtered off the
+    same cached list rather than a per-project endpoint — the `getProjectBySlug`
+    precedent above, and for the same reason: one small response the page
+    already holds beats a second route and a second cache tag. */
+export async function getReviewsForProject(
+  projectId: number
+): Promise<CmsReview[]> {
+  const { reviews } = await getReviews();
+  return reviews.filter((review) => review.projectId === projectId);
 }
 
 export async function getPosts(): Promise<CmsPost[]> {

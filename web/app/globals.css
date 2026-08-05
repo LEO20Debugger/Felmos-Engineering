@@ -367,12 +367,24 @@
     }
   }
 
-  /* The header is sticky and translucent, so the copy has to clear its height
-     — not a magic number that happens to match it at one breakpoint. */
+  /* --banner-air is the whole top padding, and deliberately does NOT add
+     --header-h on top of it.
+
+     It used to. The reasoning was that the copy has to clear a sticky header —
+     but `position: sticky` keeps the header in normal flow, so the banner
+     already begins below it and the term was counted twice. It cost --header-h
+     of dead band under the navbar: 60px on a phone, 72px from 1024px up. On a
+     phone that is pure waste, because the copy is taller than --banner-min
+     there and drives the banner's height, so the padding pushes the headline
+     down rather than being absorbed.
+
+     If the header is ever made to overlay the photograph (absolute, or
+     translucent over the banner rather than above it), this is the line to put
+     --header-h back into. */
   .banner-body {
     position: relative;
     width: 100%;
-    padding-top: calc(var(--header-h) + var(--banner-air, clamp(20px, 5vh, 44px)));
+    padding-top: var(--banner-air, clamp(20px, 5vh, 44px));
     padding-bottom: var(--banner-foot, clamp(26px, 4.5vh, 52px));
   }
 

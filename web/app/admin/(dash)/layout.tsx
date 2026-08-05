@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import "../admin.css";
-import { currentUser } from "@/lib/admin/api";
+import { api, currentUser } from "@/lib/admin/api";
 import { logout } from "../actions";
 import { AdminNav } from "./AdminNav";
 import { LogoMark } from "@/components/brand/Logo";
@@ -27,6 +27,19 @@ export default async function DashboardLayout({
      also gives every page the user's name and role. */
   const user = await currentUser();
   if (!user) redirect("/admin/login");
+
+  /* The badge on the Reviews nav item. Fetched in the layout because AdminNav
+     is a client component and cannot read the API — and here rather than on
+     the reviews page itself, since the whole point is to be visible from the
+     other eight screens.
+
+     A failure is swallowed: an unreachable API should not take down every page
+     in the dashboard to hide a number. No badge is the same as none pending,
+     which is the safe way for this to be wrong. */
+  const pendingReviews = await api
+    .get<{ pending: number }>("/admin/reviews/pending-count")
+    .then((result) => result.pending)
+    .catch(() => 0);
 
   /* Split rather than truncated with CSS, so the surname is genuinely absent
      on a narrow bar instead of being clipped mid-word. */
@@ -69,7 +82,7 @@ export default async function DashboardLayout({
       </header>
 
       <div className="adm-body">
-        <AdminNav role={user.role} />
+        <AdminNav role={user.role} pendingReviews={pendingReviews} />
         <main className="adm-main">{children}</main>
       </div>
     </div>
