@@ -90,24 +90,30 @@ type MediaSeed = {
 };
 
 function exportMedia(): MediaSeed[] {
-  return (Object.keys(SOURCES) as ImageKey[]).map((key) => {
-    const source = SOURCES[key];
-    return {
-      key,
-      kind: "remote",
-      remoteUrl: images[key],
-      provider: "from" in source ? source.from : "unsplash",
-      providerId: source.id,
-      width: source.w,
-      height: source.h,
-      /* Deliberately empty. The current components pass their own alt text at
-         each call site, so there is no per-image alt to carry over — and
-         inventing one here would be worse than leaving the gap visible. The
-         dashboard requires alt before an image can be attached, which is what
-         will actually get these filled in. */
-      alt: "",
-    };
-  });
+  return (Object.keys(SOURCES) as ImageKey[])
+    .filter((key) => {
+      const source = SOURCES[key];
+      // Skip local assets (served from public/) — they have no remote URL to seed.
+      return !("from" in source) || source.from !== "local";
+    })
+    .map((key) => {
+      const source = SOURCES[key];
+      return {
+        key,
+        kind: "remote",
+        remoteUrl: images[key],
+        provider: ("from" in source ? source.from : "unsplash") as "unsplash" | "pexels",
+        providerId: source.id,
+        width: source.w,
+        height: source.h,
+        /* Deliberately empty. The current components pass their own alt text at
+           each call site, so there is no per-image alt to carry over — and
+           inventing one here would be worse than leaving the gap visible. The
+           dashboard requires alt before an image can be attached, which is what
+           will actually get these filled in. */
+        alt: "",
+      };
+    });
 }
 
 /* ───────────────────────────── helpers ───────────────────────────── */
