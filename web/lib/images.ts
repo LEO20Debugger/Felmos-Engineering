@@ -72,12 +72,12 @@ export const SOURCES = {
   "svc-project-management": { id: "9405431", w: 1400, h: 1050, from: "pexels" }, // engineering team over drawings on site
   "svc-building-repairs": { id: "27134625", w: 1400, h: 1050, from: "pexels" }, // worker repairing a building facade from scaffolding
 
-  "process-1": { id: "1454165804606-c3d57bc86b40", w: 1200, h: 800 }, // submitting the request
-  "process-2": { id: "1531834685032-c34bf0d84c77", w: 1200, h: 800 }, // crew on a structure
-  "process-3": { id: "1579154204601-01588f351e67", w: 1200, h: 800 }, // testing laboratory
-  "process-4": { id: "1581094288338-2314dddb7ece", w: 1200, h: 800 }, // working the drawings
-  "process-5": { id: "1581092160562-40aa08e78837", w: 1200, h: 800 }, // the written report
-  "process-6": { id: "1600880292089-90a7e086ee0c", w: 1200, h: 800 }, // recommendations
+  "process-1": { id: "process/process-1.jpg", w: 1200, h: 800, from: "local" }, // client meeting & submitting request (Nigerian/African)
+  "process-2": { id: "process/process-2.jpg", w: 1200, h: 800, from: "local" }, // Nigerian site engineer conducting inspection
+  "process-3": { id: "process/process-3.jpg", w: 1200, h: 800, from: "local" }, // African laboratory technician testing materials
+  "process-4": { id: "process/process-4.jpg", w: 1200, h: 800, from: "local" }, // Nigerian engineer analyzing data & drawings
+  "process-5": { id: "process/process-5.jpg", w: 1200, h: 800, from: "local" }, // detailed engineering report review
+  "process-6": { id: "process/process-6.jpg", w: 1200, h: 800, from: "local" }, // senior engineer presenting recommendations
 
   /* team — Nigerian/African professional portraits (local assets in public/team/).
      4:5 rather than square: at 1:1 these read as avatars, at 4:5 as
