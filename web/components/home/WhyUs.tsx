@@ -44,6 +44,64 @@ export default function WhyUs() {
           const span = CELL[d.key] ?? "";
           const lead = i === 0;
 
+          /* The lead cell: the page's focal point for this section. An
+             accent-900 *card* is within the house rule that reserves the one
+             full-bleed accent-900 field for CtaBand — ServiceShowcase's
+             mobile "See all services" tile is the same device.
+
+             With an image it keeps that accent-900 identity: the picture is a
+             scanned certificate on white paper, so it sits under the same
+             gradient the photo cells use, only carried further up the card —
+             legible as a document at the top, solid accent-900 by the time it
+             reaches the figure. The icon is dropped in that case; a small
+             award mark over a certificate is the same claim twice, and
+             accent-300 on white paper would not carry contrast anyway. */
+          if (lead) {
+            return (
+              <Reveal
+                as="li"
+                key={d.key}
+                delay={0}
+                className={`relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-control)] bg-accent-900 p-6 text-on-dark md:p-8 ${span}`}
+              >
+                {d.image && (
+                  <>
+                    <Image
+                      src={imageAt(d.image, 1200, 850)}
+                      alt=""
+                      aria-hidden
+                      fill
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                      className="object-cover object-top"
+                    />
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 bg-gradient-to-t from-accent-900 from-45% via-accent-900/85 to-accent-900/25"
+                    />
+                  </>
+                )}
+
+                {d.image ? (
+                  <span aria-hidden />
+                ) : (
+                  <Icon size={28} strokeWidth={1.5} aria-hidden className="text-accent-300" />
+                )}
+
+                <div className="relative mt-8">
+                  {d.figure && (
+                    <span className="block font-heading text-[clamp(46px,8vw,76px)] font-semibold leading-none tabular-nums">
+                      {d.figure}
+                    </span>
+                  )}
+                  <h3 className="m-0 mt-3 font-heading text-[19px] uppercase text-on-dark">{d.title}</h3>
+                  <p className="m-0 mt-2 max-w-[34ch] text-[14.5px] leading-[1.55] text-on-dark/75">
+                    {d.proof}
+                  </p>
+                </div>
+              </Reveal>
+            );
+          }
+
           /* The photograph. Deliberately not <Photo>: that sets aspect-ratio
              on the frame, which fights a grid row sized by its siblings and
              would blow the auto-row height. next/image + fill inside a
@@ -76,34 +134,6 @@ export default function WhyUs() {
                     {d.proof}
                   </p>
                 </span>
-              </Reveal>
-            );
-          }
-
-          /* The lead cell: the page's focal point for this section. An
-             accent-900 *card* is within the house rule that reserves the one
-             full-bleed accent-900 field for CtaBand — ServiceShowcase's
-             mobile "See all services" tile is the same device. */
-          if (lead) {
-            return (
-              <Reveal
-                as="li"
-                key={d.key}
-                delay={0}
-                className={`flex flex-col justify-between rounded-[var(--radius-control)] bg-accent-900 p-6 text-on-dark md:p-8 ${span}`}
-              >
-                <Icon size={28} strokeWidth={1.5} aria-hidden className="text-accent-300" />
-                <div className="mt-8">
-                  {d.figure && (
-                    <span className="block font-heading text-[clamp(46px,8vw,76px)] font-semibold leading-none tabular-nums">
-                      {d.figure}
-                    </span>
-                  )}
-                  <h3 className="m-0 mt-3 font-heading text-[19px] uppercase text-on-dark">{d.title}</h3>
-                  <p className="m-0 mt-2 max-w-[34ch] text-[14.5px] leading-[1.55] text-on-dark/75">
-                    {d.proof}
-                  </p>
-                </div>
               </Reveal>
             );
           }
