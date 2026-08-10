@@ -123,7 +123,14 @@ export default async function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <MapPin size={15} strokeWidth={1.5} className="flex-none text-link" />
-                <span className="opacity-80">{site.address.short}</span>
+                <a
+                  href={site.mapLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-ink no-underline hover:text-link"
+                >
+                  {site.address.short}
+                </a>
               </li>
             </ul>
           </div>

@@ -288,7 +288,9 @@ export function SettingsForm({
                 <input
                   className="adm-input"
                   name="addressStreet"
-                  defaultValue={s?.addressStreet ?? "25 Odozi St, Ojodu"}
+                  defaultValue={
+                    s?.addressStreet ?? "23 Odozi St, Opp. Dankaro Estate, Ojodu, Berger"
+                  }
                 />
               </label>
 
@@ -338,7 +340,7 @@ export function SettingsForm({
                   <input
                     className="adm-input"
                     name="addressShort"
-                    defaultValue={s?.addressShort ?? "Ojodu, Ikeja, Lagos"}
+                    defaultValue={s?.addressShort ?? "Ojodu Berger, Ikeja, Lagos"}
                   />
                 </label>
 
@@ -348,7 +350,8 @@ export function SettingsForm({
                     className="adm-input"
                     name="addressFull"
                     defaultValue={
-                      s?.addressFull ?? "25 Odozi St, Ojodu, Ikeja 101233, Lagos"
+                      s?.addressFull ??
+                      "23 Odozi St, Opp. Dankaro Estate, Ojodu, Berger, Ikeja"
                     }
                   />
                 </label>

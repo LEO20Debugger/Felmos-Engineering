@@ -72,7 +72,14 @@ export default async function ContactPage() {
                 <MapPin size={22} strokeWidth={1.5} className="mt-0.5 flex-none text-link" />
                 <div className="min-w-0">
                   <strong className="block text-[13px] uppercase tracking-[0.05em]">Office</strong>
-                  <span className="block text-[14px] opacity-75">{site.address.full}</span>
+                  <a
+                    href={site.mapLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block break-words text-[14px] text-ink no-underline hover:text-link"
+                  >
+                    {site.address.full}
+                  </a>
                 </div>
               </div>
 
