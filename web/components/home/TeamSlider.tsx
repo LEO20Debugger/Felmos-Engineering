@@ -69,7 +69,7 @@ export default function TeamSlider() {
       <div className="wrap py-14 md:py-20">
         <SectionHead
           kicker="Our Team"
-          title="The Engineers Behind The Report"
+          title="The Engineers Behind the Scenes"
           lead="Named, reachable, and accountable for the findings they sign."
         />
 
