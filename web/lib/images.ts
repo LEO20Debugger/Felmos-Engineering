@@ -89,6 +89,11 @@ export const SOURCES = {
   "team-3": { id: "team/team-3.jpg", w: 900, h: 1125, from: "local" },
   "team-4": { id: "team/team-4.jpg", w: 900, h: 1125, from: "local" },
 
+  /* The real LSMTL certificate of registration, rendered from the 2024 PDF.
+     Landscape and mostly white paper, so it is only ever shown under the
+     accent-900 gradient in WhyUs — never as a bare photograph. */
+  "cert-lsmtl": { id: "certificates/lsmtl-2024.jpg", w: 1988, h: 1406, from: "local" },
+
   "cta-texture": { id: "1486406146926-c627a92ad1ab", w: 1920, h: 1080 },
 
   // contact — banner: two people shaking hands over a deal/agreement.

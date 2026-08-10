@@ -1047,6 +1047,10 @@ export const differentiators: readonly Differentiator[] = [
     figureLabel: "Reports signed by a chartered engineer",
     proof:
       "Every report is signed by a chartered engineer — not a technician's readings with an engineer's name on the cover.",
+    /* The LSMTL certificate itself, behind the figure — the lead cell is the
+       one place on the homepage where a document, not a photograph, is the
+       evidence. WhyUs renders it under the accent-900 gradient. */
+    image: "cert-lsmtl",
   },
   {
     key: "fast-turnaround",
