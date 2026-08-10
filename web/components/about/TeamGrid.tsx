@@ -20,7 +20,7 @@ export default function TeamGrid() {
       <div className="wrap py-14 md:py-20">
         <SectionHead
           kicker="Our Team"
-          title="The Engineers On Your Job"
+          title="The Engineers Behind the Scenes"
           lead="Named, reachable, and accountable for the report they sign."
         />
 

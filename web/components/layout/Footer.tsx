@@ -121,15 +121,18 @@ export default async function Footer() {
                   {site.email}
                 </a>
               </li>
-              <li className="flex items-center gap-2">
-                <MapPin size={15} strokeWidth={1.5} className="flex-none text-link" />
+              {/* items-start, not items-center: the full address wraps to two
+                  lines in this column, and a vertically centred pin drifts off
+                  the first line when it does. */}
+              <li className="flex items-start gap-2">
+                <MapPin size={15} strokeWidth={1.5} className="mt-[3px] flex-none text-link" />
                 <a
                   href={site.mapLink}
                   target="_blank"
                   rel="noreferrer"
                   className="text-ink no-underline hover:text-link"
                 >
-                  {site.address.short}
+                  {site.address.full}
                 </a>
               </li>
             </ul>
