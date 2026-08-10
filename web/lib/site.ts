@@ -22,19 +22,22 @@ export const site = {
   emailHref: "mailto:felmosengineering@gmail.com",
 
   address: {
-    street: "23 Odozi St, Ojodu",
+    street: "23 Odozi St, Opp. Dankaro Estate, Ojodu, Berger",
     locality: "Ikeja",
     region: "Lagos",
     postalCode: "101233",
     country: "NG",
-    short: "Ojodu, Ikeja, Lagos",
-    full: "23 Odozi St, Ojodu, Ikeja 101233, Lagos",
+    short: "Ojodu Berger, Ikeja, Lagos",
+    full: "23 Odozi St, Opp. Dankaro Estate, Ojodu, Berger, Ikeja",
   },
   geo: { lat: 6.6245, lng: 3.368 },
   mapEmbed:
     "https://www.openstreetmap.org/export/embed.html?bbox=3.3560%2C6.6155%2C3.3800%2C6.6335&layer=mapnik&marker=6.6245%2C3.3680",
+  /* Google Maps by address query rather than by lat/lng: the coordinates below
+     are neighbourhood-level, so a pin dropped on them would sit near the office
+     but not on it. The query form lets Google resolve the street itself. */
   mapLink:
-    "https://www.openstreetmap.org/?mlat=6.6245&mlon=3.3680#map=16/6.6245/3.3680",
+    "https://www.google.com/maps/search/?api=1&query=23%20Odozi%20Street%2C%20Ojodu%20Berger%2C%20Ikeja%2C%20Lagos%2C%20Nigeria",
 
   hours: "Mon–Fri 8:00–18:00 · Sat 9:00–13:00",
   hoursStructured: ["Mo-Fr 08:00-18:00", "Sa 09:00-13:00"],
