@@ -4,19 +4,16 @@ import { ArrowRight, BadgeCheck, Phone } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import { site } from "@/lib/site";
 
-/* Split per word because each word animates in on its own delay. This is the
-   supplied headline verbatim; "&" is its own token so it never ends a line
-   alone, and the clamp below was widened to 20ch to hold nine words without
-   the last one dropping to a line of its own. */
-const HEADLINE = [
-  "Structural",
-  "Testing",
-  "&",
-  "Engineering",
-  "Solutions",
-  "You",
-  "Can",
-  "Trust",
+/* Three headlines — one per slide — that crossfade in sync with the
+   background photographs on the same 21s clock. Each headline maps to
+   the slide that shares its index. */
+const HEADLINES = [
+  // Slide 1 (always-visible floor layer)
+  ["What's", "Really", "Holding", "Up", "Your", "Building?"],
+  // Slide 2
+  ["Need", "Structural", "Testing?"],
+  // Slide 3
+  ["Need", "Testing", "Equipment?"],
 ];
 
 /* The banner's three layers, in the order they play. Stacked in this same order
@@ -112,18 +109,45 @@ export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
           Structural Testing &amp; Engineering
         </Reveal>
 
-        {/* Sized down from clamp(36px,10vw,76px)/16ch: the headline went from
-            five words to eight, and at the old scale it set four full-width
-            lines and pushed the lead and both buttons off a laptop viewport. */}
-        <h1 className="m-0 max-w-[18ch] text-[clamp(32px,7.6vw,62px)] uppercase leading-[1.03] tracking-[0.005em] text-on-dark lg:max-w-[21ch]">
-          {HEADLINE.map((word, i) => (
-            <span key={word + i}>
-              <Reveal as="span" delay={i} className="inline-block">
-                {word}
-              </Reveal>{" "}
-            </span>
-          ))}
-        </h1>
+        {/* Three headline layers stacked. Only one is visible at a time.
+            Opacity and animation are inline — highest specificity — so the
+            Reveal component's per-word animations cannot override them. */}
+        <div className="relative">
+          {HEADLINES.map((words, slideIdx) => {
+            /* Slide 1 is always visible (the floor layer). Slides 2 and 3
+               start fully transparent and crossfade in sync with their
+               corresponding photo using the same keyframes. */
+            const fadeStyle: React.CSSProperties =
+              slideIdx === 0
+                ? {}
+                : {
+                    opacity: 0,
+                    animation: `hero-fade-${slideIdx + 1} 21s ease-in-out infinite`,
+                  };
+
+            return (
+              <h1
+                key={slideIdx}
+                aria-hidden={slideIdx !== 0}
+                style={fadeStyle}
+                className={[
+                  "m-0 max-w-[18ch] text-[clamp(32px,7.6vw,62px)] uppercase leading-[1.03] tracking-[0.005em] text-on-dark lg:max-w-[21ch]",
+                  slideIdx === 0 ? "" : "absolute inset-0",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {words.map((word, i) => (
+                  <span key={word + i}>
+                    <Reveal as="span" delay={slideIdx === 0 ? i : 0} className="inline-block">
+                      {word}
+                    </Reveal>{" "}
+                  </span>
+                ))}
+              </h1>
+            );
+          })}
+        </div>
 
         {/* The supplied subhead runs to three sentences. The first one — the
             LASBCA accreditation — is a credential rather than a description, so
@@ -134,9 +158,9 @@ export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
           delay={5}
           className="mb-6 mt-5 max-w-[52ch] text-[15.5px] leading-[1.6] text-on-dark/85 md:text-[17px]"
         >
-          We specialise in comprehensive testing for soil, concrete, and structural
-          safety and integrity. Our engineering reports provide the trusted data you
-          need to confidently build, lend or buy.
+          The soil beneath it, the concrete inside it, and the structural integrity
+          holding it together. We test all three, and give you the engineering report
+          to prove it — so you can build, lend or buy with confidence.
         </Reveal>
 
         <Reveal

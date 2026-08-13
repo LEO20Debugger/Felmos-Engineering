@@ -4,7 +4,7 @@
   "private": true,
   "description": "Felmos Engineering content, leads and analytics API.",
   "engines": {
-    "node": "22.x"
+    "node": ">=22"
   },
   "scripts": {
     "build": "nest build",

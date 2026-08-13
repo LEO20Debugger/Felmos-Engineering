@@ -418,6 +418,23 @@
     animation: hero-drift-3 21s linear infinite, hero-fade-3 21s ease-in-out infinite;
   }
 
+  /* Headline text layers — one per photo slide — on the same 21s clock.
+     hero-headline-1 is always visible (the floor). The others mirror the
+     same fade timings as their corresponding photo layer so text and image
+     always belong to the same slide. */
+  .hero-headline-1 {
+    /* Always visible — no animation needed; it is the fallback rendered by
+       the static HTML and visible before JavaScript loads. */
+  }
+  .hero-headline-2 {
+    opacity: 0;
+    animation: hero-fade-2 21s ease-in-out infinite;
+  }
+  .hero-headline-3 {
+    opacity: 0;
+    animation: hero-fade-3 21s ease-in-out infinite;
+  }
+
   /* ---------------------------- photography ---------------------------- */
   /* Photographs render in full colour. (The Industry system washes them in the
      steel accent; that treatment was removed by request, so the class no longer

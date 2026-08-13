@@ -62,42 +62,17 @@ export default function WhyUs() {
                 as="li"
                 key={d.key}
                 delay={0}
-                className={`relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-control)] bg-accent-900 p-6 text-on-dark md:p-8 ${span}`}
+                className={`group relative overflow-hidden rounded-[var(--radius-control)] bg-accent-900 ${span}`}
               >
                 {d.image && (
-                  <>
-                    <Image
-                      src={imageAt(d.image, 1200, 850)}
-                      alt=""
-                      aria-hidden
-                      fill
-                      sizes="(max-width: 640px) 100vw, 50vw"
-                      className="object-cover object-top"
-                    />
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 bg-gradient-to-t from-accent-900 from-45% via-accent-900/85 to-accent-900/25"
-                    />
-                  </>
+                  <Image
+                    src={imageAt(d.image, 1200, 850)}
+                    alt={d.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  />
                 )}
-
-                {d.image ? (
-                  <span aria-hidden />
-                ) : (
-                  <Icon size={28} strokeWidth={1.5} aria-hidden className="text-accent-300" />
-                )}
-
-                <div className="relative mt-8">
-                  {d.figure && (
-                    <span className="block font-heading text-[clamp(46px,8vw,76px)] font-semibold leading-none tabular-nums">
-                      {d.figure}
-                    </span>
-                  )}
-                  <h3 className="m-0 mt-3 font-heading text-[19px] uppercase text-on-dark">{d.title}</h3>
-                  <p className="m-0 mt-2 max-w-[34ch] text-[14.5px] leading-[1.55] text-on-dark/75">
-                    {d.proof}
-                  </p>
-                </div>
               </Reveal>
             );
           }
