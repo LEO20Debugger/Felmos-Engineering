@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CalendarClock, Compass, MapPin } from "lucide-react";
 import AboutHero from "@/components/about/AboutHero";
 import Timeline from "@/components/about/Timeline";
-import TeamGrid from "@/components/about/TeamGrid";
+import TeamSlider from "@/components/home/TeamSlider";
 import Standards from "@/components/about/Standards";
 import SectionHead from "@/components/ui/Section";
 import Photo from "@/components/ui/Photo";
@@ -196,7 +196,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <TeamGrid />
+      <TeamSlider />
 
       <Standards />
 
