@@ -1,7 +1,7 @@
 import SectionHead from "@/components/ui/Section";
 import Photo from "@/components/ui/Photo";
 import Reveal from "@/components/ui/Reveal";
-import { team } from "@/lib/content";
+import { getTeam } from "@/lib/cms";
 
 /**
  * The team, on a surface band.
@@ -14,7 +14,8 @@ import { team } from "@/lib/content";
  * See the DO-NOT-SHIP banner above `team` in lib/content.ts: these are stock
  * people and the credentials are unverified.
  */
-export default function TeamGrid() {
+export default async function TeamGrid() {
+  const team = await getTeam();
   return (
     <section className="bg-surface" aria-label="Our team">
       <div className="wrap py-14 md:py-20">
@@ -26,11 +27,11 @@ export default function TeamGrid() {
 
         <ul className="m-0 grid list-none grid-cols-2 gap-x-5 gap-y-8 p-0 lg:grid-cols-4">
           {team.map((m, i) => (
-            <Reveal as="li" key={m.name} delay={i % 4}>
+            <Reveal as="li" key={m.id} delay={i % 4}>
               <figure className="m-0">
                 <Photo
                   src={m.image}
-                  alt={`${m.name}, ${m.role}`}
+                  alt={`${m.name}, ${m.role ?? ""}`}
                   ratio="4/5"
                   sizes="(max-width: 1024px) 50vw, 25vw"
                 />
@@ -39,8 +40,8 @@ export default function TeamGrid() {
                   <span className="mt-1 block text-[12.5px] opacity-65">{m.role}</span>
                   {/* Outline rather than filled: this is a credential, not a
                       category label. */}
-                  <span className="tag tag-outline mt-2.5">{m.tag}</span>
-                  <p className="m-0 mt-3 text-[13.5px] leading-[1.5] opacity-75">{m.bio}</p>
+                  {m.tag && <span className="tag tag-outline mt-2.5">{m.tag}</span>}
+                  {m.bio && <p className="m-0 mt-3 text-[13.5px] leading-[1.5] opacity-75">{m.bio}</p>}
                 </figcaption>
               </figure>
             </Reveal>
