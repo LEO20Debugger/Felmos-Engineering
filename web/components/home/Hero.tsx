@@ -6,14 +6,34 @@ import { site } from "@/lib/site";
 
 /* Three headlines — one per slide — that crossfade in sync with the
    background photographs on the same 21s clock. Each headline maps to
-   the slide that shares its index. */
+   the slide that shares its index, and the photographs in `heroFrames`
+   (lib/content.ts) were chosen to illustrate the headline they land under:
+   a drilling rig under the foundation question, a UPV test on a cracked
+   column under structural testing, the compression machine under equipment.
+   Reordering either array alone breaks all three pairings. */
 const HEADLINES = [
-  // Slide 1 (always-visible floor layer)
+  // Slide 1
   ["What's", "Really", "Holding", "Up", "Your", "Building?"],
   // Slide 2
   ["Need", "Structural", "Testing?"],
   // Slide 3
   ["Need", "Testing", "Equipment?"],
+];
+
+/* The subhead that belongs to each headline, by the same index. Written to one
+   shape on purpose — name the thing in threes, say what we do about it, end on
+   what the client walks away with — so the block reads as one voice changing
+   subject rather than three different adverts.
+
+   Nothing here claims a capability the rest of the site does not already carry:
+   the instruments named in slide 3 are the ones in `instruments`
+   (lib/content.ts), and the non-destructive language in slide 2 is the
+   `integrity-testing` service. Keep it that way — a banner is the last place to
+   introduce a promise nobody has signed off. */
+const SUBHEADS = [
+  "The soil beneath it, the concrete inside it, and the structural integrity holding it together. We test all three, and give you the engineering report to prove it — so you can build, lend or buy with confidence.",
+  "Cracks you cannot account for, a floor that moves, a building someone has asked you to sign for. We test the concrete where it stands — ultrasonically, without cutting into it — and put what we find in writing.",
+  "A Schmidt hammer for the quick read, ultrasonics for what is happening inside, cube crushing for the figure that settles it. The instruments are ours and so is the engineer reading them.",
 ];
 
 /* The banner's three layers, in the order they play. Stacked in this same order
@@ -109,59 +129,64 @@ export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
           Structural Testing &amp; Engineering
         </Reveal>
 
-        {/* Three headline layers stacked. Only one is visible at a time.
-            Opacity and animation are inline — highest specificity — so the
-            Reveal component's per-word animations cannot override them. */}
+        {/* Three headline layers stacked, exactly one visible at a time. Unlike
+            the photographs, no layer here is a permanent floor: text is
+            see-through, so a headline left painted underneath the others shows
+            through them as a smear. Every layer fades — see .hero-headline-*
+            in globals.css, which carries the timing. */}
         <div className="relative">
-          {HEADLINES.map((words, slideIdx) => {
-            /* Slide 1 is always visible (the floor layer). Slides 2 and 3
-               start fully transparent and crossfade in sync with their
-               corresponding photo using the same keyframes. */
-            const fadeStyle: React.CSSProperties =
-              slideIdx === 0
-                ? {}
-                : {
-                    opacity: 0,
-                    animation: `hero-fade-${slideIdx + 1} 21s ease-in-out infinite`,
-                  };
-
-            return (
-              <h1
-                key={slideIdx}
-                aria-hidden={slideIdx !== 0}
-                style={fadeStyle}
-                className={[
-                  "m-0 max-w-[18ch] text-[clamp(32px,7.6vw,62px)] uppercase leading-[1.03] tracking-[0.005em] text-on-dark lg:max-w-[21ch]",
-                  slideIdx === 0 ? "" : "absolute inset-0",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-              >
-                {words.map((word, i) => (
-                  <span key={word + i}>
-                    <Reveal as="span" delay={slideIdx === 0 ? i : 0} className="inline-block">
-                      {word}
-                    </Reveal>{" "}
-                  </span>
-                ))}
-              </h1>
-            );
-          })}
+          {HEADLINES.map((words, slideIdx) => (
+            <h1
+              key={slideIdx}
+              aria-hidden={slideIdx !== 0}
+              className={[
+                `hero-copy-${slideIdx + 1}`,
+                "m-0 max-w-[18ch] text-[clamp(32px,7.6vw,62px)] uppercase leading-[1.03] tracking-[0.005em] text-on-dark lg:max-w-[21ch]",
+                /* Layer 1 stays in flow so it sets the block's height; the
+                   other two are lifted out of it and pinned over the top. */
+                slideIdx === 0 ? "" : "absolute inset-0",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              {words.map((word, i) => (
+                <span key={word + i}>
+                  <Reveal as="span" delay={slideIdx === 0 ? i : 0} className="inline-block">
+                    {word}
+                  </Reveal>{" "}
+                </span>
+              ))}
+            </h1>
+          ))}
         </div>
 
-        {/* The supplied subhead runs to three sentences. The first one — the
-            LASBCA accreditation — is a credential rather than a description, so
-            it is set below as its own line where it reads as a fact being
-            stated; the two sentences that describe the work stay here. */}
-        <Reveal
-          as="p"
-          delay={5}
-          className="mb-6 mt-5 max-w-[52ch] text-[15.5px] leading-[1.6] text-on-dark/85 md:text-[17px]"
-        >
-          The soil beneath it, the concrete inside it, and the structural integrity
-          holding it together. We test all three, and give you the engineering report
-          to prove it — so you can build, lend or buy with confidence.
-        </Reveal>
+        {/* The subheads change with the headline above them, on the same clock.
+
+            Stacked with grid rather than the absolute positioning the headlines
+            use, because these are the element the rest of the banner sits on:
+            a grid cell is as tall as its tallest occupant, so the accreditation
+            line and the buttons below hold still while the copy swaps, whatever
+            length a future edit makes any one of the three. The headlines can
+            afford `absolute` — slide 1 is the longest by two lines and nothing
+            below it moves.
+
+            The LASBCA accreditation is deliberately NOT part of this rotation.
+            It is a credential rather than a description of the work, it is true
+            on all three slides, and a line that says the same thing three times
+            while everything around it changes just reads as broken. */}
+        <div className="relative mb-6 mt-5 grid">
+          {SUBHEADS.map((text, slideIdx) => (
+            <p
+              key={slideIdx}
+              aria-hidden={slideIdx !== 0}
+              className={`hero-copy-${slideIdx + 1} col-start-1 row-start-1 m-0 max-w-[52ch] text-[15.5px] leading-[1.6] text-on-dark/85 md:text-[17px]`}
+            >
+              <Reveal as="span" delay={5} className="block">
+                {text}
+              </Reveal>
+            </p>
+          ))}
+        </div>
 
         <Reveal
           as="p"

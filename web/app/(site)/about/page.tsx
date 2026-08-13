@@ -8,10 +8,8 @@ import SectionHead from "@/components/ui/Section";
 import Photo from "@/components/ui/Photo";
 import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/ui/CtaBand";
-import { getProjects } from "@/lib/cms";
 import { aboutHeroPhoto, companyGoals, companyIntro, coreValues, missionVision, philosophy } from "@/lib/content";
 import { images } from "@/lib/images";
-import { focalPosition, mediaUrl } from "@/lib/media";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -36,28 +34,14 @@ const officeFacts = [
   },
 ];
 
-export default async function AboutPage() {
-  /* The banner photograph comes out of the project galleries, matched on its
-     alt text. Resolved here so AboutHero stays free of the CMS, and falling
-     back to the stock frame if the project is unpublished or its description
-     was edited in the dashboard. */
-  const gallery = (await getProjects()).flatMap((project) => [
-    ...(project.image ? [project.image] : []),
-    ...project.gallery,
-  ]);
-
-  const found = gallery.find((image) => image.alt === aboutHeroPhoto.alt);
-  const photo = found
-    ? {
-        src: mediaUrl(found, 1600),
-        alt: found.alt,
-        position: focalPosition(found),
-      }
-    : {
-        src: images[aboutHeroPhoto.fallback],
-        alt: "Felmos structural engineering construction project site under open sky",
-        position: "center",
-      };
+export default function AboutPage() {
+  /* Resolved here rather than in AboutHero so the banner component keeps taking
+     a finished photograph and stays free of the image registry. */
+  const photo = {
+    src: images[aboutHeroPhoto.image],
+    alt: aboutHeroPhoto.alt,
+    position: aboutHeroPhoto.position,
+  };
 
   return (
     <>
@@ -71,9 +55,11 @@ export default async function AboutPage() {
       <section className="wrap py-10 md:py-14">
         <div className="grid grid-cols-1 items-center gap-9 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <figure className="relative order-1 m-0 lg:order-2">
+            {/* 4:3 frame against a 4:3 original, so this one is shown whole —
+                nothing is cropped away at any width. */}
             <Photo
               src="about-story"
-              alt="Felmos engineer conducting structural site verification and inspection"
+              alt="The Felmos team around a desk, testing instruments and a structural drawing in front of them and a drawing open on the laptop"
               ratio="4/3"
               sizes="(max-width: 1024px) 100vw, 55vw"
             />

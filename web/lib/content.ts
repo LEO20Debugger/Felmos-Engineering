@@ -899,17 +899,23 @@ export type PhotoCredit = {
 /**
  * The three frames of the homepage banner, in the order they play.
  *
- * All three are buildings Felmos actually tested. Two are `local`: photographs
- * of Tafawa Balewa Square and the National Stadium at Surulere, vendored into
- * public/banner/ from Wikimedia Commons because Felmos's own shots of those
- * sites top out around 1280px — ample on a project page, soft stretched across
- * a full-bleed banner on a desktop. The third is the BUA tower, Felmos's own
- * photograph, out of the project galleries; it is last because at 1280px it is
- * the softest of the three and should not be the frame that paints first.
+ * All three are Felmos's own site photography, supplied by the company. They
+ * replaced two Wikimedia Commons photographs of Lagos landmarks, and the reason
+ * is worth keeping: a banner frame has a headline sitting on it, and each of
+ * these three shows the work the headline over it actually names — the rig
+ * boring the soil under "what's really holding up your building", the UPV
+ * transducers on a cracked column under "need structural testing", the
+ * compression machine under "need testing equipment". The landmarks were
+ * handsome and said nothing. Anything that replaces a frame here should hold to
+ * that: it has to illustrate its headline, not merely look like construction.
+ * The order is therefore fixed by HEADLINES in components/home/Hero.tsx — see
+ * the note there before reordering.
  *
- * A `local` frame's credit is not decoration — the Commons photographs are
- * CC BY-SA 4.0 and the footer credit line is a licence condition. `bannerCredits`
- * below derives from this array so the two cannot drift apart. See
+ * A `local` frame's credit is optional and these carry none: they are Felmos's
+ * to use. It stays on the type because a frame vendored from Commons must have
+ * one — the footer credit line is a licence condition, not decoration.
+ * `bannerCredits` below derives from this array so the two cannot drift apart,
+ * and renders nothing while every frame is Felmos's own. See
  * public/banner/README.md.
  *
  * A `project` frame is matched on alt text rather than id: ids differ between
@@ -938,52 +944,45 @@ export type HeroFrame =
       /** CSS object-position. The banner goes nearly square on a phone, so a
           frame whose subject sits off-centre says where to hold. */
       position?: string;
-      credit: PhotoCredit;
+      /** Required only for a photograph whose licence demands attribution.
+          Felmos's own photography carries none. */
+      credit?: PhotoCredit;
     }
   | { source: "stock"; image: ImageKey; alt: string };
 
 export const heroFrames: readonly HeroFrame[] = [
   {
     source: "local",
-    src: "/banner/tafawa-balewa-square.jpg",
-    alt: "The Tafawa Balewa Square entrance gate on Lagos Island, its white horse sculptures and red eagles above the arcade",
-    /* Held above centre: the horses and eagles sit in the upper half. Only bites
-       on a wide, short window — anywhere the banner is taller than 1:1.84 the
-       photograph is the narrower shape and gets cropped left and right instead,
-       where centred is right. */
-    position: "center 38%",
-    credit: {
-      subject: "Tafawa Balewa Square",
-      author: "Sidhant Bendre",
-      license: "CC BY-SA 4.0",
-      licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-      sourceUrl:
-        "https://commons.wikimedia.org/wiki/File:Tafawa_Balewa_Square_Image.jpg",
-    },
+    src: "/banner/soil-investigation-rig.jpg",
+    alt: "A Felmos crew boring a foundation investigation hole on a sand-filled Lagos plot, the tripod rig and winch set over the borehole",
+    /* Square original (1080x1075) in a 2.2:1 banner, so barely half its height
+       survives — at 1280 wide the visible band is 23%-69%. That is the widest
+       compromise available: the top of the mast goes either way, but this keeps
+       the converging legs (which is what still reads as a rig) together with
+       the crew, and a crew gives the machine its scale. Held any higher and the
+       men go; any lower and only the wheel is left. */
+    position: "center 42%",
   },
   {
     source: "local",
-    src: "/banner/national-stadium-surulere.jpg",
-    alt: "The National Stadium at Surulere from directly above, its running track and terracing ringing an empty pitch",
-    /* Straight down rather than the more obvious elevation of the main bowl.
-       The banner goes nearly square on a phone, and a narrow slice of an
-       elevation is an unreadable wall of terracing; a slice of this one still
-       shows track, pitch and stands and still reads as a stadium. */
-    credit: {
-      subject: "National Stadium, Surulere",
-      author: "Isaacayodele32",
-      license: "CC BY-SA 4.0",
-      licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-      sourceUrl:
-        "https://commons.wikimedia.org/wiki/File:National_Stadium,_Surulere_-_2024.jpg",
-    },
+    src: "/banner/concrete-testing-upv.jpg",
+    alt: "A Felmos engineer holding ultrasonic pulse velocity transducers against a cracked concrete column, the render cut back to expose the concrete",
+    /* 4:3, and the banner is wider than that at every size, so this crops top
+       and bottom only — the horizontal half of object-position never bites and
+       the engineer stays where he is. Held below centre to keep both hands and
+       the exposed concrete in the band, rather than sky and scaffolding. */
+    position: "center 58%",
   },
   {
-    source: "project",
-    alt: "The office tower under construction at Mulliner Road, Ikoyi, with its tower crane",
-    fallback: "hero",
-    fallbackAlt:
-      "Tower cranes standing over a glass-clad high-rise under construction",
+    source: "local",
+    src: "/banner/compression-machine.jpg",
+    alt: "A Felmos technician at the compression testing machine, a concrete cube crushed between its platens",
+    /* Held low because the cube between the platens is the subject and it sits
+       in the lower half; this drops the top of the machine, which is the least
+       interesting part of it. It does NOT help with the printed cartons stacked
+       on the left — they run the full height of the frame, so no vertical crop
+       will lose them. Only a tighter photograph will. */
+    position: "center 60%",
   },
 ];
 
@@ -994,20 +993,29 @@ export const heroFrames: readonly HeroFrame[] = [
  * no line is left crediting a photograph nobody can see.
  */
 export const bannerCredits: readonly PhotoCredit[] = heroFrames.flatMap((frame) =>
-  frame.source === "local" ? [frame.credit] : []
+  frame.source === "local" && frame.credit ? [frame.credit] : []
 );
 
 /**
  * The About banner photograph.
  *
- * Same alt-matched-with-a-fallback shape as `heroFrames`, and for the same
- * reasons. A team-on-site shot rather than an empty building: this is the page
- * that answers "who are you", and the survey team walking up to a job says that
- * better than a facade does.
+ * Named outright rather than alt-matched against the project galleries the way
+ * `heroFrames` still is. That indirection existed to prefer Felmos's own
+ * photography over a stock fallback — now that the slot IS Felmos's own
+ * photography, matching could only ever swap the right picture for a different
+ * one. (It never fired in any case: no gallery row carried the alt it looked
+ * for, so the page had been serving the stock fallback throughout.)
+ *
+ * A team shot rather than an empty building, because this is the page that
+ * answers "who are you", and the crew on a job says that better than a facade.
  */
-export const aboutHeroPhoto: { alt: string; fallback: ImageKey } = {
-  alt: "The main resort building with its curved external staircase, the survey team on site",
-  fallback: "about-hero",
+export const aboutHeroPhoto: { image: ImageKey; alt: string; position: string } = {
+  image: "about-hero",
+  alt: "The Felmos site team outside a building under scaffolding, one of them holding an ultrasonic test instrument",
+  /* The banner runs past 3:1 on a desktop against a 4:3 original, so only about
+     a quarter of the photograph's height survives. Held high to centre that
+     band on the faces — the default would land it on torsos and tarmac. */
+  position: "center 37%",
 };
 
 /* ─────────────────────────────── why felmos ────────────────────────────── */

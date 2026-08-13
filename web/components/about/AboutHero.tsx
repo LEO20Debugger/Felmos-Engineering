@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
-import { stats } from "@/lib/content";
 
 /**
  * The About banner. Same full-bleed language as the projects and contact
@@ -22,7 +21,7 @@ export default function AboutHero({
     /* The stat strip wraps to 2x2 on a phone, which used to overflow a fixed
        52svh and be clipped. .banner treats the height as a floor, so the banner
        grows to hold it instead. */
-    <section className="banner" style={{ "--banner-min": "48svh" } as React.CSSProperties}>
+    <section className="banner justify-start" style={{ "--banner-min": "48svh" } as React.CSSProperties}>
       <Image
         src={photo.src}
         alt={photo.alt}
@@ -58,27 +57,6 @@ export default function AboutHero({
         >
           Independent structural data for the people who have to make the decision —
           developers, homeowners, contractors and lenders.
-        </Reveal>
-
-        {/* Four cells wrap to 2x2 on a phone, which is the right shape there —
-            don't force them into a single row. */}
-        <Reveal
-          as="dl"
-          delay={3}
-          className="m-0 mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-on-dark/20 pt-5"
-        >
-          {stats.map((s) => (
-            <div key={s.key}>
-              <dt className="sr-only">{s.label}</dt>
-              <dd className="m-0 font-heading text-[clamp(22px,4vw,30px)] font-semibold leading-none text-on-dark tabular-nums">
-                {s.value}
-                {s.suffix}
-              </dd>
-              <span className="mt-1.5 block text-[11.5px] uppercase tracking-[0.08em] text-on-dark/65">
-                {s.label}
-              </span>
-            </div>
-          ))}
         </Reveal>
       </div>
     </section>

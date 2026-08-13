@@ -418,21 +418,33 @@
     animation: hero-drift-3 21s linear infinite, hero-fade-3 21s ease-in-out infinite;
   }
 
-  /* Headline text layers — one per photo slide — on the same 21s clock.
-     hero-headline-1 is always visible (the floor). The others mirror the
-     same fade timings as their corresponding photo layer so text and image
-     always belong to the same slide. */
-  .hero-headline-1 {
-    /* Always visible — no animation needed; it is the fallback rendered by
-       the static HTML and visible before JavaScript loads. */
+  /* Banner copy layers — one set per photo slide, headline and subhead both —
+     on the same 21s clock.
+
+     These do NOT reuse the photo keyframes. The photo stack works by keeping
+     layer 1 permanently opaque underneath: an opaque photograph hides whatever
+     is below it, so a floor layer is free. Text has no such body — layer 1's
+     words stay legible straight through layers 2 and 3, and the two headlines
+     render on top of each other as one unreadable smear. So every copy layer,
+     layer 1 included, gets its own fade, and the handovers are sequential
+     rather than crossfaded: the outgoing text is fully gone before the incoming
+     text starts, split at the midpoint of the photo's 1s crossfade so the swap
+     still lands inside the same handover.
+
+     Never put one of these on an element that also carries [data-reveal] — the
+     reveal state sets `animation` on the element itself and would win. Wrap:
+     the layer element carries the fade, a Reveal inside it carries the entrance.
+     That is why Hero.tsx nests a Reveal span inside each h1 and p. */
+  .hero-copy-1 {
+    animation: hero-copy-1 21s ease-in-out infinite;
   }
-  .hero-headline-2 {
+  .hero-copy-2 {
     opacity: 0;
-    animation: hero-fade-2 21s ease-in-out infinite;
+    animation: hero-copy-2 21s ease-in-out infinite;
   }
-  .hero-headline-3 {
+  .hero-copy-3 {
     opacity: 0;
-    animation: hero-fade-3 21s ease-in-out infinite;
+    animation: hero-copy-3 21s ease-in-out infinite;
   }
 
   /* ---------------------------- photography ---------------------------- */
@@ -1370,6 +1382,54 @@
   /* Fades back out over the last second, revealing layer 1 underneath — which
      is what closes the loop seamlessly, since layer 1 is already where the
      next cycle begins. */
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---- homepage banner copy ----
+   Same 21s clock, same three slots, but half-second fades placed either side of
+   each photo crossfade instead of across it. Extra marks: 6.5s = 30.952%,
+   13.5s = 64.286%, 20.5s = 97.619% — the midpoints of the three handovers. Each
+   copy layer is at 0 by its slot's midpoint and the next is not yet on, so no
+   two are ever painted at once. */
+@keyframes hero-copy-1 {
+  0%,
+  28.571% {
+    opacity: 1;
+  }
+  30.952%,
+  97.619% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hero-copy-2 {
+  0%,
+  30.952% {
+    opacity: 0;
+  }
+  33.333%,
+  61.905% {
+    opacity: 1;
+  }
+  64.286%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hero-copy-3 {
+  0%,
+  64.286% {
+    opacity: 0;
+  }
+  66.667%,
+  95.238% {
+    opacity: 1;
+  }
+  97.619%,
   100% {
     opacity: 0;
   }
