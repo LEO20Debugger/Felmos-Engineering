@@ -6,8 +6,8 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import SectionHead from "@/components/ui/Section";
 import Reveal from "@/components/ui/Reveal";
-import { team } from "@/lib/content";
-import { images, imageAt } from "@/lib/images";
+import { focalPosition, mediaUrl, type Media } from "@/lib/media";
+import type { CmsTeamMember } from "@/lib/cms";
 
 /**
  * The team, as a stage rather than a grid.
@@ -18,18 +18,18 @@ import { images, imageAt } from "@/lib/images";
  * It reads as a practice introducing its people rather than as a staff
  * directory, which is the difference the homepage needs.
  *
- * All four portraits are mounted and stacked; only opacity moves. Swapping a
+ * All portraits are mounted and stacked; only opacity moves. Swapping a
  * single <Image src> would re-request on every advance and flash the empty
- * frame between them — four images at one modest crop is cheaper than that,
- * and it makes the crossfade a pure compositor operation.
+ * frame between them — stacking images at one modest crop is cheaper than
+ * that, and it makes the crossfade a pure compositor operation.
  *
- * See the DO-NOT-SHIP banner above `team` in lib/content.ts: these are stock
- * people and the credentials are unverified.
+ * Data is fetched by the async server wrapper below and passed in as a prop,
+ * so admin-dashboard changes are reflected without a redeploy.
  */
 
 const ADVANCE_MS = 5600;
 
-export default function TeamSlider() {
+function TeamSliderClient({ team }: { team: CmsTeamMember[] }) {
   const [active, setActive] = useState(0);
   /* Once the visitor takes over, autoplay never resumes. A carousel that
      restarts itself after an interaction fights the person using it. */
@@ -38,9 +38,12 @@ export default function TeamSlider() {
 
   const stop = useCallback(() => setEngaged(true), []);
 
-  const go = useCallback((next: number) => {
-    setActive((n) => (next + team.length) % team.length);
-  }, []);
+  const go = useCallback(
+    (next: number) => {
+      setActive(() => (next + team.length) % team.length);
+    },
+    [team.length]
+  );
 
   useEffect(() => {
     if (engaged) return;
@@ -53,7 +56,7 @@ export default function TeamSlider() {
       setActive((n) => (n + 1) % team.length);
     }, ADVANCE_MS);
     return () => window.clearInterval(id);
-  }, [engaged]);
+  }, [engaged, team.length]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
@@ -91,24 +94,7 @@ export default function TeamSlider() {
             className="relative aspect-[4/5] w-full max-w-[230px] overflow-hidden rounded-[var(--radius-control)] bg-bg md:max-w-none"
           >
             {team.map((m, i) => (
-              <Image
-                key={m.name}
-                src={images[m.image]}
-                /* Decorative: the panel beside this names the person and states
-                   the role, so alt text here would have a screen reader read
-                   all four members' names on every page load. */
-                alt=""
-                aria-hidden
-                fill
-                /* Matches the capped widths above. Left at 100vw/340px this
-                   would fetch four portraits at roughly twice the pixels the
-                   slot can now show — and all four are downloaded eagerly to
-                   make the crossfade work, so the waste is multiplied. */
-                sizes="(max-width: 768px) 230px, 250px"
-                className={`object-cover transition-opacity duration-700 ease-[var(--ease-out-quint)] ${
-                  i === active ? "opacity-100" : "opacity-0"
-                }`}
-              />
+              <Portrait key={m.id} image={m.image} active={i === active} />
             ))}
 
             {/* Position in the set, over the photograph's foot. The scrim is
@@ -117,7 +103,10 @@ export default function TeamSlider() {
             <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-accent-900/85 to-transparent p-4 pt-12">
               <span className="font-mono text-[12px] tracking-[0.14em] text-on-dark/90 tabular-nums">
                 {String(active + 1).padStart(2, "0")}
-                <span className="opacity-50"> / {String(team.length).padStart(2, "0")}</span>
+                <span className="opacity-50">
+                  {" "}
+                  / {String(team.length).padStart(2, "0")}
+                </span>
               </span>
             </div>
           </div>
@@ -134,24 +123,35 @@ export default function TeamSlider() {
             {/* Keyed on `active`, so React remounts the block and the entry
                 animation replays on every advance. The global reduced-motion
                 block flattens it to a cut. */}
-            <div key={member.name} className="animate-[fx-rise_0.55s_var(--ease-out-quint)_both]">
+            <div
+              key={member.id}
+              className="animate-[fx-rise_0.55s_var(--ease-out-quint)_both]"
+            >
               <h3 className="m-0 font-heading text-[clamp(24px,4vw,34px)] uppercase leading-[1.05]">
                 {member.name}
               </h3>
               <p className="m-0 mt-2 text-[15px] opacity-70">{member.role}</p>
               {/* Outline rather than filled: a credential, not a category. */}
-              <span className="tag tag-outline mt-3.5">{member.tag}</span>
-              <p className="m-0 mt-4 max-w-[46ch] text-[15.5px] leading-[1.6] opacity-80">
-                {member.bio}
-              </p>
+              {member.tag && (
+                <span className="tag tag-outline mt-3.5">{member.tag}</span>
+              )}
+              {member.bio && (
+                <p className="m-0 mt-4 max-w-[46ch] text-[15.5px] leading-[1.6] opacity-80">
+                  {member.bio}
+                </p>
+              )}
             </div>
 
             {/* ------------------------- controls ------------------------- */}
             <div className="mt-8 flex items-center gap-4">
-              <div className="flex gap-2.5" role="tablist" aria-label="Choose an engineer">
+              <div
+                className="flex gap-2.5"
+                role="tablist"
+                aria-label="Choose an engineer"
+              >
                 {team.map((m, i) => (
                   <button
-                    key={m.name}
+                    key={m.id}
                     type="button"
                     role="tab"
                     aria-selected={i === active}
@@ -168,14 +168,19 @@ export default function TeamSlider() {
                         : "opacity-55 hover:opacity-85"
                     }`}
                   >
-                    <Image
-                      src={imageAt(m.image, 120, 120)}
-                      alt=""
-                      aria-hidden
-                      fill
-                      sizes="44px"
-                      className="object-cover"
-                    />
+                    {m.image ? (
+                      <Image
+                        src={mediaUrl(m.image, 120, 120)}
+                        alt=""
+                        aria-hidden
+                        fill
+                        sizes="44px"
+                        style={{ objectPosition: focalPosition(m.image) }}
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="absolute inset-0 bg-surface" aria-hidden />
+                    )}
                   </button>
                 ))}
               </div>
@@ -206,10 +211,10 @@ export default function TeamSlider() {
               </div>
             </div>
 
-            {/* The arrows wrap rather than disable at the ends — a four-item
-                loop that dead-ends reads as broken — so there is no disabled
-                state to announce. This is the only running commentary a screen
-                reader gets, and it is enough. */}
+            {/* The arrows wrap rather than disable at the ends — a loop that
+                dead-ends reads as broken — so there is no disabled state to
+                announce. This is the only running commentary a screen reader
+                gets, and it is enough. */}
             <p aria-live="polite" className="sr-only">
               {member.name}, {member.role}. {active + 1} of {team.length}.
             </p>
@@ -226,4 +231,66 @@ export default function TeamSlider() {
       </div>
     </section>
   );
+}
+
+/* ─── portrait layer ─────────────────────────────────────────────────────── */
+
+/** One portrait in the crossfade stack. All are mounted; only opacity moves. */
+function Portrait({
+  image,
+  active,
+}: {
+  image: Media | null;
+  active: boolean;
+}) {
+  const cls = `object-cover transition-opacity duration-700 ease-[var(--ease-out-quint)] ${
+    active ? "opacity-100" : "opacity-0"
+  }`;
+
+  if (!image) {
+    /* No portrait uploaded yet — neutral placeholder keeps the frame intact. */
+    return (
+      <span
+        className={`absolute inset-0 bg-surface ${active ? "opacity-100" : "opacity-0"}`}
+        aria-hidden
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={mediaUrl(image, 500, 625)}
+      /* Decorative: the panel beside this names the person and states the
+         role, so alt text here would have a screen reader announce all
+         members' names on every page load. */
+      alt=""
+      aria-hidden
+      fill
+      /* Matches the capped widths in the stage container. Left at 100vw this
+         would fetch every portrait at twice the pixels the slot can show —
+         and all are downloaded eagerly for the crossfade, so the waste
+         multiplies with the team size. */
+      sizes="(max-width: 768px) 230px, 250px"
+      style={{ objectPosition: focalPosition(image) }}
+      className={cls}
+    />
+  );
+}
+
+/* ─── server wrapper ─────────────────────────────────────────────────────── */
+
+import { getTeam } from "@/lib/cms";
+
+/**
+ * Fetches the published team from the CMS and passes it to the client
+ * carousel. The homepage remains a server component; data is available at
+ * first render rather than after a client-side fetch.
+ *
+ * Renders nothing when no published members exist — an empty slider with
+ * nav arrows pointing nowhere is worse than no slider.
+ */
+export default async function TeamSlider() {
+  const team = await getTeam();
+  if (team.length === 0) return null;
+  return <TeamSliderClient team={team} />;
 }
