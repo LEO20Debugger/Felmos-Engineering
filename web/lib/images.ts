@@ -46,8 +46,17 @@ export const SOURCES = {
   "hero-2": { id: "1545186070-de624ed19875", w: 2000, h: 1000 }, // engineer sighting through a levelling instrument
   "hero-3": { id: "5612890", w: 2000, h: 1000, from: "pexels" }, // two high-rise blocks under construction
 
-  "about-story": { id: "1581092580497-e0d23cbdf1dc", w: 1400, h: 1050 }, // structural engineer performing inspection on site
-  "about-hero": { id: "1216589", w: 2000, h: 1000, from: "pexels" }, // structural construction site under open sky
+  /* Felmos's own photography, supplied by the company — not stock. The About
+     page is where a visitor asks who these people actually are, so both slots
+     show the real team: the crew on a job for the banner, and the office
+     working over instruments and a drawing for the story figure.
+
+     4:3 camera originals at 2560x1920. w/h below are inert for a local source
+     (`url()` returns the path unchanged and next/image does the resizing), and
+     are recorded as the true pixel dimensions rather than a crop nobody
+     performs. */
+  "about-story": { id: "about/team-in-office.jpg", w: 2560, h: 1920, from: "local" },
+  "about-hero": { id: "about/team-on-site.jpg", w: 2560, h: 1920, from: "local" },
 
   /* services — one per entry in `services`, keyed by that service's slug so a
      renamed service can't quietly keep a photograph of something else. All from
