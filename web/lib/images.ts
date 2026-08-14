@@ -94,7 +94,7 @@ export const SOURCES = {
   "process-1": { id: "process/process-1.jpg", w: 1200, h: 800, from: "local" }, // client meeting & submitting request (Nigerian/African)
   "process-2": { id: "process/process-2.jpg", w: 1200, h: 800, from: "local" }, // Nigerian site engineer conducting inspection
   "process-3": { id: "process/process-3.jpg", w: 1200, h: 800, from: "local" }, // African laboratory technician testing materials
-  "process-4": { id: "process/process-4.jpg", w: 1200, h: 800, from: "local" }, // Nigerian engineer analyzing data & drawings
+  "process-4": { id: "process/process-4.jpg", w: 1024, h: 768, from: "local" }, // Felmos engineering team analyzing CAD drawings and testing apparatus
   "process-5": { id: "process/process-5.jpg", w: 1200, h: 800, from: "local" }, // detailed engineering report review
   "process-6": { id: "process/process-6.jpg", w: 1200, h: 800, from: "local" }, // senior engineer presenting recommendations
 
