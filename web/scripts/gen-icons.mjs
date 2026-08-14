@@ -26,14 +26,19 @@ import { dirname, join } from "node:path";
 const appDir = join(dirname(fileURLToPath(import.meta.url)), "..", "app");
 const svg = readFileSync(join(appDir, "icon.svg"));
 
-/* iOS applies its own rounded-rect mask to a home-screen icon. Feeding it our
-   own rx=13 tile means the corner gets cut twice and the result reads as a
-   slightly shrunken, double-rounded square — so the apple icon is rendered
-   from a squared-off copy of the same artwork. */
-const squared = Buffer.from(String(svg).replace(' rx="13"', ""));
+/* The apple icon is the one output that must NOT be transparent. iOS does not
+   composite a home-screen icon onto the wallpaper — it flattens it onto black,
+   so the two navy masses would vanish into the ground and the mark would lose
+   its plinth. Flattened onto white here, which is the ground the supplied
+   artwork was drawn on, and it costs nothing elsewhere: iOS then applies its
+   own rounded-rect mask to the square, which is why this file carries no
+   corner radius of its own for it to cut twice.
 
-await sharp(squared, { density: 384 })
+   The favicon below stays transparent — that is the whole point of the change,
+   and every browser that reads it draws it over its own chrome. */
+await sharp(svg, { density: 384 })
   .resize(180, 180)
+  .flatten({ background: "#ffffff" })
   .png()
   .toFile(join(appDir, "apple-icon.png"));
 

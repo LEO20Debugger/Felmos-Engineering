@@ -20,14 +20,18 @@ export default function CtaBand({
   href?: string;
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-accent-900 text-on-dark">
+    <section className="relative isolate overflow-hidden bg-neutral-900 text-on-dark">
+      {/* Neutral charcoal ground, not accent-900: at the opacity this photo
+          needs it was the band's colour, and the towers came through tinted
+          blue. `grayscale` drops the picture's own cast so the field reads as
+          steel rather than as a blue wash. */}
       <Image
         src={images["cta-texture"]}
         alt=""
         aria-hidden
         fill
         sizes="100vw"
-        className="object-cover opacity-[0.18] mix-blend-luminosity"
+        className="object-cover opacity-[0.32] grayscale"
       />
       <div className="wrap relative py-16 text-center md:py-24">
         <Reveal as="h2" className="m-0 text-[clamp(26px,6.5vw,42px)] uppercase leading-[1.05]">

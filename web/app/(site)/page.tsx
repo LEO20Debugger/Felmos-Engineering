@@ -72,7 +72,7 @@ export default async function HomePage() {
           CtaBand, so the alternation holds. */}
       <TeamSlider />
       <CtaBand
-        title="Need structural testing?"
+        title="If it's worth building, it's worth testing"
         lead="Book an inspection and get a certified engineer on site — with a report you can act on."
         cta="Book Your Inspection"
       />
