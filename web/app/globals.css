@@ -389,42 +389,46 @@
   }
 
   /* --------------------- homepage banner slideshow ---------------------
-     Three photographs on a 21s loop, 7s each, crossfading over 1s. No JS and no
+     Four photographs on a 28s loop, 7s each, crossfading over 1s. No JS and no
      state: the layers are stacked in DOM order and animate on one shared clock,
      so this stays a server component and the first frame is still the LCP image.
 
      The first layer never animates its opacity — it is the floor of the stack,
-     always painted. Layers 2 and 3 fade in on top of it and are the only things
-     that move. That ordering is what keeps the handover clean: a layer only
-     ever fades in over an opaque layer, never over a gap, so the banner is
+     always painted. Layers 2, 3 and 4 fade in on top of it and are the only
+     things that move. That ordering is what keeps the handover clean: a layer
+     only ever fades in over an opaque layer, never over a gap, so the banner is
      never momentarily see-through mid-crossfade.
 
      Reduced motion needs no rule of its own. The global block below forces
      iteration-count to 1 and duration to ~0, which lands every layer on its
-     100% frame — opacity 0 for layers 2 and 3 — leaving the first photograph
+     100% frame — opacity 0 for layers 2, 3 and 4 — leaving the first photograph
      alone on screen. The degradation is the correct one by construction. */
   .hero-slide {
     /* Scale and opacity are split so each can carry its own easing: the drift
        must be perfectly even (linear) or it reads as a lurch, while the fade
        needs easing at both ends or the two images visibly cross at half. */
-    animation: hero-drift-1 21s linear infinite;
+    animation: hero-drift-1 28s linear infinite;
   }
   .hero-slide-2 {
     opacity: 0;
-    animation: hero-drift-2 21s linear infinite, hero-fade-2 21s ease-in-out infinite;
+    animation: hero-drift-2 28s linear infinite, hero-fade-2 28s ease-in-out infinite;
   }
   .hero-slide-3 {
     opacity: 0;
-    animation: hero-drift-3 21s linear infinite, hero-fade-3 21s ease-in-out infinite;
+    animation: hero-drift-3 28s linear infinite, hero-fade-3 28s ease-in-out infinite;
+  }
+  .hero-slide-4 {
+    opacity: 0;
+    animation: hero-drift-4 28s linear infinite, hero-fade-4 28s ease-in-out infinite;
   }
 
-  /* Banner copy layers — one set per photo slide, headline and subhead both —
-     on the same 21s clock.
+  /* Banner copy layers — one set per photo slide, kicker, headline and subhead
+     alike — on the same 28s clock.
 
      These do NOT reuse the photo keyframes. The photo stack works by keeping
      layer 1 permanently opaque underneath: an opaque photograph hides whatever
      is below it, so a floor layer is free. Text has no such body — layer 1's
-     words stay legible straight through layers 2 and 3, and the two headlines
+     words stay legible straight through the layers above, and two headlines
      render on top of each other as one unreadable smear. So every copy layer,
      layer 1 included, gets its own fade, and the handovers are sequential
      rather than crossfaded: the outgoing text is fully gone before the incoming
@@ -436,15 +440,19 @@
      the layer element carries the fade, a Reveal inside it carries the entrance.
      That is why Hero.tsx nests a Reveal span inside each h1 and p. */
   .hero-copy-1 {
-    animation: hero-copy-1 21s ease-in-out infinite;
+    animation: hero-copy-1 28s ease-in-out infinite;
   }
   .hero-copy-2 {
     opacity: 0;
-    animation: hero-copy-2 21s ease-in-out infinite;
+    animation: hero-copy-2 28s ease-in-out infinite;
   }
   .hero-copy-3 {
     opacity: 0;
-    animation: hero-copy-3 21s ease-in-out infinite;
+    animation: hero-copy-3 28s ease-in-out infinite;
+  }
+  .hero-copy-4 {
+    opacity: 0;
+    animation: hero-copy-4 28s ease-in-out infinite;
   }
 
   /* ---------------------------- photography ---------------------------- */
@@ -1356,59 +1364,74 @@
   }
 }
 /* ---- homepage banner slideshow ----
-   One 21s clock, three 7s slots, 1s crossfades. The percentages are the second
-   marks converted once: 1s = 4.762%, 6s = 28.571%, 7s = 33.333%, 13s = 61.905%,
-   14s = 66.667%, 20s = 95.238%. Change the duration on .hero-slide* and the
-   whole thing rescales — the shape is in the percentages, not the seconds.
+   One 28s clock, four 7s slots, 1s crossfades. The percentages are the second
+   marks converted once: 6s = 21.429%, 7s = 25%, 13s = 46.429%, 14s = 50%,
+   20s = 71.429%, 21s = 75%, 27s = 96.429%. Change the duration on .hero-slide*
+   and the whole thing rescales — the shape is in the percentages, not the
+   seconds.
 
-   Layer 2 is cut rather than faded at 66.667%: layer 3 is fully opaque and
-   directly on top of it by that instant, so the cut cannot be seen. Fading it
-   out instead would thin BOTH upper layers at once and let layer 1 flash
-   through from underneath. */
+   Layers 2 and 3 are cut rather than faded at the end of their slot: the layer
+   above is fully opaque and directly on top by that instant, so the cut cannot
+   be seen. Fading one out instead would thin two upper layers at once and let
+   layer 1 flash through from underneath. */
 @keyframes hero-fade-2 {
   0%,
-  28.571% {
+  21.429% {
     opacity: 0;
   }
-  33.333%,
-  66.667% {
+  25%,
+  50% {
     opacity: 1;
   }
-  66.668%,
+  50.001%,
   100% {
     opacity: 0;
   }
 }
 @keyframes hero-fade-3 {
   0%,
-  61.905% {
+  46.429% {
     opacity: 0;
   }
-  66.667%,
-  95.238% {
+  50%,
+  75% {
     opacity: 1;
   }
-  /* Fades back out over the last second, revealing layer 1 underneath — which
-     is what closes the loop seamlessly, since layer 1 is already where the
-     next cycle begins. */
+  75.001%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hero-fade-4 {
+  0%,
+  71.429% {
+    opacity: 0;
+  }
+  75%,
+  96.429% {
+    opacity: 1;
+  }
+  /* The top layer fades back out over the last second, revealing layer 1
+     underneath — which is what closes the loop seamlessly, since layer 1 is
+     already where the next cycle begins. */
   100% {
     opacity: 0;
   }
 }
 
 /* ---- homepage banner copy ----
-   Same 21s clock, same three slots, but half-second fades placed either side of
-   each photo crossfade instead of across it. Extra marks: 6.5s = 30.952%,
-   13.5s = 64.286%, 20.5s = 97.619% — the midpoints of the three handovers. Each
-   copy layer is at 0 by its slot's midpoint and the next is not yet on, so no
-   two are ever painted at once. */
+   Same 28s clock, same four slots, but half-second fades placed either side of
+   each photo crossfade instead of across it. Extra marks: 6.5s = 23.214%,
+   13.5s = 48.214%, 20.5s = 73.214%, 27.5s = 98.214% — the midpoints of the four
+   handovers. Each copy layer is at 0 by its handover's midpoint and the next is
+   not yet on, so no two are ever painted at once. */
 @keyframes hero-copy-1 {
   0%,
-  28.571% {
+  21.429% {
     opacity: 1;
   }
-  30.952%,
-  97.619% {
+  23.214%,
+  98.214% {
     opacity: 0;
   }
   100% {
@@ -1417,28 +1440,42 @@
 }
 @keyframes hero-copy-2 {
   0%,
-  30.952% {
+  23.214% {
     opacity: 0;
   }
-  33.333%,
-  61.905% {
+  25%,
+  46.429% {
     opacity: 1;
   }
-  64.286%,
+  48.214%,
   100% {
     opacity: 0;
   }
 }
 @keyframes hero-copy-3 {
   0%,
-  64.286% {
+  48.214% {
     opacity: 0;
   }
-  66.667%,
-  95.238% {
+  50%,
+  71.429% {
     opacity: 1;
   }
-  97.619%,
+  73.214%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hero-copy-4 {
+  0%,
+  73.214% {
+    opacity: 0;
+  }
+  75%,
+  96.429% {
+    opacity: 1;
+  }
+  98.214%,
   100% {
     opacity: 0;
   }
@@ -1452,13 +1489,13 @@
   0% {
     transform: scale(1.02);
   }
-  33.333% {
+  25% {
     transform: scale(1.055);
   }
-  47.619% {
+  35.714% {
     transform: scale(1);
   }
-  95.238% {
+  96.429% {
     transform: scale(1);
   }
   100% {
@@ -1467,13 +1504,13 @@
 }
 @keyframes hero-drift-2 {
   0%,
-  28.571% {
+  21.429% {
     transform: scale(1);
   }
-  66.667% {
+  50% {
     transform: scale(1.055);
   }
-  80.952% {
+  60.714% {
     transform: scale(1);
   }
   100% {
@@ -1482,7 +1519,22 @@
 }
 @keyframes hero-drift-3 {
   0%,
-  61.905% {
+  46.429% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.055);
+  }
+  85.714% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes hero-drift-4 {
+  0%,
+  71.429% {
     transform: scale(1);
   }
   /* Snaps back to 1 on wrap, at the exact frame its opacity reaches 0. */

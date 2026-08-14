@@ -46,6 +46,16 @@ export const SOURCES = {
   "hero-2": { id: "1545186070-de624ed19875", w: 2000, h: 1000 }, // engineer sighting through a levelling instrument
   "hero-3": { id: "5612890", w: 2000, h: 1000, from: "pexels" }, // two high-rise blocks under construction
 
+  /* Banner crops of two of the service photographs below, for the pile-testing
+     and sub-soil slides of the homepage slideshow. Same Pexels ids as
+     `svc-pile-testing` and `svc-subsoil` — deliberately the same picture in
+     both places, since a slide and its service page describing the same work
+     should not show two different jobs — but requested at the banner's 2:1
+     rather than the service grid's 4:3, so the provider crops for this shape
+     instead of next/image throwing away the top and bottom of a 4:3 frame. */
+  "hero-piles": { id: "29470001", w: 2000, h: 1000, from: "pexels" }, // piling rig working below high-rise blocks
+  "hero-subsoil": { id: "15391048", w: 2000, h: 1000, from: "pexels" }, // worker operating a large drilling rig
+
   /* Felmos's own photography, supplied by the company — not stock. The About
      page is where a visitor asks who these people actually are, so both slots
      show the real team: the crew on a job for the banner, and the office
