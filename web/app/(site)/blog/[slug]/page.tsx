@@ -119,7 +119,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             as="h1"
             delay={2}
             /* Narrower measure than the page allows: a headline set to the full
-               1240px wrap runs past the point where the eye can find the next
+               1440px wrap runs past the point where the eye can find the next
                line without effort. */
             className="m-0 max-w-[20ch] text-[clamp(30px,7vw,50px)] uppercase leading-[1.05]"
           >
@@ -156,7 +156,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               src={post.image}
               alt=""
               ratio="16/9"
-              sizes="(max-width: 1240px) 100vw, 1240px"
+              sizes="(max-width: 1440px) 100vw, 1440px"
               priority
               zoom={false}
               /* The frame is tall and the entry wipe is keyed to the viewport,
