@@ -29,7 +29,17 @@ import type { CmsTeamMember } from "@/lib/cms";
 
 const ADVANCE_MS = 5600;
 
-function TeamSliderClient({ team }: { team: CmsTeamMember[] }) {
+function TeamSliderClient({
+  team,
+  linkHref = "/about",
+  linkLabel = "Meet the practice",
+  showLink = true,
+}: {
+  team: CmsTeamMember[];
+  linkHref?: string;
+  linkLabel?: string;
+  showLink?: boolean;
+}) {
   const [active, setActive] = useState(0);
   /* Once the visitor takes over, autoplay never resumes. A carousel that
      restarts itself after an interaction fights the person using it. */
@@ -90,8 +100,12 @@ function TeamSliderClient({ team }: { team: CmsTeamMember[] }) {
             /* Capped on mobile too. In the single-column stacking a full-width
                4:5 portrait is ~420px tall on a phone — most of a screen spent
                on one face before the name is even visible. From md the grid
-               track owns the width, so the cap is lifted. */
-            className="relative aspect-[4/5] w-full max-w-[230px] overflow-hidden rounded-[var(--radius-control)] bg-bg md:max-w-none"
+               track owns the width, so the cap is lifted.
+
+               photo-frame  — scroll-driven wipe entry + bg placeholder + radius
+               photo-zoom-deep — hover scale; uses the deep variant because
+               Next.js fill wraps <img> in a span, so > img won't reach it. */
+            className="photo-frame photo-zoom-deep relative aspect-[4/5] w-full max-w-[230px] md:max-w-none"
           >
             {team.map((m, i) => (
               <Portrait key={m.id} image={m.image} active={i === active} />
@@ -219,13 +233,15 @@ function TeamSliderClient({ team }: { team: CmsTeamMember[] }) {
               {member.name}, {member.role}. {active + 1} of {team.length}.
             </p>
 
-            <Link
-              href="/about"
-              className="mt-7 inline-flex items-center gap-1.5 font-heading text-[13.5px] font-semibold uppercase tracking-[0.06em] text-link no-underline"
-            >
-              Meet the practice
-              <ArrowRight size={15} strokeWidth={1.75} />
-            </Link>
+            {showLink && (
+              <Link
+                href={linkHref}
+                className="mt-7 inline-flex items-center gap-1.5 font-heading text-[13.5px] font-semibold uppercase tracking-[0.06em] text-link no-underline"
+              >
+                {linkLabel}
+                <ArrowRight size={15} strokeWidth={1.75} />
+              </Link>
+            )}
           </div>
         </Reveal>
       </div>
@@ -283,14 +299,29 @@ import { getTeam } from "@/lib/cms";
 
 /**
  * Fetches the published team from the CMS and passes it to the client
- * carousel. The homepage remains a server component; data is available at
+ * carousel. The page remains a server component; data is available at
  * first render rather than after a client-side fetch.
  *
  * Renders nothing when no published members exist — an empty slider with
  * nav arrows pointing nowhere is worse than no slider.
  */
-export default async function TeamSlider() {
+export default async function TeamSlider({
+  linkHref,
+  linkLabel,
+  showLink,
+}: {
+  linkHref?: string;
+  linkLabel?: string;
+  showLink?: boolean;
+} = {}) {
   const team = await getTeam();
   if (team.length === 0) return null;
-  return <TeamSliderClient team={team} />;
+  return (
+    <TeamSliderClient
+      team={team}
+      linkHref={linkHref}
+      linkLabel={linkLabel}
+      showLink={showLink}
+    />
+  );
 }

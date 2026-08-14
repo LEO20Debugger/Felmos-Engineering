@@ -196,7 +196,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <TeamSlider />
+      <TeamSlider linkHref="/contact" linkLabel="Speak with our team" />
 
       <Standards />
 

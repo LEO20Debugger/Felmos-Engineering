@@ -471,6 +471,15 @@
     .photo-frame.photo-zoom:hover > img {
       transform: scale(1.045);
     }
+    /* Slider/crossfade variant: Next.js fill mode wraps <img> in a <span>,
+       so the direct-child > img selector can't reach it from the stage
+       container. photo-zoom-deep targets img at any depth instead. */
+    .photo-frame.photo-zoom-deep img {
+      transition: transform 0.9s var(--ease-out-quint);
+    }
+    .photo-frame.photo-zoom-deep:hover img {
+      transform: scale(1.045);
+    }
   }
 
   /* ----------------------------- buttons ------------------------------ */
