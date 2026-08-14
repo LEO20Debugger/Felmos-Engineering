@@ -142,8 +142,27 @@
   --color-text: var(--color-ink);
 
   --header-h: 60px;
-  --gutter: clamp(20px, 5vw, 72px);
-  --wrap: 1240px;
+  /* The two numbers that decide how wide the site sits, and the only two. Every
+     bounded section is a `.wrap`, which is `min(--wrap, 100%)` with `--gutter`
+     inside it — so these are the dial, and nothing else hardcodes a page width.
+
+     Both were widened together, because on a 1280px display they were taking
+     168px (13% of the window) out of the content between them: the 1240 cap
+     left 20px of dead margin each side, and a 5vw gutter added 64px more on top
+     of that. Widening only one would have been swallowed by the other.
+
+     --gutter's ceiling is what governs on a laptop and its vw factor is what
+     governs at desktop widths; 3.5vw holds ~45px at 1280 and reaches the 64px
+     ceiling around 1830, so the edge margin grows with the window instead of
+     locking early. It is still comfortably clear of any content.
+
+     Raising --wrap past ~1500 is possible but starts to hurt: the section grids
+     are 3- and 4-up, and past that width their cards stop reading as a row and
+     start reading as separate objects. Long-form copy is unaffected either way
+     — `.prose` is capped at 68ch and the hero copy at 52ch, both independent of
+     this. */
+  --gutter: clamp(20px, 3.5vw, 64px);
+  --wrap: 1440px;
 
   /* Industry draws every control square. Rounded by request - one value so
      buttons, fields and selects stay consistent with each other. */
@@ -884,7 +903,7 @@
 
        - 17.5px, not 15px. Four minutes of reading is a different job from four
          seconds of scanning.
-       - 68ch measure. The wrap is 1240px; a paragraph run to that width loses
+       - 68ch measure. The wrap is 1440px; a paragraph run to that width loses
          the reader at every line return.
        - 1.72 leading, looser than the site's 1.55, which is tuned for short
          blocks that never wrap more than twice.
