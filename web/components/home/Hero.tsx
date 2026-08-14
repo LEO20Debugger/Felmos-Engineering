@@ -12,16 +12,17 @@ const KICKERS = [
   "Pile Integrity & Pile Load Testing",
   "Sub-soil Investigation",
   "Building Repairs & Renovations",
+  "Testing Equipment & Instruments",
 ];
 
-/* Four headlines — one per slide — that crossfade in sync with the
-   background photographs on the same 28s clock. Each headline maps to
+/* Five headlines — one per slide — that crossfade in sync with the
+   background photographs on the same 35s clock. Each headline maps to
    the slide that shares its index, and the photographs in `heroFrames`
    (lib/content.ts) were chosen to illustrate the headline they land under:
    a borehole rig under the foundation question, a piling rig under the pile
    question, a drilling rig under the sub-soil question, a UPV test on a cracked
-   column under the crack. Reordering either array alone breaks all four
-   pairings. */
+   column under the crack, the compression machine under equipment. Reordering
+   either array alone breaks all five pairings. */
 const HEADLINES = [
   // Slide 1
   ["What's", "Really", "Holding", "Up", "Your", "Building?"],
@@ -31,29 +32,44 @@ const HEADLINES = [
   ["Know", "What", "You're", "Building", "On?"],
   // Slide 4
   ["A", "Crack", "That", "Keeps", "Coming", "Back?"],
+  // Slide 5
+  ["Need", "Testing", "Equipment?"],
 ];
 
 /* The subhead that belongs to each headline, by the same index. Written to one
    shape on purpose — name the thing that is unknown, say what we do about it,
    end on the same promise — so the block reads as one voice changing subject
-   rather than four different adverts. The closing clause repeats verbatim on
+   rather than five different adverts. The closing clause repeats verbatim on
    slides 2-4; that is the refrain, not an oversight.
+
+   Slides 1 and 5 are the two that sit outside the refrain, and both earn it:
+   slide 1 is the firm rather than one job, and slide 5 answers a different
+   question — not "what is wrong with my building" but "what do you test it
+   with" — so it closes on whose hands the instruments are in instead.
 
    Nothing here claims a capability the rest of the site does not already carry:
    slides 2, 3 and 4 are the `pile-testing`, `subsoil` and `building-repairs`
-   services. Keep it that way — a banner is the last place to introduce a
-   promise nobody has signed off. */
+   services, and the instruments named in slide 5 are the ones in `instruments`
+   (lib/content.ts). Keep it that way — a banner is the last place to introduce
+   a promise nobody has signed off. */
 const SUBHEADS = [
   "The soil beneath it, the concrete inside it, and the structural integrity holding it together. We test all three, and give you the engineering report to prove it — so you can build, lend or buy with confidence.",
   "A pile driven months ago, a structure about to go on top of it, no way to see if it's sound from the surface. We test integrity and load capacity before the weight goes on, not after something moves. And put what we find in writing.",
   "Ground no one has tested is ground you're guessing about. We investigate bearing capacity and soil composition before the design is drawn, boreholes, SPT, the data your foundation actually needs. And put what we find in writing.",
   "A repair that patched the symptom and left the cause untouched. We find out why it's cracking, settling or moving before we touch a wall, then repair to that. And put what we find in writing.",
+  "A Schmidt hammer for the quick read, ultrasonics for what is happening inside, cube crushing for the figure that settles it. The instruments are ours and so is the engineer reading them.",
 ];
 
-/* The banner's four layers, in the order they play. Stacked in this same order
+/* The banner's five layers, in the order they play. Stacked in this same order
    in the DOM, which is what puts each one above the last — the crossfade depends
    on that, so do not reorder these without reading .hero-slide in globals.css. */
-const SLIDES = ["hero-slide", "hero-slide-2", "hero-slide-3", "hero-slide-4"] as const;
+const SLIDES = [
+  "hero-slide",
+  "hero-slide-2",
+  "hero-slide-3",
+  "hero-slide-4",
+  "hero-slide-5",
+] as const;
 
 /** A frame, already resolved to a URL by the page. */
 export type HeroBannerFrame = { src: string; alt: string; position: string };
@@ -164,7 +180,7 @@ export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
           ))}
         </div>
 
-        {/* Four headline layers stacked, exactly one visible at a time. Unlike
+        {/* Five headline layers stacked, exactly one visible at a time. Unlike
             the photographs, no layer here is a permanent floor: text is
             see-through, so a headline left painted underneath the others shows
             through them as a smear. Every layer fades — see .hero-copy-* in
@@ -207,7 +223,7 @@ export default function Hero({ frames }: { frames: HeroBannerFrame[] }) {
 
             The LASBCA accreditation is deliberately NOT part of this rotation.
             It is a credential rather than a description of the work, it is true
-            on all four slides, and a line that says the same thing four times
+            on all five slides, and a line that says the same thing five times
             while everything around it changes just reads as broken. */}
         <div className="relative mb-6 mt-5 grid">
           {SUBHEADS.map((text, slideIdx) => (

@@ -897,22 +897,22 @@ export type PhotoCredit = {
 };
 
 /**
- * The four frames of the homepage banner, in the order they play.
+ * The five frames of the homepage banner, in the order they play.
  *
- * Two are Felmos's own site photography, supplied by the company; two are the
+ * Three are Felmos's own site photography, supplied by the company; two are the
  * banner crops of the service photographs (`hero-piles`, `hero-subsoil`), used
  * because Felmos has supplied no photograph of a pile test or a second borehole
  * rig. They replaced two Wikimedia Commons photographs of Lagos landmarks, and
  * the reason is worth keeping: a banner frame has a headline sitting on it, and
- * each of these four shows the work the headline over it actually names — the
+ * each of these five shows the work the headline over it actually names — the
  * rig boring the soil under "what's really holding up your building", the
  * piling rig under "sure the piles will hold", the drilling rig under "know
  * what you're building on", the UPV transducers on a cracked column under "a
- * crack that keeps coming back". The landmarks were handsome and said nothing.
- * Anything that replaces a frame here should hold to that: it has to illustrate
- * its headline, not merely look like construction. The order is therefore fixed
- * by HEADLINES in components/home/Hero.tsx — see the note there before
- * reordering.
+ * crack that keeps coming back", the compression machine under "need testing
+ * equipment". The landmarks were handsome and said nothing. Anything that
+ * replaces a frame here should hold to that: it has to illustrate its headline,
+ * not merely look like construction. The order is therefore fixed by HEADLINES
+ * in components/home/Hero.tsx — see the note there before reordering.
  *
  * A `local` frame's credit is optional and these carry none: they are Felmos's
  * to use. It stays on the type because a frame vendored from Commons must have
@@ -925,7 +925,7 @@ export type PhotoCredit = {
  * every database the import has run against and would not survive a re-import.
  * If the match fails — the project unpublished, or its alt edited in the
  * dashboard — the frame falls back to `fallback` rather than leaving a hole.
- * The crossfade is a four-step CSS loop on one clock, so a missing frame reads
+ * The crossfade is a five-step CSS loop on one clock, so a missing frame reads
  * as a blank flash rather than as a shorter cycle.
  */
 export type HeroFrame =
@@ -991,6 +991,17 @@ export const heroFrames: readonly HeroFrame[] = [
        the engineer stays where he is. Held below centre to keep both hands and
        the exposed concrete in the band, rather than sky and scaffolding. */
     position: "center 58%",
+  },
+  {
+    source: "local",
+    src: "/banner/compression-machine.jpg",
+    alt: "A Felmos technician at the compression testing machine, a concrete cube crushed between its platens",
+    /* Held low because the cube between the platens is the subject and it sits
+       in the lower half; this drops the top of the machine, which is the least
+       interesting part of it. It does NOT help with the printed cartons stacked
+       on the left — they run the full height of the frame, so no vertical crop
+       will lose them. Only a tighter photograph will. */
+    position: "center 60%",
   },
 ];
 

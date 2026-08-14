@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <!--
-    Favicon. The SAME drawing as components/brand/Logo.tsx, on a white tile.
+    Favicon. The SAME drawing as components/brand/Logo.tsx, on a transparent
+    ground.
 
     An earlier version of this file redrew the mark from scratch with a mass
     removed, on the reasoning that at 16px the extra shape is mud. That
@@ -15,38 +16,55 @@
       - the mullions are dropped. They are sub pixel at any favicon size and
         only muddy the glass tower into grey.
       - the whole group is scaled and centred. LogoMark is drawn edge to edge
-        for a transparent context and would otherwise collide with this tile's
-        rounded corners. 0.92 of the tile height is as large as it goes while
-        the splayed feet stay clear of the corner radius, and it is worth
-        pushing that far: every tenth of scale is another fraction of a device
-        pixel on the shafts, which are the first thing to smear at 16px.
+        for a transparent context and would otherwise collide with the corners.
+        0.92 of the height is as large as it goes while the splayed feet stay
+        clear, and it is worth pushing that far: every tenth of scale is another
+        fraction of a device pixel on the shafts, which are the first thing to
+        smear at 16px.
 
     The transform is scale(0.13822), which is 64 * 0.92 / 426, plus the offset
-    that centres the artwork's own 322x426 box on the tile and cancels the
-    viewBox origin (10, 18) that LogoMark carries.
+    that centres the artwork's own 322x426 box, and cancels the viewBox origin
+    (10, 18) that LogoMark carries.
 
     Keep it that way. If the mark changes, retrace logo.png, copy the paths
     across again and rerun `npm run icons`, rather than redrawing to taste.
 
-    White ground, matching the supplied artwork, so the mark keeps its own
-    colours instead of being restated in a reversed palette. The tile also fixes
-    the ground: a transparent favicon loses whichever of its masses matches the
-    browser chrome behind it.
+    TRANSPARENT ground, by request: on a white tile the mark sits in a bright
+    square in the tab strip while every icon beside it floats on the chrome.
+
+    That costs the thing the tile used to buy, and the fix is the media query
+    below. A transparent favicon loses whichever of its masses matches the
+    chrome behind it, and here that is the two navy shapes — the plinth and the
+    return — which on a dark tab strip go from silhouette to smudge and leave
+    the skyline standing on nothing. So the navy is not a literal here: it is
+    the same role the site calls .logo-mass, flipped up the ramp to accent-300
+    under a dark scheme exactly as the header mark already flips. The green and
+    the blue hold their own against both chromes and do not move.
+
+    Chrome and Firefox honour prefers-color-scheme inside an SVG favicon.
+    Safari ignores SVG favicons entirely and takes favicon.ico, which is a
+    raster and cannot carry the query — it bakes the light values, which is the
+    correct fallback since Safari's tab strip is light in both themes.
 
     Literal hex rather than var(): this file is served on its own, with no
-    stylesheet behind it. The values are the light theme's accent-800, signal
-    and accent-500 tokens from app/globals.css, and must be changed with them.
+    stylesheet behind it. The values are the accent-800, accent-300, signal and
+    accent-500 tokens from app/globals.css, and must be changed with them.
 
     Note for editors: no double hyphens anywhere in this comment. They are
     illegal inside an XML comment. Browsers shrug, but the SVG rasteriser in
     scripts/gen-icons.mjs refuses the file outright, which is how the token
     names that used to be written out here in full were caught.
   -->
-  <rect width="64" height="64" rx="13" fill="#ffffff"/>
+  <style>
+    .mass { fill: #223c56; }
+    @media (prefers-color-scheme: dark) {
+      .mass { fill: #9dd7f3; }
+    }
+  </style>
   <g transform="translate(8.363 0.072) scale(0.13822)">
     <path d="M169.5 18 106.5 60V157L150 195V443.5H169.5Z" fill="#22a45d"/>
     <path d="M173.5 163 238.5 203V309L193.5 340V443.5H173.5Z" fill="#29a9e0"/>
-    <path d="M93.5 252 145.5 293V443.5H10L23 425.5H93.5Z" fill="#223c56"/>
-    <path d="M255.5 304 196.5 344V443.5H331.5L318 425.5H255.5Z" fill="#223c56"/>
+    <path class="mass" d="M93.5 252 145.5 293V443.5H10L23 425.5H93.5Z"/>
+    <path class="mass" d="M255.5 304 196.5 344V443.5H331.5L318 425.5H255.5Z"/>
   </g>
 </svg>
