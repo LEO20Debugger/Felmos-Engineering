@@ -91,6 +91,30 @@ export const SOURCES = {
   "svc-project-management": { id: "9405431", w: 1400, h: 1050, from: "pexels" }, // engineering team over drawings on site
   "svc-building-repairs": { id: "27134625", w: 1400, h: 1050, from: "pexels" }, // worker repairing a building facade from scaffolding
 
+  /* audiences — the six rows of the "Find Yourself On This List" section.
+     Only three keys, because the other three rows keep the svc-* photograph
+     that already matches their line: Architects on the drawings, Construction
+     Firms on the instrument against concrete, Government on the bridge
+     inspection.
+
+     These three are separate keys rather than more svc-* reuse for two
+     reasons. The section describes the CLIENT'S SITUATION, not the service —
+     "what the crack actually means" wants a crack, not the foundation blocks
+     it used to show — and the two it did borrow (svc-pile-testing,
+     svc-subsoil) are the same Pexels photographs the banner now plays as
+     hero-piles and hero-subsoil, so each appeared twice on the homepage.
+
+     Chosen against a read description and then looked at at the thumbnail
+     crop, which is the only size they are ever seen at. They were also picked
+     to stay distinct from each other: a group indoors, a close-up, and a lone
+     figure outdoors, so six small thumbnails in a vertical list do not blur
+     into one another. Note that stock libraries cluster — the obvious
+     alternative for the lender row was another frame of the same shoot as the
+     developer row, which is why it is not the one here. */
+  "aud-developers": { id: "7937357", w: 480, h: 320, from: "pexels" }, // team in hard hats over project plans in a bare concrete shell
+  "aud-homeowners": { id: "5561369", w: 480, h: 320, from: "pexels" }, // stepped structural crack running through a blockwork wall
+  "aud-banks": { id: "8293667", w: 480, h: 320, from: "pexels" }, // inspector in hi-vis and hard hat checking a property with a clipboard
+
   "process-1": { id: "process/process-1.jpg", w: 1200, h: 800, from: "local" }, // client meeting & submitting request (Nigerian/African)
   "process-2": { id: "process/process-2.jpg", w: 1200, h: 800, from: "local" }, // Nigerian site engineer conducting inspection
   "process-3": { id: "process/process-3.jpg", w: 1200, h: 800, from: "local" }, // African laboratory technician testing materials
