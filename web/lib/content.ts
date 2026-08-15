@@ -672,7 +672,7 @@ export const audiences: readonly Audience[] = [
     need: "Ground data before design, and an independent report before drawdown.",
     matches: ["Property Developers", "Property Developer"],
     primary: "subsoil-investigation",
-    image: "svc-subsoil",
+    image: "aud-developers",
   },
   {
     slug: "homeowners",
@@ -681,7 +681,7 @@ export const audiences: readonly Audience[] = [
     need: "Find out what the crack actually means, before you buy or build.",
     matches: ["Homeowners", "Homeowner"],
     primary: "piling-works",
-    image: "svc-piling-works",
+    image: "aud-homeowners",
   },
   {
     slug: "banks-lenders",
@@ -690,7 +690,7 @@ export const audiences: readonly Audience[] = [
     need: "Structural adequacy confirmed independently, in your credit committee's format.",
     matches: ["Banks", "Bank", "Financial Institutions", "Financial Institution"],
     primary: "integrity-testing",
-    image: "svc-pile-testing",
+    image: "aud-banks",
   },
   {
     slug: "architects",
@@ -698,9 +698,13 @@ export const audiences: readonly Audience[] = [
     icon: Ruler,
     /* Re-pointed from soil to drawings when the service list changed. Architects
        match three services now (pile testing, sub-soil, drawings); drawings is
-       the one no other audience routes to, and it keeps every row on a distinct
-       photograph — which is what the old "borrowed image" note was working
-       around back when only five svc-* images existed. */
+       the one no other audience routes to.
+
+       One of the three rows that keeps its svc-* photograph, because the
+       service picture happens to be the right picture for the client's line
+       too — an architect's need here IS the drawing set. The other three rows
+       have their own aud-* images: a row's photograph has to illustrate the
+       `need` sentence beside it, not the service it links to. */
     need: "The structural drawing set your design needs, aligned to real site conditions.",
     matches: ["Architects", "Architect"],
     primary: "structural-drawings",
