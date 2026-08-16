@@ -132,9 +132,11 @@ export const SOURCES = {
 
      Known compromise: aud-developers carries another firm's branding on the
      hard hats and vests. It is illegible at the rendered size and it is the
-     only strongly West African team-over-drawings frame on Pexels, but it is
-     the resting frame this section shows by default, so replace it first when
-     real Felmos site photography arrives. */
+     only strongly West African team-over-drawings frame on Pexels, so it
+     stays — but it is the first to replace when real Felmos site photography
+     arrives. It is no longer the resting frame: `audiences` leads with
+     Government Projects, whose flyover has no branding in it at all, so the
+     branded frame is now only seen by someone who hovers that row. */
   "aud-developers": { id: "37198875", w: 800, h: 1000, from: "pexels" }, // West African team in hard hats and hi-vis around a site render and drawing set
   "aud-homeowners": { id: "5561369", w: 800, h: 1000, from: "pexels" }, // stepped structural crack running through a painted blockwork wall
   "aud-banks": { id: "8488032", w: 800, h: 1000, from: "pexels" }, // Black engineer in hard hat and hi-vis writing findings onto a form

@@ -666,7 +666,18 @@ export type Audience = {
   image: ImageKey;
 };
 
+/* Order is the display order of the section, and the first entry does double
+   duty: it is the photograph the preview column rests on before the visitor
+   touches anything, so it is the one frame here guaranteed to be seen. */
 export const audiences: readonly Audience[] = [
+  {
+    slug: "government-projects",
+    label: "Government Projects",
+    need: "Roads, bridges and public buildings assessed without taking them out of service.",
+    matches: ["Government Projects", "Government Project"],
+    primary: "integrity-testing",
+    image: "aud-government",
+  },
   {
     slug: "property-developers",
     label: "Property Developers",
@@ -709,14 +720,6 @@ export const audiences: readonly Audience[] = [
     matches: ["Construction Companies", "Construction Company", "Construction Firms"],
     primary: "concrete-strength",
     image: "aud-construction",
-  },
-  {
-    slug: "government-projects",
-    label: "Government Projects",
-    need: "Roads, bridges and public buildings assessed without taking them out of service.",
-    matches: ["Government Projects", "Government Project"],
-    primary: "integrity-testing",
-    image: "aud-government",
   },
 ] as const;
 
