@@ -16,8 +16,6 @@ import {
   Handshake,
   HardHat,
   Headset,
-  Home,
-  Landmark,
   Layers,
   LineChart,
   Mountain,
@@ -650,7 +648,6 @@ export const processSteps: ProcessStep[] = [
 export type Audience = {
   slug: string;
   label: string;
-  icon: LucideIcon;
   /** The "is this for me?" line — one sentence, naming a real service. */
   need: string;
   /** Every spelling this audience appears under in `Service.clients` and
@@ -661,6 +658,11 @@ export type Audience = {
   matches: readonly string[];
   /** The service this audience is routed to; the row links at its anchor. */
   primary: string;
+  /** Shown large in the section's left column as the cursor moves down the
+      list, and small inside the row below lg. Every audience has its own
+      aud-* key: these illustrate the `need` sentence, not the service the row
+      links to, and the services grid on the same page already shows the
+      svc-* frames three of these used to borrow. */
   image: ImageKey;
 };
 
@@ -668,7 +670,6 @@ export const audiences: readonly Audience[] = [
   {
     slug: "property-developers",
     label: "Property Developers",
-    icon: Users,
     need: "Ground data before design, and an independent report before drawdown.",
     matches: ["Property Developers", "Property Developer"],
     primary: "subsoil-investigation",
@@ -677,7 +678,6 @@ export const audiences: readonly Audience[] = [
   {
     slug: "homeowners",
     label: "Homeowners",
-    icon: Home,
     need: "Find out what the crack actually means, before you buy or build.",
     matches: ["Homeowners", "Homeowner"],
     primary: "piling-works",
@@ -686,7 +686,6 @@ export const audiences: readonly Audience[] = [
   {
     slug: "banks-lenders",
     label: "Banks & Lenders",
-    icon: Landmark,
     need: "Structural adequacy confirmed independently, in your credit committee's format.",
     matches: ["Banks", "Bank", "Financial Institutions", "Financial Institution"],
     primary: "integrity-testing",
@@ -695,38 +694,29 @@ export const audiences: readonly Audience[] = [
   {
     slug: "architects",
     label: "Architects",
-    icon: Ruler,
     /* Re-pointed from soil to drawings when the service list changed. Architects
        match three services now (pile testing, sub-soil, drawings); drawings is
-       the one no other audience routes to.
-
-       One of the three rows that keeps its svc-* photograph, because the
-       service picture happens to be the right picture for the client's line
-       too — an architect's need here IS the drawing set. The other three rows
-       have their own aud-* images: a row's photograph has to illustrate the
-       `need` sentence beside it, not the service it links to. */
+       the one no other audience routes to. */
     need: "The structural drawing set your design needs, aligned to real site conditions.",
     matches: ["Architects", "Architect"],
     primary: "structural-drawings",
-    image: "svc-drawings",
+    image: "aud-architects",
   },
   {
     slug: "construction-firms",
     label: "Construction Firms",
-    icon: HardHat,
     need: "Concrete strength and workmanship verified without stopping the job.",
     matches: ["Construction Companies", "Construction Company", "Construction Firms"],
     primary: "concrete-strength",
-    image: "svc-concrete-strength",
+    image: "aud-construction",
   },
   {
     slug: "government-projects",
     label: "Government Projects",
-    icon: Building2,
     need: "Roads, bridges and public buildings assessed without taking them out of service.",
     matches: ["Government Projects", "Government Project"],
     primary: "integrity-testing",
-    image: "svc-integrity-testing",
+    image: "aud-government",
   },
 ] as const;
 

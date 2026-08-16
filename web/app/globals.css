@@ -843,10 +843,17 @@
      The same row language as the project index, on the surface band: the
      project's number column becomes a thumbnail and the service tags take the
      column the year holds there. Only the track differs — the hairline, the
-     hover indent and the colour shift are .idx-row's, inherited unchanged. */
+     hover indent and the colour shift are .idx-row's, inherited unchanged.
+
+     Two presentations of the photography, split at lg. Below it the picture
+     rides in the row as a small thumbnail; from lg the row is typographic and
+     the picture moves to .aud-photos in the section's left column, which the
+     heading and CTA leave empty for the height of the list. */
   .aud-row > a {
-    grid-template-columns: minmax(0, 1fr) auto;
+    /* thumbnail | label + need. Tags and arrow are hidden below md. */
+    grid-template-columns: 72px minmax(0, 1fr);
     align-items: center;
+    gap: 0 16px;
     padding-block: 16px;
   }
   @media (min-width: 768px) {
@@ -857,25 +864,110 @@
       padding-block: 18px;
     }
   }
+  @media (min-width: 1024px) {
+    .aud-row > a {
+      /* The thumbnail column goes with the thumbnail. Padding grows to bring
+         six rows up near the height of the photograph beside them — at 18px
+         the list finished well short of it. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, auto) 17px;
+      padding-block: 24px;
+    }
+  }
   /* The list closes itself, so the final row isn't left hanging on the band's
      bottom edge with no rule under it. */
   .aud-row:last-child {
     border-bottom: 1px solid var(--color-divider);
   }
 
-  /* Declared from md only, matching the grid track above — a display:none
-     element would still occupy its column otherwise. */
+  /* Hidden from lg, not below it: from there the left column carries the
+     photograph at ~430px and a 72px copy of it in the row is noise. Dropped
+     with display:none rather than visibility so it stops occupying the track
+     the lg rule above has already removed. */
   .aud-thumb {
-    display: none;
+    display: block;
+    width: 72px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    align-self: center;
   }
   @media (min-width: 768px) {
     .aud-thumb {
-      display: block;
       width: 96px;
-      height: 64px;
-      object-fit: cover;
-      border-radius: var(--radius-md);
-      align-self: center;
+      height: 120px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .aud-thumb {
+      display: none;
+    }
+  }
+
+  /* ---- the preview column: one stacked frame per row, crossfaded ----
+     Sticky so the photograph holds beside the rows through the section rather
+     than scrolling out from under the cursor driving it. The sticky has to sit
+     on the wrapper rather than on .aud-frame itself: a sticky element only
+     travels inside its parent's box, and .aud-frame's parent would be exactly
+     its own height. The wrapper's parent is the left grid column, which
+     stretches to the height of the taller row list beside it — that stretch is
+     the travel. */
+  .aud-photos {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+  .aud-frame {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-divider);
+  }
+  .aud-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-out-quint);
+  }
+  /* Resting state — the list is never previewing nothing. */
+  .aud-photo:first-child {
+    opacity: 1;
+  }
+
+  /* The rows and the photographs are in different columns, so no sibling
+     combinator reaches between them; :has() on the shared grid does. Guarded
+     to real pointers at lg, matching .idx-row's own hover rule — on touch
+     there is no cursor to drive this and the row thumbnails are showing
+     instead. :focus-visible is in the selector so tabbing through the list
+     moves the photograph too, rather than leaving a keyboard user on frame
+     one throughout.
+
+     The blanket rule has to come first: it clears the resting frame the
+     moment any row is engaged, and the six below then raise the match.
+
+     No prefers-reduced-motion branch — the global reduce block at the foot of
+     this file already collapses every transition-duration with !important, so
+     the crossfade becomes an instant swap there. */
+  @media (hover: hover) and (min-width: 1024px) {
+    .aud-grid:has(.aud-row > a:is(:hover, :focus-visible)) .aud-photo {
+      opacity: 0;
+    }
+    .aud-grid:has(.aud-row:nth-child(1) > a:is(:hover, :focus-visible))
+      .aud-photo:nth-child(1),
+    .aud-grid:has(.aud-row:nth-child(2) > a:is(:hover, :focus-visible))
+      .aud-photo:nth-child(2),
+    .aud-grid:has(.aud-row:nth-child(3) > a:is(:hover, :focus-visible))
+      .aud-photo:nth-child(3),
+    .aud-grid:has(.aud-row:nth-child(4) > a:is(:hover, :focus-visible))
+      .aud-photo:nth-child(4),
+    .aud-grid:has(.aud-row:nth-child(5) > a:is(:hover, :focus-visible))
+      .aud-photo:nth-child(5),
+    .aud-grid:has(.aud-row:nth-child(6) > a:is(:hover, :focus-visible))
+      .aud-photo:nth-child(6) {
+      opacity: 1;
     }
   }
 

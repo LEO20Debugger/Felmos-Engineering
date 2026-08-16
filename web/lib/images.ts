@@ -91,29 +91,56 @@ export const SOURCES = {
   "svc-project-management": { id: "9405431", w: 1400, h: 1050, from: "pexels" }, // engineering team over drawings on site
   "svc-building-repairs": { id: "27134625", w: 1400, h: 1050, from: "pexels" }, // worker repairing a building facade from scaffolding
 
-  /* audiences — the six rows of the "Find Yourself On This List" section.
-     Only three keys, because the other three rows keep the svc-* photograph
-     that already matches their line: Architects on the drawings, Construction
-     Firms on the instrument against concrete, Government on the bridge
-     inspection.
+  /* audiences — the six rows of the "Find Yourself On This List" section, one
+     key each. Three of these rows used to borrow the svc-* photograph of the
+     service they link to; they don't any more, because the section describes
+     the CLIENT'S SITUATION rather than the service — "what the crack actually
+     means" wants a crack, not the foundation blocks it once showed — and
+     because the services grid renders those same frames further down the same
+     page, so each appeared twice on the homepage.
 
-     These three are separate keys rather than more svc-* reuse for two
-     reasons. The section describes the CLIENT'S SITUATION, not the service —
-     "what the crack actually means" wants a crack, not the foundation blocks
-     it used to show — and the two it did borrow (svc-pile-testing,
-     svc-subsoil) are the same Pexels photographs the banner now plays as
-     hero-piles and hero-subsoil, so each appeared twice on the homepage.
+     Portrait, and much larger than the rest of the registry, because these are
+     no longer thumbnails: Audience.tsx renders the row's photograph at ~430px
+     wide in the section's left column, crossfading as the cursor moves down
+     the list. The small inline picture the rows still carry below lg re-crops
+     these through imageAt(), which is what that helper is for.
 
-     Chosen against a read description and then looked at at the thumbnail
-     crop, which is the only size they are ever seen at. They were also picked
-     to stay distinct from each other: a group indoors, a close-up, and a lone
-     figure outdoors, so six small thumbnails in a vertical list do not blur
-     into one another. Note that stock libraries cluster — the obvious
-     alternative for the lender row was another frame of the same shoot as the
-     developer row, which is why it is not the one here. */
-  "aud-developers": { id: "7937357", w: 480, h: 320, from: "pexels" }, // team in hard hats over project plans in a bare concrete shell
-  "aud-homeowners": { id: "5561369", w: 480, h: 320, from: "pexels" }, // stepped structural crack running through a blockwork wall
-  "aud-banks": { id: "8293667", w: 480, h: 320, from: "pexels" }, // inspector in hi-vis and hard hat checking a property with a clipboard
+     Two consequences of the size worth keeping in mind when swapping one:
+     a frame has to survive a 4:5 crop (a wide landscape centre-cropped to
+     portrait loses its subject), and composition and light now show, where at
+     the old 96x64 nothing did.
+
+     They also have to stay distinct from EACH OTHER, harder here than in a
+     static list: two frames from the same shoot two rows apart read as no
+     change at all when the crossfade runs between them. Hence a group, a
+     close-up, a lone figure, and three subject-only frames. Stock libraries
+     cluster, so this is a real risk rather than a theoretical one — the
+     obvious lender candidate was another frame of the developer shoot.
+
+     People shown are Black/Nigerian, matching process-* and team-*. Where
+     Pexels had no strong Black subject for a line, the row shows the thing
+     itself rather than the wrong person — which is why three of the six have
+     no people in them at all.
+
+     Every id here was downloaded at this crop and looked at, not picked off
+     its description, and that mattered: the first pick for the architect row
+     turned out to be a hand-drawn cottage sketch rather than a drawing set,
+     and the whole 82936xx inspector series the lender row used to draw from —
+     including the frame that shipped here before — is one shoot with one South
+     Asian model, so no id in it satisfies the line above. Read descriptions
+     will not tell you either of those things.
+
+     Known compromise: aud-developers carries another firm's branding on the
+     hard hats and vests. It is illegible at the rendered size and it is the
+     only strongly West African team-over-drawings frame on Pexels, but it is
+     the resting frame this section shows by default, so replace it first when
+     real Felmos site photography arrives. */
+  "aud-developers": { id: "37198875", w: 800, h: 1000, from: "pexels" }, // West African team in hard hats and hi-vis around a site render and drawing set
+  "aud-homeowners": { id: "5561369", w: 800, h: 1000, from: "pexels" }, // stepped structural crack running through a painted blockwork wall
+  "aud-banks": { id: "8488032", w: 800, h: 1000, from: "pexels" }, // Black engineer in hard hat and hi-vis writing findings onto a form
+  "aud-architects": { id: "4792483", w: 800, h: 1000, from: "pexels" }, // dimensioned floor plan and drawing pens on a wooden desk
+  "aud-construction": { id: "38520003", w: 800, h: 1000, from: "pexels" }, // reinforcement steel cages standing on site before a pour
+  "aud-government": { id: "11310491", w: 800, h: 1000, from: "pexels" }, // underside of a concrete flyover — piers, girders, traffic below
 
   "process-1": { id: "process/process-1.jpg", w: 1200, h: 800, from: "local" }, // client meeting & submitting request (Nigerian/African)
   "process-2": { id: "process/process-2.jpg", w: 1200, h: 800, from: "local" }, // Nigerian site engineer conducting inspection
