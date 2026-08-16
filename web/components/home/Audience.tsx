@@ -16,6 +16,20 @@ import { audiences, servicesFor } from "@/lib/content";
  * unused on this page — a different layout language from the icon grids
  * around it, for no new CSS beyond the track sizing in `.aud-row`.
  *
+ * From lg the photographs leave the rows and stack in the left column, which
+ * the heading and CTA left empty for the whole height of the list; the row
+ * under the cursor raises its own. That is a hover PREVIEW, not a disclosure —
+ * all six labels and their `need` lines stay on the page at all times, so the
+ * no-click-to-reveal argument above still holds. It also buys the photography
+ * ~430px instead of the 96px thumbnail it had, which is the difference between
+ * decoration and a picture that can carry a client's situation.
+ *
+ * The reveal is CSS `:has()` on `.aud-grid`, not React state, so this stays a
+ * server component — the same trade ServiceShowcase makes for its expanding
+ * panels. Below lg there is no hover, so each row keeps a small inline
+ * thumbnail instead (which is also new: the old one was `display: none` on
+ * phones, so mobile saw no photography here at all).
+ *
  * The service tags are derived, not authored: `servicesFor` reads the
  * `clients` each service already declares, so a row can never claim a
  * discipline the service itself doesn't list.
@@ -35,7 +49,10 @@ export default function Audience() {
        hidden` on body would then hide the overflow rather than the mistake. */
     <section className="bg-surface" aria-label="Who we serve">
       <div className="wrap py-14 md:py-20">
-        <div className="lg:grid lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-x-16">
+        {/* .aud-grid is the `:has()` anchor: the photographs sit in the left
+            column and the rows in the right, so no sibling combinator can
+            reach from one to the other. */}
+        <div className="aud-grid lg:grid lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-x-16">
           <div>
             <SectionHead
               kicker="Who We Serve"
@@ -47,11 +64,35 @@ export default function Audience() {
                 {cta}
               </Link>
             </Reveal>
+
+            {/* The preview stack, in `audiences` order — .aud-photo:nth-child(n)
+                is matched against .aud-row:nth-child(n), so this must not be
+                reordered or filtered independently of the list below.
+                Decorative: every one of these is captioned by the row label
+                sitting beside it. */}
+            <Reveal delay={4} className="aud-photos hidden lg:block">
+              <span className="aud-frame">
+                {audiences.map((a, i) => (
+                  <Image
+                    key={a.slug}
+                    src={imageAt(a.image, 860, 1080)}
+                    alt=""
+                    aria-hidden
+                    width={860}
+                    height={1080}
+                    sizes="430px"
+                    /* Six 430px portraits in one section, all below the fold.
+                       Only the resting frame is worth fetching eagerly. */
+                    loading={i === 0 ? undefined : "lazy"}
+                    className="aud-photo"
+                  />
+                ))}
+              </span>
+            </Reveal>
           </div>
 
           <ul className="m-0 list-none p-0">
             {audiences.map((a, i) => {
-              const Icon = a.icon;
               const mine = servicesFor(a);
               return (
                 <Reveal as="li" key={a.slug} delay={i % 3} className="idx-row aud-row">
@@ -59,27 +100,21 @@ export default function Audience() {
                       stay plain text: an <a> inside an <a> is invalid and
                       behaves unpredictably in assistive tech. */}
                   <Link href={`/services#${a.primary}`}>
+                    {/* Sub-lg stand-in for the preview column, which needs a
+                        cursor. Same key, re-cropped by imageAt(). */}
                     <Image
-                      src={imageAt(a.image, 240, 160)}
+                      src={imageAt(a.image, 216, 288)}
                       alt=""
                       aria-hidden
-                      width={120}
-                      height={80}
-                      sizes="96px"
+                      width={216}
+                      height={288}
+                      sizes="72px"
                       className="aud-thumb"
                     />
 
                     <span className="min-w-0">
-                      <span className="flex items-center gap-2.5">
-                        <Icon
-                          size={19}
-                          strokeWidth={1.5}
-                          aria-hidden
-                          className="flex-none text-link"
-                        />
-                        <span className="font-heading text-[18px] uppercase leading-tight md:text-[21px]">
-                          {a.label}
-                        </span>
+                      <span className="font-heading block text-[20px] uppercase leading-tight md:text-[24px]">
+                        {a.label}
                       </span>
                       <span className="mt-1.5 block max-w-[44ch] text-[13.5px] leading-[1.5] opacity-70">
                         {a.need}
