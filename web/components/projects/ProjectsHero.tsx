@@ -2,13 +2,23 @@ import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
 import { images } from "@/lib/images";
 import { stats } from "@/lib/content";
+import { mediaUrl, focalPosition, type Media } from "@/lib/media";
 
 /**
  * The projects banner. Same full-bleed language as the homepage Hero and the
  * contact banner, with a reversed stat strip along the base — on the page that
  * exists to establish track record, the numbers belong above the fold.
  */
-export default function ProjectsHero({ count }: { count: number }) {
+export default function ProjectsHero({
+  count,
+  image,
+}: {
+  count: number;
+  /** A photograph from the company's own project record, chosen by the page.
+      The banner shows real work when there is any, and falls back to the stock
+      crane frame only while no published project carries a photograph. */
+  image?: Media | null;
+}) {
   /* Read from the same source as the rest of the site rather than retyping the
      figures, so the banner can never drift from the Stats row. Keyed on `key`,
      not `label` — the strip filters out misses, so a label rename used to drop
@@ -27,12 +37,21 @@ export default function ProjectsHero({ count }: { count: number }) {
 
   return (
     <section className="banner" style={{ "--banner-min": "48svh" } as React.CSSProperties}>
+      {/* Asked for at the banner's own 2:1 rather than reusing the card crop,
+          and positioned on the focal point an editor set, so a subject that
+          sits off-centre survives the letterbox. */}
       <Image
-        src={images["projects-hero"]}
-        alt="A high-rise structure under construction, seen from below"
+        src={image ? mediaUrl(image, 2000, 1000) : images["projects-hero"]}
+        alt={
+          image?.alt ||
+          "A high-rise structure under construction, seen from below"
+        }
         fill
         priority
         sizes="100vw"
+        placeholder={image?.blurDataUrl ? "blur" : "empty"}
+        blurDataURL={image?.blurDataUrl ?? undefined}
+        style={image ? { objectPosition: focalPosition(image) } : undefined}
         className="-z-20 object-cover"
       />
       <div

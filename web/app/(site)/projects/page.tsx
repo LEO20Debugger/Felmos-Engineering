@@ -28,9 +28,17 @@ export default async function ProjectsPage() {
     .map((alt) => gallery.find((image) => image.alt === alt))
     .filter((image): image is Media => Boolean(image));
 
+  /* The banner now shows the company's own work rather than a stock crane:
+     the first published project that carries a photograph, in the order the
+     index renders them, with its gallery as the fallback for a project whose
+     cover has not been set. Still nullable — ProjectsHero keeps the stock
+     frame for the case where nothing has been uploaded yet. */
+  const heroImage =
+    projects.map((p) => p.image ?? p.gallery[0]).find(Boolean) ?? null;
+
   return (
     <>
-      <ProjectsHero count={projects.length} />
+      <ProjectsHero count={projects.length} image={heroImage} />
       <ProjectIndex projects={projects} />
       <ProjectCapability projects={projects} services={services} />
       <ProjectEquipment photos={equipmentPhotos} />
