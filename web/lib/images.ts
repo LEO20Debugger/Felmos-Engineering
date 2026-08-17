@@ -137,7 +137,7 @@ export const SOURCES = {
      arrives. It is no longer the resting frame: `audiences` leads with
      Government Projects, whose flyover has no branding in it at all, so the
      branded frame is now only seen by someone who hovers that row. */
-  "aud-developers": { id: "37198875", w: 800, h: 1000, from: "pexels" }, // West African team in hard hats and hi-vis around a site render and drawing set
+  "aud-developers": { id: "audiences/developers.jpg", w: 800, h: 1000, from: "local" }, // Nigerian property developer and structural engineer reviewing foundation plans on site
   "aud-homeowners": { id: "5561369", w: 800, h: 1000, from: "pexels" }, // stepped structural crack running through a painted blockwork wall
   "aud-banks": { id: "8488032", w: 800, h: 1000, from: "pexels" }, // Black engineer in hard hat and hi-vis writing findings onto a form
   "aud-architects": { id: "4792483", w: 800, h: 1000, from: "pexels" }, // dimensioned floor plan and drawing pens on a wooden desk
@@ -146,7 +146,7 @@ export const SOURCES = {
 
   "process-1": { id: "process/process-1.jpg", w: 1200, h: 800, from: "local" }, // client meeting & submitting request (Nigerian/African)
   "process-2": { id: "process/process-2.jpg", w: 1200, h: 800, from: "local" }, // Nigerian site engineer conducting inspection
-  "process-3": { id: "process/process-3.jpg", w: 1200, h: 800, from: "local" }, // African laboratory technician testing materials
+  "process-3": { id: "process/process-3.jpg", w: 1200, h: 800, from: "local" }, // Felmos lab technician conducting concrete cube compression test
   "process-4": { id: "process/process-4.jpg", w: 1024, h: 768, from: "local" }, // Felmos engineering team analyzing CAD drawings and testing apparatus
   "process-5": { id: "process/process-5.jpg", w: 1200, h: 800, from: "local" }, // detailed engineering report review
   "process-6": { id: "process/process-6.jpg", w: 1200, h: 800, from: "local" }, // senior engineer presenting recommendations
