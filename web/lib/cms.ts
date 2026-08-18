@@ -178,11 +178,31 @@ export async function getProjects(): Promise<CmsProject[]> {
      existed would not send one either. Both cases used to reach the gallery
      component as `undefined.length` and take the whole page down, which is a
      poor way for a fallback to behave. */
-  return data.projects.map((project) => ({
-    ...project,
-    services: project.services ?? [],
-    gallery: project.gallery ?? [],
-  }));
+  return data.projects
+    .map((project) => ({
+      ...project,
+      services: project.services ?? [],
+      gallery: project.gallery ?? [],
+    }))
+    /* Ordered by the number the dashboard shows on each card, so the index can
+       never print 01, 02, 16. The API sorts by the same rule, but it is applied
+       again here on purpose: this file also serves the bundled snapshot, and
+       the two halves of the stack deploy separately, so the site must not
+       depend on the API having shipped first. Sorting an already-sorted list
+       is a no-op. */
+    .sort(byNumber);
+}
+
+/** Numeric, not lexical — an editor typing "3" rather than "03" still belongs
+    between 2 and 4, where a string compare would put it after "16". A project
+    saved without a number sorts last rather than first, and ties keep the
+    order the API sent (Array.prototype.sort is stable). */
+function byNumber(a: CmsProject, b: CmsProject): number {
+  const rank = (value: string) => {
+    const n = Number.parseInt(value, 10);
+    return Number.isNaN(n) ? Number.POSITIVE_INFINITY : n;
+  };
+  return rank(a.num) - rank(b.num);
 }
 
 export async function getProjectBySlug(
