@@ -114,6 +114,12 @@ export function ProjectForm({
               inputMode="numeric"
               maxLength={8}
             />
+            {/* Says what it does, because it does two things at once: the API
+                orders the index by this field, so it is the running order as
+                well as the label on the card. */}
+            <span className="adm-muted" style={{ fontSize: "0.75rem" }}>
+              Sets the order on /projects.
+            </span>
           </label>
 
           <label className="adm-field">

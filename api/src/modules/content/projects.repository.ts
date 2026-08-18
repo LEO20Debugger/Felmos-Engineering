@@ -260,6 +260,30 @@ export class ProjectsRepository extends TenantRepository<typeof projects> {
     return rows;
   }
 
+  /**
+   * The order both lists render in.
+   *
+   * The "Number" an editor types in the dashboard is the control — it is what
+   * the card shows, so it is what has to decide where the card sits. It used to
+   * decide nothing: ordering read `sortOrder`, a column no screen exposes, so
+   * editing a project's number moved the label without moving the project and
+   * the index read 01, 02, 16.
+   *
+   * Cast rather than compared as text, because the field is a varchar and an
+   * editor typing "3" instead of "03" would otherwise sort it after "16".
+   * A blank number sorts last rather than first — a new draft saved without one
+   * belongs at the end of the record, not at the top of it. `sortOrder` stays
+   * as the tie-break for two projects sharing a number, and id breaks that.
+   */
+  private listOrder() {
+    return [
+      sql`case when ${projects.num} = '' or ${projects.num} is null then 1 else 0 end`,
+      sql`cast(${projects.num} as unsigned)`,
+      asc(projects.sortOrder),
+      desc(projects.id),
+    ];
+  }
+
   /** Everything, for the dashboard — drafts included. */
   async listAll(
     ctx: TenantContext,
@@ -270,7 +294,7 @@ export class ProjectsRepository extends TenantRepository<typeof projects> {
       .from(projects)
       .leftJoin(media, eq(media.id, projects.imageId))
       .where(this.scope(ctx, undefined, options.includeDeleted ?? false))
-      .orderBy(asc(projects.sortOrder), desc(projects.id));
+      .orderBy(...this.listOrder());
 
     return this.attach(
       ctx,
@@ -285,7 +309,7 @@ export class ProjectsRepository extends TenantRepository<typeof projects> {
       .from(projects)
       .leftJoin(media, eq(media.id, projects.imageId))
       .where(this.scope(ctx, eq(projects.status, "published")))
-      .orderBy(asc(projects.sortOrder), desc(projects.id));
+      .orderBy(...this.listOrder());
 
     return this.attach(
       ctx,
