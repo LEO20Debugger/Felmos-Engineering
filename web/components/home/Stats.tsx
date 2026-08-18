@@ -44,7 +44,13 @@ function Stat({ value, suffix, label, run }: { value: number; suffix: string; la
   );
 }
 
-export default function Stats() {
+/**
+ * `servicesCount` overrides the "Services offered" figure with the number the
+ * CMS actually holds. The static `stats` entry is only the build-time default:
+ * a service added from the dashboard used to leave this cell reading one fewer
+ * than /services listed.
+ */
+export default function Stats({ servicesCount }: { servicesCount?: number }) {
   const ref = useRef<HTMLElement>(null);
   const [run, setRun] = useState(false);
 
@@ -68,7 +74,13 @@ export default function Stats() {
     <section ref={ref} className="wrap py-10 md:py-14" aria-label="Felmos by the numbers">
       <div className="grid grid-cols-2 gap-x-6 gap-y-8 border-y border-divider py-9 md:grid-cols-4">
         {stats.map((s) => (
-          <Stat key={s.label} value={s.value} suffix={s.suffix} label={s.label} run={run} />
+          <Stat
+            key={s.label}
+            value={s.key === "disciplines" && servicesCount ? servicesCount : s.value}
+            suffix={s.suffix}
+            label={s.label}
+            run={run}
+          />
         ))}
       </div>
     </section>

@@ -9,7 +9,7 @@ import TeamSlider from "@/components/home/TeamSlider";
 import ProcessShowcase from "@/components/process/ProcessShowcase";
 import Projects from "@/components/home/Projects";
 import CtaBand from "@/components/ui/CtaBand";
-import { getProjects } from "@/lib/cms";
+import { getProjects, getServices } from "@/lib/cms";
 import { heroFrames } from "@/lib/content";
 import { images } from "@/lib/images";
 import { focalPosition, mediaUrl } from "@/lib/media";
@@ -22,6 +22,11 @@ export default async function HomePage() {
      the same request rather than a second one — and the banner is still
      server-rendered, so its first frame remains the LCP element rather than
      appearing after hydration. */
+  /* Both cached, and both already requested by sections further down the page
+     (ServiceShowcase and the Projects teaser), so this is the same round trip
+     rather than two more. */
+  const services = await getServices();
+
   const gallery = (await getProjects()).flatMap((project) => [
     ...(project.image ? [project.image] : []),
     ...project.gallery,
@@ -64,7 +69,9 @@ export default async function HomePage() {
       <WhyUs />
       <ProcessShowcase />
       <Projects />
-      <Stats />
+      {/* Counted from the CMS, not from the static `stats` entry — a service
+          added from the dashboard has to move this cell too. */}
+      <Stats servicesCount={services.length} />
       <Reviews />
       {/* Last thing before the CTA, deliberately: the page closes on the people
           who would turn up, then asks for the booking. It also lands on the

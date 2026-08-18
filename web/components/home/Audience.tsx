@@ -5,6 +5,7 @@ import SectionHead from "@/components/ui/Section";
 import Reveal from "@/components/ui/Reveal";
 import { imageAt } from "@/lib/images";
 import { audiences, servicesFor } from "@/lib/content";
+import { getServices } from "@/lib/cms";
 
 /**
  * "Is this for me?" — so every audience stays visible at once. A tabbed or
@@ -34,7 +35,12 @@ import { audiences, servicesFor } from "@/lib/content";
  * `clients` each service already declares, so a row can never claim a
  * discipline the service itself doesn't list.
  */
-export default function Audience() {
+export default async function Audience() {
+  /* Counted rather than written down: the lead used to say "eight services",
+     which went stale the moment one was added from the dashboard. Same cached
+     request ServiceShowcase makes one section above. */
+  const serviceCount = (await getServices()).length;
+
   const cta = (
     <>
       Not listed? Tell us the project
@@ -57,7 +63,7 @@ export default function Audience() {
             <SectionHead
               kicker="Who We Serve"
               title="Find Yourself On This List"
-              lead="You are our ideal client if you fall into any of these groups — each needing a different answer from the same eight services."
+              lead={`You are our ideal client if you fall into any of these groups — each needing a different answer from the same ${serviceCount} services.`}
             />
             <Reveal delay={3} className="mb-8 hidden lg:block">
               <Link href="/contact" className="btn btn-secondary text-ink no-underline">
