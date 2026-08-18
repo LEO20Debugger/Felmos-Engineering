@@ -322,8 +322,25 @@ export const projects: Project[] = [
     image: null,
   },
   {
-    slug: "eko-electricity-distribution",
+    slug: "national-stadium-surulere",
     num: "03",
+    title: "National Stadium, Surulere",
+    category: "Non-Destructive Integrity Testing",
+    location: "Surulere, Lagos",
+    year: null,
+    client: null,
+    duration: null,
+    scope: "Testing of the facility ahead of renovation.",
+    narrative:
+      "Built in 1972, the National Stadium is a major sports venue and a symbol of national pride. Felmos Engineering was commissioned to conduct a non-destructive test on the facility prior to renovation â€” establishing what the existing structure could still carry before anything was designed on top of it.",
+    result: null,
+    metric: null,
+    services: ["integrity-testing", "concrete-strength"],
+    image: null,
+  },
+  {
+    slug: "eko-electricity-distribution",
+    num: "04",
     title: "Eko Electricity Distribution Company",
     category: "Non-Destructive Integrity Testing",
     location: "Marina, Lagos Island, Lagos",
@@ -340,7 +357,7 @@ export const projects: Project[] = [
   },
   {
     slug: "iddo-modern-market",
-    num: "04",
+    num: "05",
     title: "Iddo Modern Market",
     category: "Non-Destructive Integrity Testing",
     location: "Mainland L.C.D.A., Lagos",
@@ -357,7 +374,7 @@ export const projects: Project[] = [
   },
   {
     slug: "british-canadian-university",
-    num: "05",
+    num: "06",
     title: "British-Canadian University",
     category: "Non-Destructive Integrity Testing",
     location: "Obudu, Cross River",
@@ -374,7 +391,7 @@ export const projects: Project[] = [
   },
   {
     slug: "wemabod-marina",
-    num: "06",
+    num: "07",
     title: "Wemabod, Marina",
     category: "Non-Destructive Integrity Testing",
     location: "37 Marina Road, Lagos Island, Lagos",
@@ -391,7 +408,7 @@ export const projects: Project[] = [
   },
   {
     slug: "barracuda-beach-resort",
-    num: "07",
+    num: "08",
     title: "Barracuda Beach Resort & Water Park",
     category: "Non-Destructive Integrity Testing",
     location: "Okun-Ajah Road, off Ogombo Road, Lekki Phase 2, Eti-Osa, Lagos",
@@ -408,7 +425,7 @@ export const projects: Project[] = [
   },
   {
     slug: "lagos-state-college-of-nursing",
-    num: "08",
+    num: "09",
     title: "Lagos State College of Nursing Sewage Treatment Plant",
     category: "Non-Destructive Integrity Testing",
     location: "Igando, Lasu-Iba Road, Lagos",
@@ -425,7 +442,7 @@ export const projects: Project[] = [
   },
   {
     slug: "teju-industrial-clinic",
-    num: "09",
+    num: "10",
     title: "Teju Industrial Clinic",
     category: "Non-Destructive Integrity Testing",
     location: "Fola Osibo Street, Lekki Phase 1, Eti-Osa, Lagos",
@@ -442,7 +459,7 @@ export const projects: Project[] = [
   },
   {
     slug: "agl-property-marina",
-    num: "10",
+    num: "11",
     title: "AGL Property",
     category: "Non-Destructive Integrity Testing",
     location: "Marina Road, Lagos Island, Lagos",
@@ -459,7 +476,7 @@ export const projects: Project[] = [
   },
   {
     slug: "high-point-properties",
-    num: "11",
+    num: "12",
     title: "High Point Properties",
     category: "Non-Destructive Integrity Testing",
     location: "5 MacGregor Road, Ikoyi, Lagos",
@@ -476,7 +493,7 @@ export const projects: Project[] = [
   },
   {
     slug: "bua-group-office-tower",
-    num: "12",
+    num: "13",
     title: "Office Development for BUA Group",
     category: "Non-Destructive Integrity Testing",
     location: "10 Mulliner Road, Ikoyi, Eti-Osa, Lagos",
@@ -493,7 +510,7 @@ export const projects: Project[] = [
   },
   {
     slug: "gr-estate-development",
-    num: "13",
+    num: "14",
     title: "G&R Estate Development",
     category: "Sub-Structure Integrity Testing",
     location: "19B Cooper Road, off Bourdillon Road, Ikoyi, Lagos",
@@ -510,7 +527,7 @@ export const projects: Project[] = [
   },
   {
     slug: "holy-rosary-auditorium",
-    num: "14",
+    num: "15",
     title: "Holy Rosary Secondary School Auditorium",
     category: "Failure Investigation",
     location: "Umuahia, Abia",
@@ -527,7 +544,7 @@ export const projects: Project[] = [
   },
   {
     slug: "citadel-hotel-uromi",
-    num: "15",
+    num: "16",
     title: "Citadel Hotel",
     category: "Non-Destructive Integrity Testing",
     location: "New Agbor Road, Uromi, Esan North-East, Edo",
@@ -537,23 +554,6 @@ export const projects: Project[] = [
     scope: "Testing of both sub-structure and super-structure on an ongoing five-floor commercial building.",
     narrative:
       "An ongoing five-floor building at finishing stage, built for commercial purposes. Both the sub-structure and the super-structure were tested by Felmos Engineering using up-to-date equipment, which meant excavating down to the foundations as well as working through the finished floors above.",
-    result: null,
-    metric: null,
-    services: ["integrity-testing", "concrete-strength"],
-    image: null,
-  },
-  {
-    slug: "national-stadium-surulere",
-    num: "16",
-    title: "National Stadium, Surulere",
-    category: "Non-Destructive Integrity Testing",
-    location: "Surulere, Lagos",
-    year: null,
-    client: null,
-    duration: null,
-    scope: "Testing of the facility ahead of renovation.",
-    narrative:
-      "Built in 1972, the National Stadium is a major sports venue and a symbol of national pride. Felmos Engineering was commissioned to conduct a non-destructive test on the facility prior to renovation â€” establishing what the existing structure could still carry before anything was designed on top of it.",
     result: null,
     metric: null,
     services: ["integrity-testing", "concrete-strength"],
