@@ -91,8 +91,28 @@
     },
 
     {
-      "slug": "eko-electricity-distribution",
+      "slug": "national-stadium-surulere",
       "num": "03",
+      "title": "National Stadium, Surulere",
+      "category": "Non-Destructive Integrity Testing",
+      "location": "Surulere, Lagos",
+      "year": null,
+      "client": null,
+      "scope": "Testing of the facility ahead of renovation.",
+      "narrative": "Built in 1972, the National Stadium is a major sports venue and a symbol of national pride. Felmos Engineering was commissioned to conduct a non-destructive test on the facility prior to renovation — establishing what the existing structure could still carry before anything was designed on top of it.",
+      "serviceSlugs": ["integrity-testing", "concrete-strength"],
+      "hero": "national-stadium-surulere-01.jpg",
+      "heroAlt": "The National Stadium bowl at Surulere, track and terracing",
+      "gallery": [
+        { "file": "national-stadium-surulere-03.jpg", "alt": "The terracing and scoreboard before renovation" },
+        { "file": "national-stadium-surulere-02.jpg", "alt": "Two engineers recording readings on the terrace steps" },
+        { "file": "national-stadium-surulere-04.jpg", "alt": "Engineers testing the terracing, with vegetation grown through the seating" }
+      ]
+    },
+
+    {
+      "slug": "eko-electricity-distribution",
+      "num": "04",
       "title": "Eko Electricity Distribution Company",
       "category": "Non-Destructive Integrity Testing",
       "location": "Marina, Lagos Island, Lagos",
@@ -110,7 +130,7 @@
 
     {
       "slug": "iddo-modern-market",
-      "num": "04",
+      "num": "05",
       "title": "Iddo Modern Market",
       "category": "Non-Destructive Integrity Testing",
       "location": "Mainland L.C.D.A., Lagos",
@@ -129,7 +149,7 @@
 
     {
       "slug": "british-canadian-university",
-      "num": "05",
+      "num": "06",
       "title": "British-Canadian University",
       "category": "Non-Destructive Integrity Testing",
       "location": "Obudu, Cross River",
@@ -154,7 +174,7 @@
 
     {
       "slug": "wemabod-marina",
-      "num": "06",
+      "num": "07",
       "title": "Wemabod, Marina",
       "category": "Non-Destructive Integrity Testing",
       "location": "37 Marina Road, Lagos Island, Lagos",
@@ -175,7 +195,7 @@
 
     {
       "slug": "barracuda-beach-resort",
-      "num": "07",
+      "num": "08",
       "title": "Barracuda Beach Resort & Water Park",
       "category": "Non-Destructive Integrity Testing",
       "location": "Okun-Ajah Road, off Ogombo Road, Lekki Phase 2, Eti-Osa, Lagos",
@@ -198,7 +218,7 @@
 
     {
       "slug": "lagos-state-college-of-nursing",
-      "num": "08",
+      "num": "09",
       "title": "Lagos State College of Nursing Sewage Treatment Plant",
       "category": "Non-Destructive Integrity Testing",
       "location": "Igando, Lasu-Iba Road, Lagos",
@@ -220,7 +240,7 @@
 
     {
       "slug": "teju-industrial-clinic",
-      "num": "09",
+      "num": "10",
       "title": "Teju Industrial Clinic",
       "category": "Non-Destructive Integrity Testing",
       "location": "Fola Osibo Street, Lekki Phase 1, Eti-Osa, Lagos",
@@ -238,7 +258,7 @@
 
     {
       "slug": "agl-property-marina",
-      "num": "10",
+      "num": "11",
       "title": "AGL Property",
       "category": "Non-Destructive Integrity Testing",
       "location": "Marina Road, Lagos Island, Lagos",
@@ -258,7 +278,7 @@
 
     {
       "slug": "high-point-properties",
-      "num": "11",
+      "num": "12",
       "title": "High Point Properties",
       "category": "Non-Destructive Integrity Testing",
       "location": "5 MacGregor Road, Ikoyi, Lagos",
@@ -279,7 +299,7 @@
 
     {
       "slug": "bua-group-office-tower",
-      "num": "12",
+      "num": "13",
       "title": "Office Development for BUA Group",
       "category": "Non-Destructive Integrity Testing",
       "location": "10 Mulliner Road, Ikoyi, Eti-Osa, Lagos",
@@ -301,7 +321,7 @@
 
     {
       "slug": "gr-estate-development",
-      "num": "13",
+      "num": "14",
       "title": "G&R Estate Development",
       "category": "Sub-Structure Integrity Testing",
       "location": "19B Cooper Road, off Bourdillon Road, Ikoyi, Lagos",
@@ -323,7 +343,7 @@
 
     {
       "slug": "holy-rosary-auditorium",
-      "num": "14",
+      "num": "15",
       "title": "Holy Rosary Secondary School Auditorium",
       "category": "Failure Investigation",
       "location": "Umuahia, Abia",
@@ -346,7 +366,7 @@
 
     {
       "slug": "citadel-hotel-uromi",
-      "num": "15",
+      "num": "16",
       "title": "Citadel Hotel",
       "category": "Non-Destructive Integrity Testing",
       "location": "New Agbor Road, Uromi, Esan North-East, Edo",
@@ -364,26 +384,6 @@
         { "file": "citadel-hotel-uromi-05.jpg", "alt": "Testing at the edge of a structural member below ground" },
         { "file": "citadel-hotel-uromi-06.jpg", "alt": "An engineer taking a reading on an internal wall" },
         { "file": "citadel-hotel-uromi-07.jpg", "alt": "A reading taken at the base of an external wall" }
-      ]
-    },
-
-    {
-      "slug": "national-stadium-surulere",
-      "num": "16",
-      "title": "National Stadium, Surulere",
-      "category": "Non-Destructive Integrity Testing",
-      "location": "Surulere, Lagos",
-      "year": null,
-      "client": null,
-      "scope": "Testing of the facility ahead of renovation.",
-      "narrative": "Built in 1972, the National Stadium is a major sports venue and a symbol of national pride. Felmos Engineering was commissioned to conduct a non-destructive test on the facility prior to renovation — establishing what the existing structure could still carry before anything was designed on top of it.",
-      "serviceSlugs": ["integrity-testing", "concrete-strength"],
-      "hero": "national-stadium-surulere-01.jpg",
-      "heroAlt": "The National Stadium bowl at Surulere, track and terracing",
-      "gallery": [
-        { "file": "national-stadium-surulere-03.jpg", "alt": "The terracing and scoreboard before renovation" },
-        { "file": "national-stadium-surulere-02.jpg", "alt": "Two engineers recording readings on the terrace steps" },
-        { "file": "national-stadium-surulere-04.jpg", "alt": "Engineers testing the terracing, with vegetation grown through the seating" }
       ]
     },
 
