@@ -31,3 +31,4 @@ api/seed/deck
 # Scratch files holding production credentials, written during deployment
 # setup. Delete once the values are in the hosting provider.
 VERCEL-ENV.txt
+ACCESS-DETAILS.txt
