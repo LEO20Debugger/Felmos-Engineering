@@ -89,7 +89,7 @@ export const services: Service[] = [
   {
     slug: "integrity-testing",
     num: "01",
-    title: "Non-Destructive Integrity Testing",
+    title: "NDT",
     label: "Integrity",
     short: "Don't Buy a Hidden Problem",
     lead: "Let an independent test prove the building is sound before you pay. Fresh paint and fine finishing can hide serious structural defects. A small test fee now saves you from massive repair bills later.",
@@ -105,7 +105,7 @@ export const services: Service[] = [
   {
     slug: "concrete-strength",
     num: "02",
-    title: "Concrete Compressive Strength Testing",
+    title: "Cube Test",
     label: "Concrete",
     short: "Integrity Tests for Government Approvals",
     lead: "Regulators require proof that your structure is safe. Our NDT reports give you the technical evidence you need to meet approval requirements and avoid costly delays.",
@@ -121,7 +121,7 @@ export const services: Service[] = [
   {
     slug: "pile-testing",
     num: "03",
-    title: "Pile Integrity & Pile Load Testing",
+    title: "Pile Load and Pile Integrity Test",
     label: "Pile Testing",
     short: "Flawless Piles, Fearless Skyscrapers.",
     lead: "Through precision load and integrity testing to guarantee foundation endurance, you can ensure your foundation can take the weight before progressing with the superstructure — proving the capacity before you build the legacy.",
@@ -201,7 +201,7 @@ export const services: Service[] = [
   {
     slug: "building-repairs",
     num: "08",
-    title: "Building Repairs & Renovations",
+    title: "Building Repairs and Renovations",
     label: "Repairs",
     short: "A Stitch in Time Saves Nine!",
     lead: "Cracks, leaks, and sagging are warning signs, not just blemishes. We find the real cause and restore your building safely. Ignored defects only grow worse and more expensive. We test and renovate your building to serve its intended purpose.",
