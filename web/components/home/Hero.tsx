@@ -9,10 +9,10 @@ import { site } from "@/lib/site";
    on the same clock. */
 const KICKERS = [
   "Structural Testing & Engineering",
-  "Pile Integrity & Pile Load Testing",
+  "Pile Load and Pile Integrity Test",
   "Sub-soil Investigation",
-  "Building Repairs & Renovations",
-  "Testing Equipment & Instruments",
+  "Building Repairs and Renovations",
+  "Purchase of Test Equipment",
 ];
 
 /* Five headlines — one per slide — that crossfade in sync with the
@@ -27,37 +27,26 @@ const HEADLINES = [
   // Slide 1
   ["What's", "Really", "Holding", "Up", "Your", "Building?"],
   // Slide 2
-  ["Sure", "the", "Piles", "Will", "Hold?"],
+  ["Flawless", "Piles,", "Fearless", "Skyscrapers."],
   // Slide 3
-  ["Know", "What", "You're", "Building", "On?"],
+  ["Solid", "Ground,", "Safe", "Structures."],
   // Slide 4
-  ["A", "Crack", "That", "Keeps", "Coming", "Back?"],
+  ["A", "Stitch", "in", "Time", "Saves", "Nine!"],
   // Slide 5
   ["Need", "Testing", "Equipment?"],
 ];
 
-/* The subhead that belongs to each headline, by the same index. Written to one
-   shape on purpose — name the thing that is unknown, say what we do about it,
-   end on the same promise — so the block reads as one voice changing subject
-   rather than five different adverts. The closing clause repeats verbatim on
-   slides 2-4; that is the refrain, not an oversight.
-
-   Slides 1 and 5 are the two that sit outside the refrain, and both earn it:
-   slide 1 is the firm rather than one job, and slide 5 answers a different
-   question — not "what is wrong with my building" but "what do you test it
-   with" — so it closes on whose hands the instruments are in instead.
-
-   Nothing here claims a capability the rest of the site does not already carry:
-   slides 2, 3 and 4 are the `pile-testing`, `subsoil` and `building-repairs`
-   services, and the instruments named in slide 5 are the ones in `instruments`
-   (lib/content.ts). Keep it that way — a banner is the last place to introduce
-   a promise nobody has signed off. */
+/* The subhead that belongs to each headline, by the same index. Slides 2-5 are
+   company copy, supplied verbatim alongside the service taglines: they match the
+   `short` (headline) and `lead` (subhead) of the `pile-testing`, `subsoil`,
+   `building-repairs` and `purchase-calibration-of-testing-equipment` services.
+   Change them together. Slide 1 is the firm rather than one job. */
 const SUBHEADS = [
   "The soil beneath it, the concrete inside it, and the structural integrity holding it together. We test all three, and give you the engineering report to prove it — so you can build, lend or buy with confidence.",
-  "A pile driven months ago, a structure about to go on top of it, no way to see if it's sound from the surface. We test integrity and load capacity before the weight goes on, not after something moves. And put what we find in writing.",
-  "Ground no one has tested is ground you're guessing about. We investigate bearing capacity and soil composition before the design is drawn, boreholes, SPT, the data your foundation actually needs. And put what we find in writing.",
-  "A repair that patched the symptom and left the cause untouched. We find out why it's cracking, settling or moving before we touch a wall, then repair to that. And put what we find in writing.",
-  "A Schmidt hammer for the quick read, ultrasonics for what is happening inside, cube crushing for the figure that settles it. The instruments are ours and so is the engineer reading them.",
+  "Through precision load and integrity testing to guarantee foundation endurance, you can ensure your foundation can take the weight before progressing with the superstructure — proving the capacity before you build the legacy.",
+  "Before you build up, know what's down — don't bet your building on guesswork; test your soil first.",
+  "Cracks, leaks, and sagging are warning signs, not just blemishes. We find the real cause and restore your building safely. Ignored defects only grow worse and more expensive. We test and renovate your building to serve its intended purpose.",
+  "Accurate tests start with reliable equipment. Wrong readings lead to wrong decisions, and wrong decisions lead to failures. Equip your team with instruments you can trust.",
 ];
 
 /* The banner's five layers, in the order they play. Stacked in this same order
